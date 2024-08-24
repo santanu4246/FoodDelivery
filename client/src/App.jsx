@@ -1,13 +1,21 @@
-
-import './App.css'
-import {Home} from './utils/utils'
+import { useEffect } from "react";
+import "./App.css";
+import { useFoodCategory } from "./store/FoodCategory.js";
+import { Home } from "./utils/utils";
 function App() {
-
+  const { fetchCategory } = useFoodCategory();
+  useEffect(() => {
+    try {
+      fetchCategory();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [fetchCategory]);
   return (
-    <div className='w-full h-full px-12'>
-      <Home/>
+    <div className="w-full h-full px-12">
+      <Home />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
