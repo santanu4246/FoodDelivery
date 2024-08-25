@@ -3,8 +3,6 @@ cd /d "%~dp0"
 
 git add .
 
-git commit -m "Food delivery"
+git commit -m "Working on backend..."
 
 git push -u origin main
-
-pause

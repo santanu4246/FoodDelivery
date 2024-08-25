@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import mongoose from "mongoose"
 import cors from "cors"
 import FoodCategoryRouter from "./routes/FoodCategoryRoutes.js"
+import RestrudentRouter from "./routes/RestrudentRoutes.js"
 
 const app = express()
 dotenv.config()
@@ -16,6 +17,7 @@ app.use(cors({
 }))
 
 app.use("/", FoodCategoryRouter)
+app.use("/", RestrudentRouter)
 
 mongoose.connect(MONGO_URL).then(() => {
     console.log("Connected to Database");

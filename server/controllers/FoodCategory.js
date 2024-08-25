@@ -6,10 +6,10 @@ async function AddFoodCategory(req, res) {
     try {
         if (!name || !file) {
             res.status(400).json({ msg: "All fields are not provided", success: false })
-        }
-        const cloudinaryResponse = await uploadOnCloudinary(file.path, "FoodCategory")
+const cloudinaryResponse = await uploadOnCloudinary(file.path, "FoodCategory")
 
-        if (!cloudinaryResponse) return res.status(500).json({ msg: "File not uploaded on cloud", success: false })
+        if (!cloudinaryResponse) return res.status(500).json({ msg: "File not uploaded on cloud", success: false })        }
+        
         const newCategory = new CategoryModel({
             name,
             image: cloudinaryResponse.url
