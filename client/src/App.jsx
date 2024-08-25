@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
-import { Home } from "./utils/utils";
+import { Home,Nav } from "./utils/utils";
 function App() {
   const { fetchCategory } = useFoodCategory();
   useEffect(() => {
@@ -12,7 +12,8 @@ function App() {
     }
   }, [fetchCategory]);
   return (
-    <div className="w-full h-full px-12">
+    <div className="w-full h-full px-[15%]">
+      <Nav/>
       <Home />
     </div>
   );

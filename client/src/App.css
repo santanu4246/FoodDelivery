@@ -2,11 +2,12 @@
 margin:0;
 padding:0;
 box-sizing:boder-box;
-background-color: rgb(79, 79, 79);
-
 }
 .scrollNone::-webkit-scrollbar {
     display: none;
     -ms-overflow-style: none;
     scrollbar-width:none;
+  }
+  body{
+    background-color: rgb(99, 98, 98);
   }

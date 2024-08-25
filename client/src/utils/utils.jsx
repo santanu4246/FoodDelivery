@@ -1,3 +1,3 @@
 import Home from "../components/Home/Home"
-
-export  {Home}
+import Nav from "../components/nav/Nav"
+export  {Home,Nav}
