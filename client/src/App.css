@@ -11,3 +11,6 @@ box-sizing:boder-box;
   body{
     background-color: rgb(99, 98, 98);
   }
+  li{
+    list-style: none;
+  }

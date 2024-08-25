@@ -1,3 +1,4 @@
 import Home from "../components/Home/Home"
 import Nav from "../components/nav/Nav"
-export  {Home,Nav}
+import Footer from "../components/Footer/Footer"
+export  {Home,Nav,Footer}

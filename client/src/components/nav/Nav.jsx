@@ -3,7 +3,7 @@ import React from "react";
 const Nav = () => {
   return (
     <div>
-      <nav className="flex justify-between py-5">
+      <nav className="flex justify-between py-5  px-[15%]">
         <h3>OrrinSanMato</h3>
         <input
           id="inputField"
