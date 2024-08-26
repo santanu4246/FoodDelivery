@@ -22,7 +22,7 @@ useEffect(()=>{
             <div key={index} className="">
               <img
                 src={item.image}
-                className="h-[150px] min-w-[150px] object-cover rounded-[100%]"
+                className="h-[150px] w-[150px] min-w-[150px] object-cover rounded-[100%]"
               />
               <p className="mt-[10px] text-center text-white font-[500]">
                 {item.name}
