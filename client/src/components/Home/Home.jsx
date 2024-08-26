@@ -14,8 +14,8 @@ useEffect(()=>{
   setResturents(restureantlist)
 },[restureantlist])
   return (
-    <div className="HomeContainer px-[15%]">
-      <div className="py-10">
+    <div className="HomeContainer">
+      <div className="py-10 bg-gray-100 w-[100%] px-[15%]">
         <h2>Inspiration for your first order</h2>
         <div className="flex gap-5 py-10 overflow-x-auto scrollNone select-none">
           {Slider.map((item, index) => (
@@ -24,7 +24,7 @@ useEffect(()=>{
                 src={item.image}
                 className="h-[150px] w-[150px] min-w-[150px] object-cover rounded-[100%]"
               />
-              <p className="mt-[10px] text-center text-white font-[500]">
+              <p className="mt-[10px] text-center text-black font-[500]">
                 {item.name}
               </p>
             </div>
@@ -32,14 +32,14 @@ useEffect(()=>{
         </div>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-5 px-[15%] py-10">
         <h2>Locality Restaurants</h2>
         <div className="grid grid-cols-3 gap-[5rem]">
           {Resturents.map((item, index) => {
             return (
-              <div className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5" key={index}>
-                <div className="h-[85%] w-[90%] rounded-[10px] bg-black">
-                  <img src={item.image} alt="" className="h-[100%]"/>
+              <div className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5 hover:shadow-2xl" key={index}>
+                <div className="h-[70%] w-[90%] rounded-[10px] ">
+                  <img src={item.image} alt="" className=" object-cover rounded-[10px]"/>
                 </div>
                 <div className=" w-[90%] flex justify-between">
                   <div className="">
