@@ -47,7 +47,7 @@ useEffect(()=>{
                     <span>North indian,khabab...</span>
                   </div>
                   <div className="flex flex-col  items-end">
-                    <span>New</span>
+                    <span>{item.rating}</span>
                     <span>₹{item.perThali} for one</span>
                     <span>39min</span>
                   </div>

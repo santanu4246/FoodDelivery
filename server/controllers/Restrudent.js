@@ -3,7 +3,7 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 
 async function addRestrudent(req, res) {
   try {
-    const { name, cuisine, location, geolocation, perThali } = req.body;
+    const { name, cuisine, location, geolocation, perThali,rating } = req.body;
     const file = req.file;
 
     if (!file || !name || !location) {
@@ -29,6 +29,7 @@ async function addRestrudent(req, res) {
       cuisine: cuisine || [],
       geolocation: geolocation || "",
       perThali: perThali || 100,
+      rating: rating || 0
     });
 
     const response = await newRestaurant.save();
