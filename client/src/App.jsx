@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
 import { Home, Nav, Footer, Admin, Dashboard } from "./utils/utils";
@@ -26,8 +26,8 @@ function App() {
   }, [fetchresturent]);
 
   useEffect(() => {
-    setisVisiblaeNavFooter(location.pathname === "/admin");
-  }, []);
+    setisVisiblaeNavFooter(location.pathname.startsWith("/admin"));
+  }, [location.pathname]);
   return (
     <div className="w-full h-full">
       {!isVisiblaeNavFooter && <Nav />}
