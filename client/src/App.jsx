@@ -1,12 +1,14 @@
-import { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {  Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
-import { Home, Nav, Footer,Admin,Dashboard } from "./utils/utils";
+import { Home, Nav, Footer, Admin, Dashboard } from "./utils/utils";
 import { useAllresturent } from "./store/GetallResturants.js";
 function App() {
+  const location = useLocation();
   const { fetchCategory } = useFoodCategory();
   const { fetchresturent } = useAllresturent();
+  const [isVisiblaeNavFooter, setisVisiblaeNavFooter] = useState(true);
   useEffect(() => {
     try {
       fetchCategory();
@@ -23,17 +25,18 @@ function App() {
     }
   }, [fetchresturent]);
 
+  useEffect(() => {
+    setisVisiblaeNavFooter(location.pathname === "/admin");
+  }, []);
   return (
     <div className="w-full h-full">
-      <BrowserRouter>
-        <Nav />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
+      {!isVisiblaeNavFooter && <Nav />}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin/*" element={<Admin />} />
+      </Routes>
+      {!isVisiblaeNavFooter && <Footer />}
     </div>
   );
 }
