@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useFoodCategory } from "../../store/FoodCategory";
+import { useAllresturent } from "../../store/GetallResturants";
 const Home = () => {
   const { categoryList } = useFoodCategory();
+  const { restureantlist } = useAllresturent()
   const [Slider, setSlider] = useState([]);
-  const [Resturents, setResturents] = useState(Array(10).fill(null));
+  const [Resturents, setResturents] = useState([]);
   useEffect(() => {
     setSlider(categoryList);
   }, [categoryList]);
 
+useEffect(()=>{
+  setResturents(restureantlist)
+},[restureantlist])
   return (
     <div className="HomeContainer px-[15%]">
       <div className="py-10">
@@ -32,16 +37,18 @@ const Home = () => {
         <div className="grid grid-cols-3 gap-[5rem]">
           {Resturents.map((item, index) => {
             return (
-              <div className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5">
-                <div className="h-[85%] w-[90%] rounded-[10px] bg-black"></div>
+              <div className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5" key={index}>
+                <div className="h-[85%] w-[90%] rounded-[10px] bg-black">
+                  <img src={item.image} alt="" className="h-[100%]"/>
+                </div>
                 <div className=" w-[90%] flex justify-between">
                   <div className="">
-                    <h4>Food Hunter</h4>
+                    <h4>{item.name}</h4>
                     <span>North indian,khabab...</span>
                   </div>
                   <div className="flex flex-col  items-end">
                     <span>New</span>
-                    <span>₹200 for two</span>
+                    <span>₹{item.perThali} for one</span>
                     <span>39min</span>
                   </div>
                 </div>

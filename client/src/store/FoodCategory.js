@@ -9,6 +9,7 @@ export const useFoodCategory = create((set) => ({
         try {
             const response = await axios.get(`${BASE_URL}/getcategory`)
             set({ categoryList: response.data.category_list })
+          
         } catch (error) {
             throw error
         }

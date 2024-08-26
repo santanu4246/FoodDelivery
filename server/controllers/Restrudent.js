@@ -28,14 +28,14 @@ async function addRestrudent(req, res) {
       image: cloudinaryResponse.url,
       cuisine: cuisine || [],
       geolocation: geolocation || "",
-      perThali: perThali || 100
+      perThali: perThali || 100,
     });
 
     const response = await newRestaurant.save();
     return res.status(201).json({
       msg: "New restrurant added",
       success: true,
-      restrurant: response
+      restrurant: response,
     });
   } catch (error) {
     console.error(error);
@@ -52,12 +52,12 @@ async function getAllRestrudents(req, res) {
     return res.status(201).json({
       msg: "All restrurants fetched",
       success: true,
-      restrurant: response
+      restrurant: response,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "An error occurred while fetching all the restaurants"
+      message: "An error occurred while fetching all the restaurants",
     });
   }
 }
@@ -73,12 +73,12 @@ async function getRestrudentById(req, res) {
     return res.status(200).json({
       msg: "Restrurant fetch successfull",
       success: true,
-      restrurant: response
+      restrurant: response,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "An error occurred while fetching all the restaurants"
+      message: "An error occurred while fetching all the restaurants",
     });
   }
 }
@@ -88,5 +88,5 @@ export {
   updateRestrudent,
   deleteRestrudent,
   getAllRestrudents,
-  getRestrudentById
+  getRestrudentById,
 };
