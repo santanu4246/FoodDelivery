@@ -8,7 +8,10 @@ function App() {
   const location = useLocation();
   const { fetchCategory } = useFoodCategory();
   const { fetchresturent } = useAllresturent();
-  const [isVisiblaeNavFooter, setisVisiblaeNavFooter] = useState(true);
+  const [isVisiblaeNavFooter, setisVisiblaeNavFooter] = useState(null);
+  
+
+
   useEffect(() => {
     try {
       fetchCategory();
@@ -28,10 +31,12 @@ function App() {
   useEffect(() => {
     setisVisiblaeNavFooter(location.pathname.startsWith("/admin"));
   }, [location.pathname]);
+
+  if (isVisiblaeNavFooter === null) return <></>;
+
   return (
     <div className="w-full h-full">
       {!isVisiblaeNavFooter && <Nav />}
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin/*" element={<Admin />} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
 import AddFood from "./adminRoutes/AddFood";
@@ -8,7 +8,7 @@ import Food from "./adminRoutes/Food";
 import RestrurantDetail from "./adminRoutes/RestrurantDetail";
 
 const routesOfAdmin = [
-  { name: "Dashboard", path: "/" },
+  { name: "Dashboard", path: "" },
   { name: "Add Food", path: "/addfood" },
   { name: "Edit Food", path: "/editfood" },
   { name: "Food", path: "/food" },
@@ -16,6 +16,9 @@ const routesOfAdmin = [
 ];
 
 const Admin = () => {
+  const location = useLocation();
+  const path = location.pathname;
+
   return (
     <div className="text-white flex h-screen w-full bg-gray-700 px-[10%] relative">
       <div className="h-screen w-[20vw] flex flex-col items-center py-11">
@@ -23,8 +26,16 @@ const Admin = () => {
         <ul className="flex flex-col gap-5 py-[5rem]">
           {routesOfAdmin.map((item, index) => {
             return (
-              <Link to={`/admin${item.path}`}>
-                <li>{item.name}</li>
+              <Link key={index} to={`/admin${item.path}`}>
+                <li
+                  className={`${
+                    path === `/admin${item.path}`
+                      ? "border border-white"
+                      : "border border-transparent"
+                  } px-[1rem] py-[5px] rounded-[5px]`}
+                >
+                  {item.name}
+                </li>
               </Link>
             );
           })}
