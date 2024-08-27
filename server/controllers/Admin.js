@@ -10,7 +10,6 @@ import bcrypt from "bcryptjs";
 async function registerAdmin(req, res) {
   const { username, password, name, location } = req.body;
   const file = req.file;
-  console.log(username, password, name, location, file);
 
   if (!username || !password || !name || !location || !file) {
     return res
@@ -19,6 +18,14 @@ async function registerAdmin(req, res) {
   }
 
   try {
+    const existingUser = await AdminModel.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({
+        msg: "Admin already exist with this username",
+        success: false
+      });
+    }
+
     const cloudinaryResponse = await uploadOnCloudinary(
       file.path,
       "Restrurant"
@@ -42,6 +49,7 @@ async function registerAdmin(req, res) {
       restrurant: response._id
     });
     const adminRes = await newAdmin.save();
+    adminRes.password = "";
     return res.status(201).json({
       msg: "Admin register successfull",
       success: true,
