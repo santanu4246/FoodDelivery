@@ -9,8 +9,6 @@ function App() {
   const { fetchCategory } = useFoodCategory();
   const { fetchresturent } = useAllresturent();
   const [isVisiblaeNavFooter, setisVisiblaeNavFooter] = useState(null);
-  
-
 
   useEffect(() => {
     try {

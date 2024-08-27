@@ -3,16 +3,16 @@ import { useFoodCategory } from "../../store/FoodCategory";
 import { useAllresturent } from "../../store/GetallResturants";
 const Home = () => {
   const { categoryList } = useFoodCategory();
-  const { restureantlist } = useAllresturent()
+  const { restureantlist } = useAllresturent();
   const [Slider, setSlider] = useState([]);
   const [Resturents, setResturents] = useState([]);
   useEffect(() => {
     setSlider(categoryList);
   }, [categoryList]);
 
-useEffect(()=>{
-  setResturents(restureantlist)
-},[restureantlist])
+  useEffect(() => {
+    setResturents(restureantlist);
+  }, [restureantlist]);
   return (
     <div className="HomeContainer">
       <div className="py-10 bg-gray-100 w-[100%] px-[15%]">
@@ -37,9 +37,16 @@ useEffect(()=>{
         <div className="grid grid-cols-3 gap-[5rem]">
           {Resturents.map((item, index) => {
             return (
-              <div className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5 hover:shadow-2xl" key={index}>
+              <div
+                className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5 hover:shadow-2xl"
+                key={index}
+              >
                 <div className="h-[70%] w-[90%] rounded-[10px] ">
-                  <img src={item.image} alt="" className=" object-cover rounded-[10px]"/>
+                  <img
+                    src={item.image}
+                    alt=""
+                    className=" object-cover rounded-[10px]"
+                  />
                 </div>
                 <div className=" w-[90%] flex justify-between">
                   <div className="">
@@ -57,9 +64,6 @@ useEffect(()=>{
           })}
         </div>
       </div>
-
-      
-
     </div>
   );
 };

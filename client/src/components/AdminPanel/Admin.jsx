@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
@@ -6,6 +6,7 @@ import AddFood from "./adminRoutes/AddFood";
 import EditFood from "./adminRoutes/EditFood";
 import Food from "./adminRoutes/Food";
 import RestrurantDetail from "./adminRoutes/RestrurantDetail";
+import AdminLogin from "./adminRoutes/AdminLogin";
 
 const routesOfAdmin = [
   { name: "Dashboard", path: "" },
@@ -18,6 +19,15 @@ const routesOfAdmin = [
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+
+  if (isAdminAuthenticated === null) {
+    return <></>;
+  }
+
+  if (isAdminAuthenticated === false) {
+    return <AdminLogin />;
+  }
 
   return (
     <div className="text-white  flex h-screen w-[100%] bg-gray-700  relative">
