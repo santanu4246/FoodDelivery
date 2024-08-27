@@ -18,12 +18,19 @@ function AddFood() {
 
   return (
     <div className="h-full w-full flex justify-center items-center bg-gray-100">
-      <div className="h-full w-[50%] bg-white shadow-2xl p-10 rounded-lg">
-        <h2 className="uppercase text-center pb-5 text-black text-[30px] font-extrabold">Add Food Item</h2>
+      <div className="relative h-full w-[50%] bg-white shadow-2xl p-10 rounded-lg">
+        <h2 className="uppercase text-center pb-5 text-black text-[30px] font-extrabold">
+          Add Food Item
+        </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 ">
           <div className="flex flex-col">
-            <label htmlFor="title" className="text-black text-[18px] font-bold mb-2">Food Title</label>
+            <label
+              htmlFor="title"
+              className="text-black text-[18px] font-bold mb-2"
+            >
+              Food Title
+            </label>
             <input
               type="text"
               id="title"
@@ -31,12 +38,16 @@ function AddFood() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-
             />
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="description" className="text-black text-[18px] font-bold mb-2 ">Description</label>
+            <label
+              htmlFor="description"
+              className="text-black text-[18px] font-bold mb-2 "
+            >
+              Description
+            </label>
             <textarea
               id="description"
               className="border-2 border-gray-300 p-2 rounded-md text-black"
@@ -47,7 +58,12 @@ function AddFood() {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="price" className="text-black text-[18px] font-bold mb-2">Price</label>
+            <label
+              htmlFor="price"
+              className="text-black text-[18px] font-bold mb-2"
+            >
+              Price
+            </label>
             <input
               type="number"
               id="price"
@@ -59,7 +75,12 @@ function AddFood() {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="image" className="text-black text-[18px] font-bold mb-2">Food Image</label>
+            <label
+              htmlFor="image"
+              className="text-black text-[18px] font-bold mb-2"
+            >
+              Food Image
+            </label>
             <input
               type="file"
               id="image"
@@ -71,7 +92,7 @@ function AddFood() {
 
           <button
             type="submit"
-            className="bg-[#111111] text-white p-3 rounded-md font-bold w-full"
+            className="bg-[#111111] text-white p-3 rounded-md font-bold w-[87%] absolute bottom-[20px]"
           >
             Add Food
           </button>

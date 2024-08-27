@@ -20,8 +20,8 @@ const Admin = () => {
   const path = location.pathname;
 
   return (
-    <div className="text-white flex h-[140vh] w-[100%] bg-gray-700  relative">
-      <div className="h-screen w-[20vw] flex flex-col items-center py-11">
+    <div className="text-white  flex h-screen w-[100%] bg-gray-700  relative">
+      <div className="h-screen w-[20vw] flex flex-col items-center py-11 relative">
         <h2>Welcome Admin</h2>
         <ul className="flex flex-col gap-5 py-[5rem]">
           {routesOfAdmin.map((item, index) => {
@@ -41,12 +41,12 @@ const Admin = () => {
           })}
         </ul>
 
-        <button className="absolute bottom-80 bg-red-600 h-[40px] w-[15%] rounded-md">
+        <button className="absolute bottom-[20px] px-[2rem] bg-red-600 h-[40px] rounded-md">
           Log Out
         </button>
       </div>
 
-      <div className="h-[140vh] w-[80vw] bg-[#FBFBFB] text-white">
+      <div className="h-full overflow-y-auto w-[80vw] bg-[#FBFBFB] text-white">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/addfood" element={<AddFood />} />
