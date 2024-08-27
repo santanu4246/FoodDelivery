@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteAdmin,
+  getAdmin,
   loginAdmin,
   registerAdmin
 } from "../controllers/Admin.js";
@@ -15,4 +16,5 @@ AdminRouter.post(
 );
 AdminRouter.delete("/masteradmin/delete/:adminid", AuthAdmin, deleteAdmin);
 AdminRouter.post("/admin/login", loginAdmin);
+AdminRouter.get("/getadmin", AuthAdmin, getAdmin);
 export default AdminRouter;

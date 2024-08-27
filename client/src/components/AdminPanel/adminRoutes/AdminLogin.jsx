@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useAdminAuthentication } from "../../../store/Authentication.js";
 
 function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const { adminLogin, error } = useAdminAuthentication();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      
+      await adminLogin(username, password);
     } catch (error) {
-      console.log(error);
-      setError(err.response?.data?.message || "An error occurred");
+      console.log(error.response?.data?.msg);
     }
   };
 

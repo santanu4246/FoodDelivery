@@ -4,11 +4,24 @@ import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
 import { Home, Nav, Footer, Admin, Dashboard } from "./utils/utils";
 import { useAllresturent } from "./store/GetallResturants.js";
+import { useAdminAuthentication } from "./store/Authentication.js";
 function App() {
   const location = useLocation();
   const { fetchCategory } = useFoodCategory();
   const { fetchresturent } = useAllresturent();
   const [isVisiblaeNavFooter, setisVisiblaeNavFooter] = useState(null);
+  const { getAdmin } = useAdminAuthentication();
+
+  useEffect(() => {
+    async function getAdminOrMasterAdmin() {
+      try {
+        await getAdmin();
+      } catch (error) {
+        console.log(error.response?.data?.msg);
+      }
+    }
+    getAdminOrMasterAdmin();
+  }, []);
 
   useEffect(() => {
     try {

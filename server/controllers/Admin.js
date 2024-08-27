@@ -50,8 +50,9 @@ async function loginAdmin(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
+      path: "/admin",
       maxAge: 60 * 1000,
-      secure: true,
+      secure: false,
       sameSite: "None"
     });
 
@@ -175,4 +176,22 @@ async function deleteAdmin(req, res) {
   }
 }
 
-export { registerAdmin, deleteAdmin, loginAdmin };
+async function getAdmin(req, res) {
+  const id = req.id;
+  try {
+    const admin = await AdminModel.findById(id).select("-password");
+    if (!admin) {
+      return res.status(400).json({ msg: "admin not found!", success: false });
+    }
+    return res
+      .status(200)
+      .json({ msg: "Admin fetched successfully", success: true, admin });
+  } catch (error) {
+    console.error("Error while finding user", error);
+    return res
+      .status(500)
+      .json({ msg: "Error while finding user", error, success: false });
+  }
+}
+
+export { registerAdmin, deleteAdmin, loginAdmin, getAdmin };

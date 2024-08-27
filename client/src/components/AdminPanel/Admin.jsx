@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
@@ -8,6 +8,7 @@ import Food from "./adminRoutes/Food";
 import RestrurantDetail from "./adminRoutes/RestrurantDetail";
 import AdminLogin from "./adminRoutes/AdminLogin";
 import { useAdminAuthentication } from "../../store/Authentication.js";
+import MasterAdmin from "./masteradmin/MasterAdmin.jsx";
 
 const routesOfAdmin = [
   { name: "Dashboard", path: "" },
@@ -20,7 +21,7 @@ const routesOfAdmin = [
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;
-  const { isAuthenticated } = useAdminAuthentication();
+  const { isAuthenticated, adminType } = useAdminAuthentication();
 
   if (isAuthenticated === null) {
     return <></>;
@@ -30,44 +31,49 @@ const Admin = () => {
     return <AdminLogin />;
   }
 
-  return (
-    <div className="text-white  flex h-screen w-[100%] bg-gray-700  relative">
-      <div className="h-screen w-[20vw] flex flex-col items-center py-11 relative">
-        <h2>Welcome Admin</h2>
-        <ul className="flex flex-col gap-5 py-[5rem]">
-          {routesOfAdmin.map((item, index) => {
-            return (
-              <Link key={index} to={`/admin${item.path}`}>
-                <li
-                  className={`${
-                    path === `/admin${item.path}`
-                      ? "border border-white"
-                      : "border border-transparent"
-                  } px-[1rem] py-[5px] rounded-[5px]`}
-                >
-                  {item.name}
-                </li>
-              </Link>
-            );
-          })}
-        </ul>
+  if (isAuthenticated === true && adminType === "masteradmin") {
+    return <MasterAdmin />;
+  }
+  if (isAuthenticated === true && adminType === "admin") {
+    return (
+      <div className="text-white  flex h-screen w-[100%] bg-gray-700  relative">
+        <div className="h-screen w-[20vw] flex flex-col items-center py-11 relative">
+          <h2>Welcome Admin</h2>
+          <ul className="flex flex-col gap-5 py-[5rem]">
+            {routesOfAdmin.map((item, index) => {
+              return (
+                <Link key={index} to={`/admin${item.path}`}>
+                  <li
+                    className={`${
+                      path === `/admin${item.path}`
+                        ? "border border-white"
+                        : "border border-transparent"
+                    } px-[1rem] py-[5px] rounded-[5px]`}
+                  >
+                    {item.name}
+                  </li>
+                </Link>
+              );
+            })}
+          </ul>
 
-        <button className="absolute bottom-[20px] px-[2rem] bg-red-600 h-[40px] rounded-md">
-          Log Out
-        </button>
-      </div>
+          <button className="absolute bottom-[20px] px-[2rem] bg-red-600 h-[40px] rounded-md">
+            Log Out
+          </button>
+        </div>
 
-      <div className="h-full overflow-y-auto w-[80vw] bg-[#FBFBFB] text-white">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/addfood" element={<AddFood />} />
-          <Route path="/editfood" element={<EditFood />} />
-          <Route path="/food" element={<Food />} />
-          <Route path="/restrurantdetail" element={<RestrurantDetail />} />
-        </Routes>
+        <div className="h-full overflow-y-auto w-[80vw] bg-[#FBFBFB] text-white">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/addfood" element={<AddFood />} />
+            <Route path="/editfood" element={<EditFood />} />
+            <Route path="/food" element={<Food />} />
+            <Route path="/restrurantdetail" element={<RestrurantDetail />} />
+          </Routes>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default Admin;
