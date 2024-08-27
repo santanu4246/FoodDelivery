@@ -5,6 +5,7 @@ function AddFood() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
+  const [isVegetarian, setIsVegetarian] = useState(false);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -12,18 +13,17 @@ function AddFood() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the form submission logic here, like making an API call to add the food item
-    console.log({ title, description, price, image });
+    console.log({ title, description, price, image, isVegetarian });
   };
 
   return (
-    <div className="h-full w-full flex justify-center items-center bg-gray-100">
-      <div className="relative h-full w-[50%] bg-white shadow-2xl p-10 rounded-lg">
+    <div className="h-full w-full flex justify-center bg-gray-100 py-5">
+      <div className="max-h-[140vh] w-[50%] bg-white shadow-2xl p-10 rounded-lg">
         <h2 className="uppercase text-center pb-5 text-black text-[30px] font-extrabold">
           Add Food Item
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5 ">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col">
             <label
               htmlFor="title"
@@ -44,7 +44,7 @@ function AddFood() {
           <div className="flex flex-col">
             <label
               htmlFor="description"
-              className="text-black text-[18px] font-bold mb-2 "
+              className="text-black text-[18px] font-bold mb-2"
             >
               Description
             </label>
@@ -90,9 +90,25 @@ function AddFood() {
             />
           </div>
 
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isVegetarian"
+              className="mr-2"
+              checked={isVegetarian}
+              onChange={(e) => setIsVegetarian(e.target.checked)}
+            />
+            <label
+              htmlFor="isVegetarian"
+              className="text-black text-[18px] font-bold mb-2"
+            >
+              Vegetarian
+            </label>
+          </div>
+
           <button
             type="submit"
-            className="bg-[#111111] text-white p-3 rounded-md font-bold w-[87%] absolute bottom-[20px]"
+            className="bg-[#111111] text-white p-3 rounded-md font-bold w-full"
           >
             Add Food
           </button>
