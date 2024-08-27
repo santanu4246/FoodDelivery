@@ -158,6 +158,7 @@ async function deleteAdmin(req, res) {
 
     const imagelink = adminsres.restrurant.image;
     await deleteImageFromCloudinary(imagelink);
+    await RestrudentModel.findByIdAndDelete(adminsres.restrurant._id);
     const deletedAdmin = await AdminModel.findByIdAndDelete(adminid);
     return res.status(200).json({
       msg: "Admin deleted successfully",
