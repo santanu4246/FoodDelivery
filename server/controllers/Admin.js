@@ -48,9 +48,9 @@ async function loginAdmin(req, res) {
       { expiresIn: "30d" }
     );
 
-    res.cookie("foodDeliveryToken", token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 60 * 1000,
       secure: true,
       sameSite: "None"
     });
@@ -69,6 +69,12 @@ async function loginAdmin(req, res) {
 }
 /* master admin route */
 async function registerAdmin(req, res) {
+  const type = req.type;
+  if (type !== "masteradmin") {
+    return res
+      .status(400)
+      .json({ msg: "Not Master Admin!, Cannont access!", success: false });
+  }
   const { username, password, name, location } = req.body;
   const file = req.file;
 
@@ -128,6 +134,12 @@ async function registerAdmin(req, res) {
 
 /* master admin route */
 async function deleteAdmin(req, res) {
+  const type = req.type;
+  if (type !== "masteradmin") {
+    return res
+      .status(400)
+      .json({ msg: "Not Master Admin!, Cannont access!", success: false });
+  }
   const { adminid } = req.params;
   try {
     const adminsres = await AdminModel.findById(adminid).populate("restrurant");
@@ -137,6 +149,13 @@ async function deleteAdmin(req, res) {
         success: false
       });
     }
+
+    if (adminsres.type === "masteradmin") {
+      return res
+        .status(400)
+        .json({ msg: "Master Admin cannot be deleted!", success: false });
+    }
+
     const imagelink = adminsres.restrurant.image;
     await deleteImageFromCloudinary(imagelink);
     const deletedAdmin = await AdminModel.findByIdAndDelete(adminid);
