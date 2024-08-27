@@ -2,6 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 import cors from "cors"
+import cookieParser from "cookie-parser";
 import FoodCategoryRouter from "./routes/FoodCategoryRoutes.js"
 import RestrudentRouter from "./routes/RestrudentRoutes.js"
 import AdminRouter from "./routes/AdminRouter.js"
@@ -13,6 +14,7 @@ const PORT = process.env.PORT
 const MONGO_URL = process.env.MONGO_URL
 
 app.use(express.json())
+app.use(cookieParser());
 app.use(cors({
     origin: "*"
 }))

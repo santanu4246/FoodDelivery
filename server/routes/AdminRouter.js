@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteAdmin, registerAdmin } from "../controllers/Admin.js";
+import { deleteAdmin, loginAdmin, registerAdmin } from "../controllers/Admin.js";
 import uploadStorage from "../middleware/Multer.js";
 const AdminRouter = express.Router();
 AdminRouter.post(
@@ -8,4 +8,5 @@ AdminRouter.post(
   registerAdmin
 );
 AdminRouter.delete("/masteradmin/delete/:adminid", deleteAdmin);
+AdminRouter.post("/admin/login", loginAdmin);
 export default AdminRouter;

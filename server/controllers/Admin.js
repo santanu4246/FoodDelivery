@@ -5,7 +5,68 @@ import {
   uploadOnCloudinary
 } from "../utils/Cloudinary.js";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
+dotenv.config();
+
+/* masteradmin and admin route */
+async function loginAdmin(req, res) {
+  const { username, password } = req.body;
+  try {
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ msg: "Not all credentials are provided!", success: false });
+    }
+    const existingAdmin = await AdminModel.findOne({ username });
+    if (!existingAdmin) {
+      return res
+        .status(404)
+        .json({ msg: "Admin doesn't exist", success: false });
+    }
+
+    let isPassword;
+
+    if (existingAdmin.type === "masteradmin") {
+      isPassword = existingAdmin.password === password.trim();
+    } else {
+      isPassword = await bcrypt.compare(password, existingAdmin.password);
+    }
+    if (!isPassword) {
+      return res
+        .status(401)
+        .json({ msg: "Incorrect password", success: false });
+    }
+
+    const token = jwt.sign(
+      {
+        id: existingAdmin._id,
+        type: existingAdmin.type
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" }
+    );
+
+    res.cookie("foodDeliveryToken", token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "None"
+    });
+
+    existingAdmin.password = "";
+
+    return res
+      .status(200)
+      .json({ msg: "Login successfull", success: true, user: existingAdmin });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ msg: "Error while login admin", error, success: false });
+  }
+}
 /* master admin route */
 async function registerAdmin(req, res) {
   const { username, password, name, location } = req.body;
@@ -94,4 +155,4 @@ async function deleteAdmin(req, res) {
   }
 }
 
-export { registerAdmin, deleteAdmin };
+export { registerAdmin, deleteAdmin, loginAdmin };
