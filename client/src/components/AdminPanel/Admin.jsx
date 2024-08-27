@@ -21,7 +21,18 @@ const routesOfAdmin = [
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;
-  const { isAuthenticated, adminType } = useAdminAuthentication();
+  const { isAuthenticated, adminType, getAdmin } = useAdminAuthentication();
+
+  useEffect(() => {
+    async function getAdminOrMasterAdmin() {
+      try {
+        await getAdmin();
+      } catch (error) {
+        console.log(error.response?.data?.msg);
+      }
+    }
+    getAdminOrMasterAdmin();
+  }, []);
 
   if (isAuthenticated === null) {
     return <></>;

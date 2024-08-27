@@ -8,7 +8,6 @@ export const useAllresturent = create((set)=>({
     fetchresturent: async()=>{
         try {
             const response = await axios.get(`${BASE_URL}/getallrestrurants`)
-            console.log(response);
             set({restureantlist:response.data.restrurant})
         } catch (error) {
             throw error
