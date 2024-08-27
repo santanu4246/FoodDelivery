@@ -7,6 +7,7 @@ import EditFood from "./adminRoutes/EditFood";
 import Food from "./adminRoutes/Food";
 import RestrurantDetail from "./adminRoutes/RestrurantDetail";
 import AdminLogin from "./adminRoutes/AdminLogin";
+import { useAdminAuthentication } from "../../store/Authentication.js";
 
 const routesOfAdmin = [
   { name: "Dashboard", path: "" },
@@ -19,13 +20,13 @@ const routesOfAdmin = [
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const { isAuthenticated } = useAdminAuthentication();
 
-  if (isAdminAuthenticated === null) {
+  if (isAuthenticated === null) {
     return <></>;
   }
 
-  if (isAdminAuthenticated === false) {
+  if (isAuthenticated === false) {
     return <AdminLogin />;
   }
 
