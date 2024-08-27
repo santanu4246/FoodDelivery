@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 
 const restaurantSchema = mongoose.Schema({
-  username: { type: String, required: true },
-  password: { type: String, required: true },
   name: { type: String, required: true },
   cuisine: [String],
   rating: { type: Number },
@@ -17,6 +15,6 @@ const restaurantSchema = mongoose.Schema({
   }
 });
 
-const RestrudentModel = mongoose.model("Restrudent", restaurantSchema);
+const RestrudentModel = mongoose.model("Restrurant", restaurantSchema);
 
 export default RestrudentModel;

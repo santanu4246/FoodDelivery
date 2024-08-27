@@ -4,6 +4,7 @@ import mongoose from "mongoose"
 import cors from "cors"
 import FoodCategoryRouter from "./routes/FoodCategoryRoutes.js"
 import RestrudentRouter from "./routes/RestrudentRoutes.js"
+import AdminRouter from "./routes/AdminRouter.js"
 
 const app = express()
 dotenv.config()
@@ -16,6 +17,7 @@ app.use(cors({
     origin: "*"
 }))
 
+app.use("/",AdminRouter)
 app.use("/", FoodCategoryRouter)
 app.use("/", RestrudentRouter)
 
