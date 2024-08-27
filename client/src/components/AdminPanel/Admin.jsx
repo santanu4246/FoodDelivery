@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
 import AddFood from "./adminRoutes/AddFood";
 import EditFood from "./adminRoutes/EditFood";
@@ -21,7 +21,8 @@ const routesOfAdmin = [
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;
-  const { isAuthenticated, adminType, getAdmin } = useAdminAuthentication();
+  const { isAuthenticated, adminType, getAdmin, logoutAdmin } =
+    useAdminAuthentication();
 
   useEffect(() => {
     async function getAdminOrMasterAdmin() {
@@ -68,7 +69,12 @@ const Admin = () => {
             })}
           </ul>
 
-          <button className="absolute bottom-[20px] px-[2rem] bg-red-600 h-[40px] rounded-md">
+          <button
+            onClick={async () => {
+              await logoutAdmin();
+            }}
+            className="absolute bottom-[20px] px-[2rem] bg-red-600 h-[40px] rounded-md"
+          >
             Log Out
           </button>
         </div>
@@ -80,6 +86,7 @@ const Admin = () => {
             <Route path="/editfood" element={<EditFood />} />
             <Route path="/food" element={<Food />} />
             <Route path="/restrurantdetail" element={<RestrurantDetail />} />
+            <Route path="*" element={<Navigate to="/admin" replace />} />
           </Routes>
         </div>
       </div>

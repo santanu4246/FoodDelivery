@@ -3,6 +3,7 @@ import {
   deleteAdmin,
   getAdmin,
   loginAdmin,
+  logoutAdmin,
   registerAdmin
 } from "../controllers/Admin.js";
 import uploadStorage from "../middleware/Multer.js";
@@ -17,4 +18,5 @@ AdminRouter.post(
 AdminRouter.delete("/masteradmin/delete/:adminid", AuthAdmin, deleteAdmin);
 AdminRouter.post("/admin/login", loginAdmin);
 AdminRouter.get("/getadmin", AuthAdmin, getAdmin);
+AdminRouter.get("/admin/logout",logoutAdmin)
 export default AdminRouter;

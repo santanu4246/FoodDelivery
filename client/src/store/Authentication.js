@@ -52,5 +52,17 @@ export const useAdminAuthentication = create((set) => ({
     } finally {
       set({ isLoading: false });
     }
+  },
+  logoutAdmin:async()=>{
+    try {
+        await axios.get(`${BASE_URL}/admin/logout`);
+        set({admin: null,
+            adminType: null,
+            isAuthenticated: false})
+    } catch (error) {
+        throw error
+    }finally{
+        set({isLoading:false})
+    }
   }
 }));
