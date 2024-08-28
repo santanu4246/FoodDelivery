@@ -21,7 +21,10 @@ const Updateresturent = () => {
   }, [getAllRestrurants]);
   const [Resturent, setResturent] = useState(null);
   const handleUpdateClick = (item) => {
-    setResturent(item);
+    const obj = {};
+    console.log(item);
+
+    setResturent("");
   };
   const Onclose = () => {
     setResturent(null);
@@ -65,7 +68,7 @@ const Updateresturent = () => {
                 <div className="flex space-x-4">
                   <button
                     className="flex-1 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-                    onClick={(e) => handleUpdateClick(item.restrurant)}
+                    onClick={(e) => handleUpdateClick(item)}
                   >
                     Update
                   </button>

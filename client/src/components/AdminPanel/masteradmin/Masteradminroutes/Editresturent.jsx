@@ -4,8 +4,7 @@ const Editresturent = ({ Resturent, onClose }) => {
   const [updatedRestaurant, setUpdatedRestaurant] = useState({
     name: Resturent.name,
     location: Resturent.location,
-    cuisine: Resturent.cuisine,
-    imageUrl: Resturent.imageUrl,
+    image: Resturent.image
   });
 
   const handleChange = (e) => {
@@ -15,7 +14,7 @@ const Editresturent = ({ Resturent, onClose }) => {
 
   const handleSave = () => {
     console.log("Updated Restaurant:", updatedRestaurant);
-    onClose(); 
+    onClose();
   };
 
   return (
@@ -24,7 +23,9 @@ const Editresturent = ({ Resturent, onClose }) => {
         <h2 className="text-2xl font-semibold mb-4">Edit Restaurant</h2>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
           <input
             type="text"
             name="name"
@@ -35,7 +36,9 @@ const Editresturent = ({ Resturent, onClose }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Location</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Location
+          </label>
           <input
             type="text"
             name="location"
@@ -46,21 +49,12 @@ const Editresturent = ({ Resturent, onClose }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Cuisine</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Image URL
+          </label>
           <input
             type="text"
-            name="cuisine"
-            value={updatedRestaurant.cuisine}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Image URL</label>
-          <input
-            type="text"
-            name="imageUrl"
+            name="image"
             value={updatedRestaurant.imageUrl}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"

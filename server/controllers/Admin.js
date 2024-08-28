@@ -207,7 +207,7 @@ async function logoutAdmin(req, res) {
 
 async function getAllAdmins(req, res) {
   try {
-    const response = await AdminModel.find({ type: "admin" }).populate(
+    const response = await AdminModel.find({ type: "admin" }).select("-password").populate(
       "restrurant"
     );
     return res.status(200).json({
