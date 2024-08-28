@@ -3,10 +3,12 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Editresturent from "./Editresturent";
 import { useAdminAuthentication } from "../../../../store/Authentication";
+import { BeatLoader } from "react-spinners";
 
 const Updateresturent = () => {
   const { getAllRestrurants, allRestrurants, deleteAdmin, isLoading } =
     useAdminAuthentication();
+  const [targetIndex, setTargetIndex] = useState(null);
   useEffect(() => {
     async function fetchRestrurants() {
       try {
@@ -24,21 +26,22 @@ const Updateresturent = () => {
   const Onclose = () => {
     setResturent(null);
   };
-  async function handleDeleteAdmin(adminId) {
+  async function handleDeleteAdmin(adminId, index) {
+    setTargetIndex(index);
     try {
       const msg = await deleteAdmin(adminId);
       await getAllRestrurants();
       toast.success(msg);
     } catch (error) {
-      console.log(error);
-
       toast.warn(error.response?.data?.msg || error.message);
+    } finally {
+      setTargetIndex(null);
     }
   }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       {allRestrurants &&
-        allRestrurants.map((item) => {
+        allRestrurants.map((item, index) => {
           return (
             <div
               key={item.restrurant._id}
@@ -67,12 +70,17 @@ const Updateresturent = () => {
                     Update
                   </button>
                   <button
+                    style={{ pointerEvents: isLoading ? "none" : "auto" }}
                     onClick={() => {
-                      handleDeleteAdmin(item._id);
+                      handleDeleteAdmin(item._id, index);
                     }}
                     className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition"
                   >
-                    Delete
+                    {isLoading && targetIndex && targetIndex === index ? (
+                      <BeatLoader size={7} color="#ffffff" />
+                    ) : (
+                      <span>Delete</span>
+                    )}
                   </button>
                 </div>
               </div>
