@@ -54,4 +54,50 @@ async function getAllLocations(req, res) {
   }
 }
 
-export { getAllRestrudents, getRestrudentById, getAllLocations };
+async function setLocation(req, res) {
+  try {
+    const location = req.body.location;
+    if (!location) {
+      return res.status(400).json({ error: "Location is required" });
+    }
+    res.cookie("location", JSON.stringify(location), {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000
+    });
+    res.status(200).json({ message: "Location set successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+async function getRestrurantByLocation(req, res) {
+  let location = req.cookies.location;
+  // if (!location)
+  //   return res
+  //     .status(400)
+  //     .json({ msg: "Location cookie not found!", success: false });
+  try {
+    const restrurantList = await RestrudentModel.find({
+      location: location ? location.slice(1, -1) : "Bankura"
+    });
+    return res.status(200).json({
+      msg: "Restrurants feched by location",
+      success: false,
+      restrurantList
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Error while finding restrurant by location",
+      success: false,
+      error: error.message
+    });
+  }
+}
+
+export {
+  getAllRestrudents,
+  getRestrudentById,
+  getAllLocations,
+  setLocation,
+  getRestrurantByLocation
+};
