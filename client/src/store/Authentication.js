@@ -90,5 +90,16 @@ export const useAdminAuthentication = create((set) => ({
     }finally{
       set({ isLoading: false });
     }
+  },
+  deleteAdmin:async(adminId)=>{
+    set({ isLoading: true });
+    try {
+      const response = await axios.delete(`${BASE_URL}/masteradmin/delete/${adminId}`)
+      return response.data.msg
+    } catch (error) {
+      throw error
+    }finally{
+      set({ isLoading: false });
+    }
   }
 }));

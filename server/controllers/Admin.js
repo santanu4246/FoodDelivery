@@ -145,7 +145,7 @@ async function deleteAdmin(req, res) {
     const adminsres = await AdminModel.findById(adminid).populate("restrurant");
     if (!adminsres) {
       return res.status(404).json({
-        message: "Admin not found!",
+        msg: "Admin not found!",
         success: false
       });
     }
@@ -168,7 +168,7 @@ async function deleteAdmin(req, res) {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "Error while delete admin",
+      msg: "Error while delete admin",
       success: false,
       error
     });
