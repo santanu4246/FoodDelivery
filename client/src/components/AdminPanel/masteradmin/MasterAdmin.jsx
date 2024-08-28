@@ -14,9 +14,9 @@ function MasterAdmin() {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Left Side Menu */}
-      <div className="w-1/4 bg-blue-900 text-white flex flex-col justify-between">
+      <div className="w-1/4 bg-blue-900 text-white flex flex-col justify-between p-8">
         <div>
-          <h2 className="text-2xl font-bold p-4">Master Admin Panel</h2>
+          <h2 className="text-xl font-bold p-4">Master Admin Panel</h2>
           {
             routesOfmasterAdmin.map((item,index)=>{
               return (
