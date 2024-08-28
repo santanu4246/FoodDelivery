@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminAuthentication } from "../../../../store/Authentication";
+import { BeatLoader } from "react-spinners";
 
 const Editresturent = ({ Resturent, onClose }) => {
-  const { updateAdmin } = useAdminAuthentication();
+  const { updateAdmin, isLoading, getAllRestrurants } =
+    useAdminAuthentication();
   const [updatedRestaurant, setUpdatedRestaurant] = useState({
     username: Resturent.username,
     password: "",
@@ -48,6 +50,7 @@ const Editresturent = ({ Resturent, onClose }) => {
     try {
       const reponse = await updateAdmin(formData, Resturent.adminID);
       toast.success(reponse);
+      getAllRestrurants();
       onClose();
     } catch (error) {
       toast.warn(error.response?.data?.msg || error.message);
@@ -123,16 +126,26 @@ const Editresturent = ({ Resturent, onClose }) => {
 
         <div className="flex justify-end space-x-4">
           <button
+            style={{ pointerEvents: isLoading ? "none" : "auto" }}
             className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition"
             onClick={onClose}
           >
-            Cancel
+            {isLoading ? (
+              <BeatLoader size={7} color="#ffffff" />
+            ) : (
+              <span>Cancel</span>
+            )}
           </button>
           <button
+            style={{ pointerEvents: isLoading ? "none" : "auto" }}
             className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
             onClick={handleSave}
           >
-            Save
+            {isLoading ? (
+              <BeatLoader size={7} color="#ffffff" />
+            ) : (
+              <span>Save</span>
+            )}
           </button>
         </div>
       </div>
