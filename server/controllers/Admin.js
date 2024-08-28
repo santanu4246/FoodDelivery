@@ -19,7 +19,9 @@ async function loginAdmin(req, res) {
         .status(400)
         .json({ msg: "Not all credentials are provided!", success: false });
     }
-    const existingAdmin = await AdminModel.findOne({ username });
+    const existingAdmin = await AdminModel.findOne({ username }).populate(
+      "restrurant"
+    );
     if (!existingAdmin) {
       return res
         .status(404)
@@ -178,7 +180,9 @@ async function deleteAdmin(req, res) {
 async function getAdmin(req, res) {
   const id = req.id;
   try {
-    const admin = await AdminModel.findById(id).select("-password");
+    const admin = await AdminModel.findById(id)
+      .select("-password")
+      .populate("restrurant");
     if (!admin) {
       return res.status(400).json({ msg: "admin not found!", success: false });
     }
