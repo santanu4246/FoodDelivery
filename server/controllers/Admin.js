@@ -223,11 +223,69 @@ async function getAllAdmins(req, res) {
   }
 }
 
+async function updateAdmin(req, res) {
+  const type = req.type;
+  if (type !== "masteradmin") {
+    return res
+      .status(400)
+      .json({ msg: "Not Master Admin!, Cannont access!", success: false });
+  }
+  const { adminid } = req.params;
+  const { username, password, name, location } = req.body;
+  const file = req.file;
+
+  if (!username && !password && !name && !location && !file) {
+    return res.status(400).json({ msg: "Nothing to update!", success: false });
+  }
+  try {
+    const adminres = await AdminModel.findById(adminid);
+    if (!adminres) {
+      return res.status(400).json({ msg: "Admin not found!", success: false });
+    }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 8);
+      adminres.password = hashedPassword;
+    }
+    if (username) adminres.username = username;
+
+    const restrurantRes = await RestrudentModel.findById(adminres.restrurant);
+
+    if (file) {
+      await deleteImageFromCloudinary(restrurantRes.image);
+      const cloudinaryResponse = await uploadOnCloudinary(
+        file.path,
+        "Restrurant"
+      );
+      if (!cloudinaryResponse) {
+        return res
+          .status(500)
+          .json({ msg: "File not uploaded on cloud", success: false });
+      }
+      restrurantRes.image = cloudinaryResponse.url;
+    }
+    if (location) restrurantRes.location = location;
+    if (name) restrurantRes.name = name;
+    await adminres.save();
+    await restrurantRes.save();
+    return res.status(200).json({
+      msg: "Admin updated successfully",
+      success: true,
+      admin: adminres
+    });
+  } catch (error) {
+    console.error("Error while updating admin", error);
+    return res
+      .status(500)
+      .json({ msg: "Error while updating admin", error, success: false });
+  }
+}
+
 export {
   registerAdmin,
   deleteAdmin,
   loginAdmin,
   getAdmin,
   logoutAdmin,
-  getAllAdmins
+  getAllAdmins,
+  updateAdmin
 };

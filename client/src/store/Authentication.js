@@ -101,5 +101,16 @@ export const useAdminAuthentication = create((set) => ({
     }finally{
       set({ isLoading: false });
     }
+  },
+  updateAdmin : async(formData,adminId)=>{
+    set({ isLoading: true });
+    try {
+      const response = await axios.put(`${BASE_URL}/masteradmin/updateadmin/${adminId}`,formData)
+      return response.data.msg
+    } catch (error) {
+      throw error
+    }finally{
+      set({ isLoading: false });
+    }
   }
 }));

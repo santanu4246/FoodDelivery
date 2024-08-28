@@ -22,6 +22,7 @@ const Updateresturent = () => {
   const [Resturent, setResturent] = useState(null);
   const handleUpdateClick = (item) => {
     const obj = {
+      adminID: item._id,
       username: item.username,
       name: item.restrurant.name,
       location: item.restrurant.location

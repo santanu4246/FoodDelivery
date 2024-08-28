@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { useAdminAuthentication } from "../../../../store/Authentication";
 
 const Editresturent = ({ Resturent, onClose }) => {
+  const { updateAdmin } = useAdminAuthentication();
   const [updatedRestaurant, setUpdatedRestaurant] = useState({
     username: Resturent.username,
     password: "",
@@ -19,9 +22,36 @@ const Editresturent = ({ Resturent, onClose }) => {
     setUpdatedRestaurant((prev) => ({ ...prev, image: file }));
   };
 
-  const handleSave = () => {
-    console.log("Updated Restaurant:", updatedRestaurant);
-    onClose();
+  const handleSave = async () => {
+    if (
+      updatedRestaurant.username == "" &&
+      updatedRestaurant.password == "" &&
+      updatedRestaurant.name == "" &&
+      updatedRestaurant.location == "" &&
+      updatedRestaurant.image == null
+    ) {
+      toast.warn("Nothing to update!");
+      return;
+    }
+    const formData = new FormData();
+    if (updatedRestaurant.username !== "")
+      formData.append("username", updatedRestaurant.username);
+    if (updatedRestaurant.password !== "")
+      formData.append("password", updatedRestaurant.password);
+    if (updatedRestaurant.name !== "")
+      formData.append("name", updatedRestaurant.name);
+    if (updatedRestaurant.location !== "")
+      formData.append("location", updatedRestaurant.location);
+    if (updatedRestaurant.image !== null)
+      formData.append("image", updatedRestaurant.image);
+
+    try {
+      const reponse = await updateAdmin(formData, Resturent.adminID);
+      toast.success(reponse);
+      onClose();
+    } catch (error) {
+      toast.warn(error.response?.data?.msg || error.message);
+    }
   };
 
   return (
