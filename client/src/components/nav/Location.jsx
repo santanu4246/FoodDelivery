@@ -19,10 +19,10 @@ const Location = ({ setLocationVisible }) => {
         <ul className="p-[20px] flex gap-5 items-center justify-center">
           {allLocations.map((location, index) => (
             <li
-              onClick={() => {
+              onClick={async () => {
                 setLocationVisible(false),
-                  setLocation(location),
-                  getRestrurantByLocation();
+                  await setLocation(location),
+                  await getRestrurantByLocation();
               }}
               key={index}
               className="px-[1rem] py-[5px] bg-[#e5e5e5] transition-all ease-linear duration-200 hover:bg-[#d2d2d2] rounded-[5px] cursor-pointer"
