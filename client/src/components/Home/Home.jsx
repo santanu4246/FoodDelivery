@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useFoodCategory } from "../../store/FoodCategory";
 import { useAllresturent } from "../../store/GetallResturants";
+import { useRestrurant } from "../../store/Restrurants";
 const Home = () => {
   const { categoryList } = useFoodCategory();
   const { restureantlist } = useAllresturent();
+  const { getAllLocations } = useRestrurant();
   const [Slider, setSlider] = useState([]);
   const [Resturents, setResturents] = useState([]);
   useEffect(() => {
@@ -13,6 +15,9 @@ const Home = () => {
   useEffect(() => {
     setResturents(restureantlist);
   }, [restureantlist]);
+  useEffect(() => {
+    getAllLocations();
+  }, [getAllLocations]);
   return (
     <div className="HomeContainer">
       <div className="py-10 bg-gray-100 w-[100%] px-[15%]">
