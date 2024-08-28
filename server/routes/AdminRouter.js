@@ -2,6 +2,7 @@ import express from "express";
 import {
   deleteAdmin,
   getAdmin,
+  getAllAdmins,
   loginAdmin,
   logoutAdmin,
   registerAdmin
@@ -18,5 +19,6 @@ AdminRouter.post(
 AdminRouter.delete("/masteradmin/delete/:adminid", AuthAdmin, deleteAdmin);
 AdminRouter.post("/admin/login", loginAdmin);
 AdminRouter.get("/getadmin", AuthAdmin, getAdmin);
-AdminRouter.get("/admin/logout",logoutAdmin)
+AdminRouter.get("/admin/logout", logoutAdmin);
+AdminRouter.get("/masteradmin/getalladmins", AuthAdmin, getAllAdmins);
 export default AdminRouter;

@@ -205,4 +205,29 @@ async function logoutAdmin(req, res) {
   }
 }
 
-export { registerAdmin, deleteAdmin, loginAdmin, getAdmin, logoutAdmin };
+async function getAllAdmins(req, res) {
+  try {
+    const response = await AdminModel.find({ type: "admin" }).populate(
+      "restrurant"
+    );
+    return res.status(200).json({
+      msg: "All restrurants fetched",
+      success: true,
+      allRestrurants: response
+    });
+  } catch (error) {
+    console.error("Error while finding admins", error);
+    return res
+      .status(500)
+      .json({ msg: "Error while finding admins", error, success: false });
+  }
+}
+
+export {
+  registerAdmin,
+  deleteAdmin,
+  loginAdmin,
+  getAdmin,
+  logoutAdmin,
+  getAllAdmins
+};

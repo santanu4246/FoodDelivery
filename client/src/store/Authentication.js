@@ -7,6 +7,7 @@ axios.defaults.withCredentials = true;
 
 export const useAdminAuthentication = create((set) => ({
   admin: null,
+  allRestrurants:[],
   adminType: null,
   isAuthenticated: null,
   isLoading: false,
@@ -70,9 +71,20 @@ export const useAdminAuthentication = create((set) => ({
         `${BASE_URL}/masteradmin/register`,
         formData
       );
-      if(response.status===201){
-        return response.data
+      if (response.status === 201) {
+        return response.data;
       }
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  getAllRestrurants: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await axios.get(`${BASE_URL}/masteradmin/getalladmins`);
+      set({allRestrurants:response.data.allRestrurants})
     } catch (error) {
       throw error;
     }finally{
