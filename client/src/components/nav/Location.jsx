@@ -1,8 +1,9 @@
 import React from "react";
 import { RxCross1 } from "react-icons/rx";
+import { useRestrurant } from "../../store/Restrurants";
 
 const Location = ({ setLocationVisible }) => {
-  const locations = ["Bankura", "Kolkata", "Dubai"];
+  const { allLocations } = useRestrurant();
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
@@ -15,7 +16,7 @@ const Location = ({ setLocationVisible }) => {
           Select your preferred location
         </h2>
         <ul className="p-[20px] flex gap-5 items-center justify-center">
-          {locations.map((location, index) => (
+          {allLocations.map((location, index) => (
             <li
               onClick={() => setLocationVisible(false)}
               key={index}
