@@ -29,7 +29,7 @@ export const useAdminAuthentication = create((set) => ({
           isAuthenticated: true
         });
       }
-      return true;
+      return response.data.msg;
     } catch (error) {
       throw error;
     } finally {

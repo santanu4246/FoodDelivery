@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { useAdminAuthentication } from "../../../store/Authentication.js";
+import { toast } from "react-toastify";
 
 function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { adminLogin, error } = useAdminAuthentication();
+  const { adminLogin } = useAdminAuthentication();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await adminLogin(username, password);
+      const reponse = await adminLogin(username, password);
+      toast.success(reponse);
     } catch (error) {
-      console.log(error.response?.data?.msg);
+      toast.warn(error.response?.data?.msg || error.message);
     }
   };
 
@@ -60,8 +62,6 @@ function AdminLogin() {
               />
             </div>
           </div>
-
-          {error && <div className="text-red-600 text-sm mt-4">{error}</div>}
 
           <div>
             <button
