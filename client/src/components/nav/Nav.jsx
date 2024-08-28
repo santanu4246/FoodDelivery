@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Location from "./Location";
 
+
 const Nav = () => {
   const [locationVisible, setLocationVisible] = useState(false);
 
@@ -26,8 +27,10 @@ const Nav = () => {
           <span>Sign up</span>
         </div>
       </nav>
-    <div className=" relative flex items-center justify-center">
-      {locationVisible && <Location />}
+      <div className=" relative flex items-center justify-center">
+        {locationVisible && (
+          <Location setLocationVisible={setLocationVisible} />
+        )}
       </div>
     </div>
   );
