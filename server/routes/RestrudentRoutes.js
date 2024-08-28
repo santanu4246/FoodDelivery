@@ -1,24 +1,12 @@
 import express from "express";
 import {
-  addRestrudent,
-  deleteRestrudent,
+  getAllLocations,
   getAllRestrudents,
-  getRestrudentById,
-  updateRestrudent
+  getRestrudentById
 } from "../controllers/Restrudent.js";
-import uploadStorage from "../middleware/Multer.js";
 const RestrudentRouter = express.Router();
-RestrudentRouter.post(
-  "/addrestrudent",
-  uploadStorage.single("image"),
-  addRestrudent
-);
-RestrudentRouter.put(
-  "/updaterestrudent",
-  uploadStorage.single("image"),
-  updateRestrudent
-);
-RestrudentRouter.delete("/deleterestrudent", deleteRestrudent);
+
 RestrudentRouter.get("/getallrestrurants", getAllRestrudents);
 RestrudentRouter.get("/getrestrurantbyid/:id", getRestrudentById);
+RestrudentRouter.get("/getlocations", getAllLocations);
 export default RestrudentRouter;
