@@ -64,6 +64,9 @@ const Updateresturent = () => {
                 <h2 className="text-lg font-semibold text-white mb-2">
                   {item.restrurant.name}
                 </h2>
+                <h2 className="text-sm font-semibold text-[#ffffffa8] mb-2">
+                  @{item.username}
+                </h2>
                 <p className="text-sm text-gray-400 mb-2">
                   {item.restrurant.location}
                 </p>
