@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
@@ -40,6 +42,7 @@ function App() {
         <Route path="/admin/*" element={<Admin />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
+      <ToastContainer />
     </div>
   );
 }

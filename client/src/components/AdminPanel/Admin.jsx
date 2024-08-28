@@ -18,6 +18,16 @@ const routesOfAdmin = [
   { name: "Restrurant Detail", path: "/restrurantdetail" }
 ];
 
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAdminAuthentication();
+  if (isAuthenticated === false) {
+    console.log(isAuthenticated);
+
+    return <Navigate to="/admin" replace />;
+  }
+  return children;
+}
+
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;
@@ -81,7 +91,14 @@ const Admin = () => {
 
         <div className="h-full overflow-y-auto w-[80vw] bg-[#FBFBFB] text-white">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/addfood" element={<AddFood />} />
             <Route path="/editfood" element={<EditFood />} />
             <Route path="/food" element={<Food />} />

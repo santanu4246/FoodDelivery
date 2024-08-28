@@ -47,22 +47,36 @@ export const useAdminAuthentication = create((set) => ({
         });
       }
     } catch (error) {
-        set({ isAuthenticated: false });
+      set({ isAuthenticated: false });
       throw error;
     } finally {
       set({ isLoading: false });
     }
   },
-  logoutAdmin:async()=>{
+  logoutAdmin: async () => {
     try {
-        await axios.get(`${BASE_URL}/admin/logout`);
-        set({admin: null,
-            adminType: null,
-            isAuthenticated: false})
+      await axios.get(`${BASE_URL}/admin/logout`);
+      set({ admin: null, adminType: null, isAuthenticated: false });
     } catch (error) {
-        throw error
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  registerAdmin: async (formData) => {
+    set({ isLoading: true });
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/masteradmin/register`,
+        formData
+      );
+      if(response.status===201){
+        return response.data
+      }
+    } catch (error) {
+      throw error;
     }finally{
-        set({isLoading:false})
+      set({ isLoading: false });
     }
   }
 }));

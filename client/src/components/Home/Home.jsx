@@ -38,17 +38,17 @@ const Home = () => {
           {Resturents.map((item, index) => {
             return (
               <div
-                className="h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-5 mt-5 hover:shadow-2xl"
+                className="relative h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 hover:shadow-2xl"
                 key={index}
               >
                 <div className="h-[70%] w-[90%] rounded-[10px] ">
                   <img
                     src={item.image}
                     alt=""
-                    className=" object-cover rounded-[10px]"
+                    className=" object-cover rounded-[10px] w-full h-[250px]"
                   />
                 </div>
-                <div className=" w-[90%] flex justify-between">
+                <div className="w-full px-[1.3rem] flex justify-between absolute bottom-[20px]">
                   <div className="">
                     <h4>{item.name}</h4>
                     <span>North indian,khabab...</span>
