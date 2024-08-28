@@ -43,6 +43,18 @@ const Editresturent = ({ Resturent, onClose }) => {
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            value={updatedRestaurant.password}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
             Name
           </label>
           <input
