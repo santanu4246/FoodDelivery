@@ -1,6 +1,7 @@
 import React from "react";
 import { useAdminAuthentication } from "../../../store/Authentication.js";
 import Addresturent from "./Masteradminroutes/Addresturent.jsx";
+import UpdateRestaurant from "./Masteradminroutes/Updateresturent.jsx";
 import { Link,Route,Routes, useLocation } from "react-router-dom";
 function MasterAdmin() {
   const { logoutAdmin } = useAdminAuthentication();
@@ -8,6 +9,7 @@ function MasterAdmin() {
   const path = location.pathname
   const routesOfmasterAdmin = [
     { name: "Add Resturenat", path: "/addresturent" },
+    { name: "Edit Resturenat", path: "/updateresturent" },
   ]
   return (
     <div className="flex h-screen bg-gray-100">
@@ -47,10 +49,11 @@ function MasterAdmin() {
       </div>
 
       {/* Right Side Content */}
-      <div className="w-full h-screen p-8">
+      <div className="w-full h-screen p-8 overflow-auto">
       
       <Routes>
         <Route path="/addresturent" element={<Addresturent/>}/>
+        <Route path="/updateresturent" element={<UpdateRestaurant/>}/>
       </Routes>
 
       </div>
