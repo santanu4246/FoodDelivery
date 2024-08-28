@@ -21,10 +21,12 @@ const Updateresturent = () => {
   }, [getAllRestrurants]);
   const [Resturent, setResturent] = useState(null);
   const handleUpdateClick = (item) => {
-    const obj = {};
-    console.log(item);
-
-    setResturent("");
+    const obj = {
+      username: item.username,
+      name: item.restrurant.name,
+      location: item.restrurant.location
+    };
+    setResturent(obj);
   };
   const Onclose = () => {
     setResturent(null);

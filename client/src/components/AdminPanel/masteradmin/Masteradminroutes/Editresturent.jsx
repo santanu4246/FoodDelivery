@@ -2,14 +2,21 @@ import React, { useState } from "react";
 
 const Editresturent = ({ Resturent, onClose }) => {
   const [updatedRestaurant, setUpdatedRestaurant] = useState({
+    username: Resturent.username,
+    password: "",
     name: Resturent.name,
     location: Resturent.location,
-    image: Resturent.image
+    image: null
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdatedRestaurant((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setUpdatedRestaurant((prev) => ({ ...prev, image: file }));
   };
 
   const handleSave = () => {
@@ -22,6 +29,18 @@ const Editresturent = ({ Resturent, onClose }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
         <h2 className="text-2xl font-semibold mb-4">Edit Restaurant</h2>
 
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Username
+          </label>
+          <input
+            type="text"
+            name="username"
+            value={updatedRestaurant.username}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             Name
@@ -50,13 +69,12 @@ const Editresturent = ({ Resturent, onClose }) => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Image URL
+            Image
           </label>
           <input
-            type="text"
+            type="file"
             name="image"
-            value={updatedRestaurant.imageUrl}
-            onChange={handleChange}
+            onChange={handleImageChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
