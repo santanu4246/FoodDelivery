@@ -1,11 +1,12 @@
 import React from "react";
 import { RxCross1 } from "react-icons/rx";
+import { useRestrurant } from "../../store/Restrurants";
 
 const Location = ({ setLocationVisible }) => {
-  const locations = ["Bankura", "Kolkata", "Dubai"];
+  const { allLocations } = useRestrurant();
 
   return (
-    <div className="flex justify-center h-[300px] w-full inset-0 bg-transparent text-black absolute z-10 ">
+    <div className="select-none flex justify-center h-[300px] w-full inset-0 bg-transparent text-black absolute z-10 ">
       <div className="relative border border-[#00000038] w-[80%] shadow-md rounded-[10px] bg-white">
         <RxCross1
           onClick={() => {
@@ -17,7 +18,7 @@ const Location = ({ setLocationVisible }) => {
           Select your preferred locaiton
         </h2>
         <ul className="p-[20px] flex gap-5 items-center justify-center">
-          {locations.map((location, index) => (
+          {allLocations.map((location, index) => (
             <li
               onClick={() => {
                 setLocationVisible(false);
