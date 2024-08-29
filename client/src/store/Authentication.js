@@ -126,12 +126,8 @@ export const useAdminAuthentication = create((set) => ({
     }
   },
   updateRestrurant:async function(id,formData){
-    formData.forEach((value, key) => {
-      console.log(`${key}: ${value}`);
-    });
     try {
-      const res = await axios.put(`${BASE_URL}/updaterestrurant`)
-      console.log(res);
+      const res = await axios.put(`${BASE_URL}/updaterestrurant/${id}`,formData)
     } catch (error) {
       throw error
     }

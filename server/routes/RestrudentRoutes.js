@@ -4,8 +4,11 @@ import {
   getAllRestrudents,
   getRestrudentById,
   getRestrurantByLocation,
-  setLocation
+  setLocation,
+  updateRestrurant
 } from "../controllers/Restrudent.js";
+import AuthAdmin from "../middleware/AuthAdmin.js";
+import uploadStorage from "../middleware/Multer.js";
 const RestrudentRouter = express.Router();
 
 RestrudentRouter.get("/getallrestrurants", getAllRestrudents);
@@ -13,4 +16,10 @@ RestrudentRouter.get("/getrestrurantbyid/:id", getRestrudentById);
 RestrudentRouter.get("/getlocations", getAllLocations);
 RestrudentRouter.get("/getrestrurantbylocation", getRestrurantByLocation);
 RestrudentRouter.post("/setlocation", setLocation);
+RestrudentRouter.put(
+  "/updaterestrurant/:id",
+  AuthAdmin,
+  uploadStorage.single("image"),
+  updateRestrurant
+);
 export default RestrudentRouter;

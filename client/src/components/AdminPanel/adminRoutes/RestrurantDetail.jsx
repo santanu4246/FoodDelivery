@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useAdminAuthentication } from "../../../store/Authentication";
 const RestaurantDetail = () => {
   const { admin, updateRestrurant } = useAdminAuthentication();
+  const [image, setImage] = useState(null);
   const [restaurant, setRestaurant] = useState({
     name: "",
     cuisine: [],
     location: "",
     geolocation: "",
-    image: "",
     perThali: 100
   });
 
@@ -19,7 +20,6 @@ const RestaurantDetail = () => {
           cuisine: admin.restrurant.cuisine || [],
           location: admin.restrurant.location || "",
           geolocation: admin.restrurant.geolocation || "",
-          image: "",
           perThali: admin.restrurant.perThali || 300
         });
       }
@@ -48,16 +48,17 @@ const RestaurantDetail = () => {
     const formData = new FormData();
     if (restaurant.name !== "") formData.append("name", restaurant.name);
     if (restaurant.cuisine.length > 0)
-      formData.append("image", restaurant.image);
+      formData.append("cuisine", restaurant.cuisine);
     if (restaurant.location !== "")
       formData.append("location", restaurant.location);
     if (restaurant.perThali !== "")
       formData.append("perThali", restaurant.perThali);
-    if (restaurant.image !== "") formData.append("image", restaurant.image);
     if (restaurant.geolocation !== "")
       formData.append("geolocation", restaurant.geolocation);
+    if (image !== null) formData.append("image", image);
     try {
-      const res = await updateRestrurant(admin._id, formData);
+      await updateRestrurant(admin.restrurant._id, formData);
+      toast.success("Admin updated successfully");
     } catch (error) {
       console.log(error);
     }
@@ -119,9 +120,10 @@ const RestaurantDetail = () => {
             type="file"
             name="image"
             value={restaurant.image}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              setImage(e.target.files[0]);
+            }}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
-            required
           />
         </label>
         <label className="block mb-4">

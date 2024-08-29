@@ -1,5 +1,8 @@
 import RestrudentModel from "../models/RestrudentModel.js";
-import { uploadOnCloudinary } from "../utils/Cloudinary.js";
+import {
+  deleteImageFromCloudinary,
+  uploadOnCloudinary
+} from "../utils/Cloudinary.js";
 
 async function getAllRestrudents(req, res) {
   try {
@@ -94,10 +97,61 @@ async function getRestrurantByLocation(req, res) {
   }
 }
 
+async function updateRestrurant(req, res) {
+  const { id } = req.params;
+  const file = req.file;
+  const { name, location, geolocation, cuisine, perThali } = req.body;
+  if (!file && !name && !location && !geolocation && !cuisine && !perThali) {
+    return res.status(400).json({
+      msg: "Not all things are provided!",
+      success: false
+    });
+  }
+  try {
+    const restrurantRes = await RestrudentModel.findById(id);
+    if (!restrurantRes) {
+      return res.status(400).json({
+        msg: "Restrurant not found!",
+        success: false
+      });
+    }
+    if (file) {
+      await deleteImageFromCloudinary(restrurantRes.image);
+      const cloudinaryResponse = await uploadOnCloudinary(
+        file.path,
+        "Restrurant"
+      );
+      if (!cloudinaryResponse)
+        return res
+          .status(500)
+          .json({ msg: "File not uploaded on cloud", success: false });
+      restrurantRes.image = cloudinaryResponse.url;
+    }
+    if (name) restrurantRes.name = name;
+    if (location) restrurantRes.location = location;
+    if (geolocation) restrurantRes.geolocation = geolocation;
+    if (perThali) restrurantRes.perThali = perThali;
+    if (cuisine) restrurantRes.cuisine = cuisine.split(",").map(String);
+    await restrurantRes.save();
+    return res.status(200).json({
+      msg: "Restrurant updated successfully",
+      success: true,
+      restrurant: restrurantRes
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Error while updating restrurant!",
+      success: false,
+      error: error.message
+    });
+  }
+}
+
 export {
   getAllRestrudents,
   getRestrudentById,
   getAllLocations,
   setLocation,
-  getRestrurantByLocation
+  getRestrurantByLocation,
+  updateRestrurant
 };
