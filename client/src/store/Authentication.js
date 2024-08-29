@@ -11,6 +11,7 @@ export const useAdminAuthentication = create((set) => ({
   adminType: null,
   isAuthenticated: null,
   isLoading: false,
+  restrurantDetail:null,
   adminLogin: async (username, password) => {
     if (!username || !password) {
       set({ error: "Username and password are required" });
@@ -112,5 +113,16 @@ export const useAdminAuthentication = create((set) => ({
     }finally{
       set({ isLoading: false });
     }
-  }
+  },
+  getRestrurantById:async(id)=>{
+    set({ isLoading: true });
+    try {
+      const res = await axios.get(`${BASE_URL}/getrestrurantbyid/${id}`)
+      console.log(res);
+    } catch (error) {
+      throw error
+    }finally{
+      set({ isLoading: false });
+    }
+  },
 }));

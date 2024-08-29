@@ -30,7 +30,6 @@ function RestrurantAdmin() {
   const location = useLocation();
   const path = location.pathname;
   const { logoutAdmin, admin } = useAdminAuthentication();
-  console.log(admin);
 
   return (
     <div className="text-white  flex h-screen w-[100%] bg-gray-700  relative">

@@ -1,20 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAdminAuthentication } from "../../../store/Authentication";
 const RestaurantDetail = () => {
+  const { admin } = useAdminAuthentication();
   const [restaurant, setRestaurant] = useState({
     name: "",
     cuisine: [],
-    rating: 0,
     location: "",
     geolocation: "",
     image: "",
-    perThali: 100,
+    perThali: 100
   });
+
+  useEffect(() => {
+    function getRestaurant() {
+      if (admin.restrurant) {
+        setRestaurant({
+          name: admin.restrurant.name || "",
+          cuisine: admin.restrurant.cuisine || [],
+          location: admin.restrurant.location || "",
+          geolocation: admin.restrurant.geolocation || "",
+          image: "",
+          perThali: admin.restrurant.perThali || 300
+        });
+      }
+    }
+    if (admin !== null) getRestaurant();
+  }, [admin]);
+
+  useEffect(() => {
+    console.log(restaurant);
+  }, [restaurant]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setRestaurant({
       ...restaurant,
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -22,18 +43,20 @@ const RestaurantDetail = () => {
     const { value } = e.target;
     setRestaurant({
       ...restaurant,
-      cuisine: value.split(","),
+      cuisine: value.split(",")
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <form onSubmit={handleSubmit} className="mt-12 max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg">
+    <div className="container mx-auto px-4 py-8 text-black">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-12 max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg"
+      >
         <h3 className="text-2xl font-semibold mb-4">Update Restaurant</h3>
         <label className="block mb-4">
           <span className="text-gray-700">Name:</span>
@@ -56,18 +79,7 @@ const RestaurantDetail = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
           />
         </label>
-        <label className="block mb-4">
-          <span className="text-gray-700">Rating:</span>
-          <input
-            type="number"
-            name="rating"
-            value={restaurant.rating}
-            onChange={handleInputChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 text-black"
-            min="0"
-            max="5"
-          />
-        </label>
+
         <label className="block mb-4">
           <span className="text-gray-700">Location:</span>
           <input
