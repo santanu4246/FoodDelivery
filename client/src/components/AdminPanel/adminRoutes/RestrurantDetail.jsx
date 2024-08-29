@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminAuthentication } from "../../../store/Authentication";
+import { BeatLoader } from "react-spinners";
 const RestaurantDetail = () => {
-  const { admin, updateRestrurant } = useAdminAuthentication();
+  const { admin, updateRestrurant, isLoading } = useAdminAuthentication();
   const [image, setImage] = useState(null);
   const [restaurant, setRestaurant] = useState({
     name: "",
@@ -138,10 +139,15 @@ const RestaurantDetail = () => {
           />
         </label>
         <button
+          style={{ pointerEvents: isLoading ? "none" : "auto" }}
           type="submit"
           className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Update Restaurant
+          {isLoading ? (
+            <BeatLoader size={7} color="#ffffff" />
+          ) : (
+            <span>Update Restaurant</span>
+          )}
         </button>
       </form>
     </div>
