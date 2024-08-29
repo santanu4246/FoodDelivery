@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAdminAuthentication } from "../../../store/Authentication";
 const RestaurantDetail = () => {
-  const { admin } = useAdminAuthentication();
+  const { admin, updateRestrurant } = useAdminAuthentication();
   const [restaurant, setRestaurant] = useState({
     name: "",
     cuisine: [],
@@ -27,10 +27,6 @@ const RestaurantDetail = () => {
     if (admin !== null) getRestaurant();
   }, [admin]);
 
-  useEffect(() => {
-    console.log(restaurant);
-  }, [restaurant]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setRestaurant({
@@ -49,6 +45,22 @@ const RestaurantDetail = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    if (restaurant.name !== "") formData.append("name", restaurant.name);
+    if (restaurant.cuisine.length > 0)
+      formData.append("image", restaurant.image);
+    if (restaurant.location !== "")
+      formData.append("location", restaurant.location);
+    if (restaurant.perThali !== "")
+      formData.append("perThali", restaurant.perThali);
+    if (restaurant.image !== "") formData.append("image", restaurant.image);
+    if (restaurant.geolocation !== "")
+      formData.append("geolocation", restaurant.geolocation);
+    try {
+      const res = await updateRestrurant(admin._id, formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
