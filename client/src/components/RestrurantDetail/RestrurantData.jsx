@@ -26,7 +26,7 @@ function RestrurantData() {
 
   return (
     <div className="h-screen w-full px-[10%] py-[5%] bg-gradient-to-br bg-white text-black">
-      <div className="w-full max-w-5xl mx-auto bg-white bg-opacity-10 rounded-xl">
+      <div className="w-full max-w-5xl mx-auto bg-white rounded-xl">
         <div className="h-[300px] w-[490px] overflow-hidden rounded-xl shadow-lg">
           <img
             src={restrurantData.image}
@@ -63,6 +63,14 @@ function RestrurantData() {
            </div>
           </a>
         </div>
+
+        <div className="mt-5 text-xl">
+          Order online
+        </div>
+
+        <hr className="mt-5 border-t-1 border-gray-500" />
+
+        
       </div>
     </div>
   );
