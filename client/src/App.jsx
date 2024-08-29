@@ -5,6 +5,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
 import { Home, Nav, Footer, Admin, Dashboard } from "./utils/utils";
+import RestaurantDetail from "./components/AdminPanel/adminRoutes/RestrurantDetail.jsx";
+import RestrurantData from "./components/RestrurantDetail/RestrurantData.jsx";
 function App() {
   const location = useLocation();
   const { fetchCategory } = useFoodCategory();
@@ -29,6 +31,7 @@ function App() {
       {!isVisiblaeNavFooter && <Nav />}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/restrurant/:id" element={<RestrurantData />} />
         <Route path="/admin/*" element={<Admin />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}

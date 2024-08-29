@@ -118,7 +118,7 @@ export const useAdminAuthentication = create((set) => ({
     set({ isLoading: true });
     try {
       const res = await axios.get(`${BASE_URL}/getrestrurantbyid/${id}`)
-      console.log(res);
+      return res.data.restrurant
     } catch (error) {
       throw error
     }finally{

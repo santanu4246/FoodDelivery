@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useFoodCategory } from "../../store/FoodCategory";
 import { useRestrurant } from "../../store/Restrurants";
 import Skeleton from "./Skeleton";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
+  const navigate = useNavigate();
   const { categoryList } = useFoodCategory();
   const { getAllLocations, getRestrurantByLocation, restureantlist } =
     useRestrurant();
@@ -49,12 +51,15 @@ const Home = () => {
           {Resturents.length === 0
             ? Array.from({ length: 3 })
                 .fill("")
-                .map((_) => {
-                  return <Skeleton />;
+                .map((_,index) => {
+                  return <Skeleton key={index}/>;
                 })
             : Resturents.map((item, index) => {
                 return (
                   <div
+                    onClick={() => {
+                      navigate(`/restrurant/${item._id}`);
+                    }}
                     className="relative h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 hover:shadow-2xl"
                     key={index}
                   >
