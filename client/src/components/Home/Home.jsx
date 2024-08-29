@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFoodCategory } from "../../store/FoodCategory";
 import { useRestrurant } from "../../store/Restrurants";
+import Skeleton from "./Skeleton";
 const Home = () => {
   const { categoryList } = useFoodCategory();
   const { getAllLocations, getRestrurantByLocation, restureantlist } =
@@ -45,33 +46,39 @@ const Home = () => {
       <div className="mb-5 px-[15%] py-10">
         <h2>Locality Restaurants</h2>
         <div className="grid grid-cols-3 gap-[5rem]">
-          {Resturents.map((item, index) => {
-            return (
-              <div
-                className="relative h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 hover:shadow-2xl"
-                key={index}
-              >
-                <div className="h-[70%] w-[90%] rounded-[10px] ">
-                  <img
-                    src={item.image}
-                    alt=""
-                    className=" object-cover rounded-[10px] w-full h-[250px]"
-                  />
-                </div>
-                <div className="w-full px-[1.3rem] flex justify-between absolute bottom-[20px]">
-                  <div className="">
-                    <h4>{item.name}</h4>
-                    <span>North indian,khabab...</span>
+          {Resturents.length === 0
+            ? Array.from({ length: 3 })
+                .fill("")
+                .map((_) => {
+                  return <Skeleton />;
+                })
+            : Resturents.map((item, index) => {
+                return (
+                  <div
+                    className="relative h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 hover:shadow-2xl"
+                    key={index}
+                  >
+                    <div className="h-[70%] w-[90%] rounded-[10px] ">
+                      <img
+                        src={item.image}
+                        alt=""
+                        className=" object-cover rounded-[10px] w-full h-[250px]"
+                      />
+                    </div>
+                    <div className="w-full px-[1.3rem] flex justify-between absolute bottom-[20px]">
+                      <div className="">
+                        <h4>{item.name}</h4>
+                        <span>North indian,khabab...</span>
+                      </div>
+                      <div className="flex flex-col  items-end">
+                        <span>{item.rating}</span>
+                        <span>₹{item.perThali} for one</span>
+                        <span>39min</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex flex-col  items-end">
-                    <span>{item.rating}</span>
-                    <span>₹{item.perThali} for one</span>
-                    <span>39min</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
         </div>
       </div>
     </div>

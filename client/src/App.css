@@ -1,16 +1,29 @@
-*{
-margin:0;
-padding:0;
-box-sizing:boder-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: boder-box;
 }
 .scrollNone::-webkit-scrollbar {
-    display: none;
-    -ms-overflow-style: none;
-    scrollbar-width:none;
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+body {
+  background-color: rgb(255, 255, 255);
+}
+li {
+  list-style: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150%);
   }
-  body{
-    background-color: rgb(255, 255, 255);
+  100% {
+    transform: translateX(150%);
   }
-  li{
-    list-style: none;
-  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
