@@ -23,9 +23,7 @@ async function getAllRestrudents(req, res) {
 async function getRestrudentById(req, res) {
   const { id } = req.params;
   try {
-    const response = await RestrudentModel.findById(id).populate("menu");
-    console.log(response);
-    
+    const response = await RestrudentModel.findById(id).populate("menu"); 
     if (!response) {
       return res
         .status(400)

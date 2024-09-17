@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const menuSchema = mongoose.Schema({
-    title:[String],
+    title:{ type: String, required: true },
     food:[String],
 });
 

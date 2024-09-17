@@ -7,12 +7,16 @@ function RestrurantData() {
   const { id } = useParams();
   const { getRestrurantById } = useAdminAuthentication();
   const [restrurantData, setRestrurantData] = useState([]);
+  const [selectedMenuIndex, setSelectedMenuIndex] = useState(null); // Set default selected index to 0
 
   useEffect(() => {
     async function getRestrurant() {
       try {
         const res = await getRestrurantById(id);
         setRestrurantData(res);
+        if (res.menu && res.menu.length > 0) {
+          setSelectedMenuIndex(0);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -20,57 +24,99 @@ function RestrurantData() {
     if (id) getRestrurant();
   }, [id]);
 
-  useEffect(() => {
-    console.log(restrurantData);
-  }, [restrurantData]);
+  // Handle title click to show corresponding food items
+  const handleTitleClick = (index) => {
+    setSelectedMenuIndex(index); // Update the selected menu index
+  };
 
   return (
-    <div className="h-screen w-full px-[10%] py-[5%] bg-gradient-to-br bg-white text-black">
-      <div className="w-full max-w-5xl mx-auto bg-white rounded-xl">
-        <div className="h-[300px] w-[490px] overflow-hidden rounded-xl shadow-lg">
-          <img
-            src={restrurantData.image}
-            alt="Restaurant"
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          />
-        </div>
-        <div className="mt-6">
-          <h2 className="text-4xl font-bold text-black">{restrurantData.name}</h2>
-        </div>
-        
-        <div className="mt-2">
-          {
-            restrurantData.cuisine && restrurantData.cuisine.map((item,index)=>{
-              return <span key={index} className="text-lg font-[500] text-gray-600">{item} {index < restrurantData.cuisine.length - 1 ? ", " : ""}</span>
-            })
-          }
-          
+    <div className="min-h-screen w-full px-[8%] py-[5%] bg-gray-50 text-gray-900">
+      <div className="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        {/* Restaurant Image */}
+        <div className="flex justify-center">
+          <div className="h-[300px] w-full max-w-xl overflow-hidden rounded-xl shadow-md">
+            <img
+              src={restrurantData.image}
+              alt="Restaurant"
+              className="w-full  object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
         </div>
 
-        <div className="mt-2">
-          <span className="text-lg font-[500] text-gray-500">{restrurantData.location}</span>
-        </div>
-        <div className="mt-4">
-          <a
-            href={restrurantData.geolocation}
-            target="_blank"
-            rel="noopener noreferrer"
-            className=""
-          >
-            <div className="inline-flex items-center gap-2  text-black py-2 px-4 rounded-lg border-2 border-red-400">
-            <FaDirections className="text-xl" />
-           <span className="">Direction</span>
-           </div>
-          </a>
+        {/* Restaurant Info */}
+        <div className="mt-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-800">{restrurantData.name}</h2>
+          <div className="mt-2 text-lg text-gray-600">
+            {restrurantData.cuisine &&
+              restrurantData.cuisine.map((item, index) => (
+                <span key={index}>
+                  {item}
+                  {index < restrurantData.cuisine.length - 1 ? ", " : ""}
+                </span>
+              ))}
+          </div>
+          <div className="mt-2 text-lg text-gray-500">{restrurantData.location}</div>
+
+          <div className="mt-4">
+            <a
+              href={restrurantData.geolocation}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="inline-flex items-center gap-2 text-gray-800 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors">
+                <FaDirections className="text-xl" />
+                <span>Get Directions</span>
+              </div>
+            </a>
+          </div>
         </div>
 
-        <div className="mt-5 text-xl">
-          Order online
+        <hr className="mt-8 border-t-1 border-gray-300" />
+
+        {/* Menu Section */}
+        <div className="mt-8 flex flex-col md:flex-row md:gap-10">
+          {/* Left: Menu Titles */}
+          <div className="w-full md:w-1/3">
+            <h3 className="text-3xl font-semibold text-gray-800 mb-6">Menu</h3>
+            <div className="space-y-3">
+              {restrurantData.menu && restrurantData.menu.length > 0 ? (
+                restrurantData.menu.map((menu, index) => (
+                  <div
+                    key={menu._id}
+                    onClick={() => handleTitleClick(index)}
+                    className={`cursor-pointer p-4 rounded-lg border border-gray-200 hover:border-gray-400 transition-all duration-300 ease-in-out ${
+                      selectedMenuIndex === index
+                        ? "bg-gray-100 border-gray-400 text-gray-900"
+                        : "bg-white text-gray-700"
+                    }`}
+                  >
+                    <span className="text-xl font-medium">{menu.title}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-lg text-gray-500">No menu available.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Food Items for the Selected Title */}
+          <div className="w-full md:w-2/3 mt-8 md:mt-0">
+            {selectedMenuIndex !== null && restrurantData.menu && (
+              <div className="p-6 bg-gray-50 rounded-lg shadow-sm">
+                <h4 className="text-2xl font-semibold text-gray-800 mb-4">
+                  {restrurantData.menu[selectedMenuIndex].title}
+                </h4>
+                <ul className="list-disc list-inside space-y-2">
+                  {restrurantData.menu[selectedMenuIndex].food.map((item, idx) => (
+                    <li key={idx} className="text-lg text-gray-600 hover:text-gray-800 transition-colors">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
-
-        <hr className="mt-5 border-t-1 border-gray-500" />
-
-        
       </div>
     </div>
   );
