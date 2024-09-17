@@ -7,7 +7,7 @@ function RestrurantData() {
   const { id } = useParams();
   const { getRestrurantById } = useAdminAuthentication();
   const [restrurantData, setRestrurantData] = useState([]);
-  const [selectedMenuIndex, setSelectedMenuIndex] = useState(null); // Set default selected index to 0
+  const [selectedMenuIndex, setSelectedMenuIndex] = useState(0); // Set default selected index to 0
 
   useEffect(() => {
     async function getRestrurant() {
@@ -15,7 +15,7 @@ function RestrurantData() {
         const res = await getRestrurantById(id);
         setRestrurantData(res);
         if (res.menu && res.menu.length > 0) {
-          setSelectedMenuIndex(0);
+          setSelectedMenuIndex(0); // Automatically select the first menu item if available
         }
       } catch (error) {
         console.log(error);
@@ -29,6 +29,9 @@ function RestrurantData() {
     setSelectedMenuIndex(index); // Update the selected menu index
   };
 
+  // Safeguard against undefined menu data
+  const currentMenu = restrurantData.menu?.[selectedMenuIndex];
+
   return (
     <div className="min-h-screen w-full px-[8%] py-[5%] bg-gray-50 text-gray-900">
       <div className="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8">
@@ -38,7 +41,7 @@ function RestrurantData() {
             <img
               src={restrurantData.image}
               alt="Restaurant"
-              className="w-full  object-cover transition-transform duration-300 hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
         </div>
@@ -101,19 +104,42 @@ function RestrurantData() {
 
           {/* Right: Food Items for the Selected Title */}
           <div className="w-full md:w-2/3 mt-8 md:mt-0">
-            {selectedMenuIndex !== null && restrurantData.menu && (
+            {currentMenu ? (
               <div className="p-6 bg-gray-50 rounded-lg shadow-sm">
                 <h4 className="text-2xl font-semibold text-gray-800 mb-4">
-                  {restrurantData.menu[selectedMenuIndex].title}
+                  {currentMenu.title}
                 </h4>
-                <ul className="list-disc list-inside space-y-2">
-                  {restrurantData.menu[selectedMenuIndex].food.map((item, idx) => (
-                    <li key={idx} className="text-lg text-gray-600 hover:text-gray-800 transition-colors">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+
+                {/* Veg Section */}
+                <div className="mb-4">
+                  <h5 className="text-xl font-bold text-green-700 mb-2">Vegetarian</h5>
+                  <ul className="list-disc list-inside space-y-2">
+                    {currentMenu.food
+                      .filter((item) => item.veg)
+                      .map((vegItem, idx) => (
+                        <li key={idx} className="text-lg text-gray-600 hover:text-gray-800 transition-colors">
+                          {vegItem.name} - ₹{vegItem.price} {/* Display the price */}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+
+                {/* Non-Veg Section */}
+                <div className="mb-4">
+                  <h5 className="text-xl font-bold text-red-700 mb-2">Non-Vegetarian</h5>
+                  <ul className="list-disc list-inside space-y-2">
+                    {currentMenu.food
+                      .filter((item) => !item.veg)
+                      .map((nonVegItem, idx) => (
+                        <li key={idx} className="text-lg text-gray-600 hover:text-gray-800 transition-colors">
+                          {nonVegItem.name} - ₹{nonVegItem.price} {/* Display the price */}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
               </div>
+            ) : (
+              <p className="text-lg text-gray-500">No menu items available for the selected category.</p>
             )}
           </div>
         </div>
