@@ -41,7 +41,7 @@ const Home = () => {
     <div className="HomeContainer">
       <div className="py-10 bg-gray-100 w-[100%] px-[14%]">
       <div className="relative">
-          {/* Left Button */}
+          
           <button
             onClick={() => scrollSlider("left")}
             className="absolute left-[-65px] top-[40%] bg-white text-white p-3 rounded-full z-10"
@@ -54,7 +54,7 @@ const Home = () => {
           {/* Slider */}
           <div
             className="flex gap-[2.2rem] py-10 overflow-x-auto scrollNone select-none slider"
-            ref={sliderRef} // Attach the ref to the slider container
+            ref={sliderRef} 
           >
             {Slider.map((item, index) => (
               <div key={index}>
@@ -69,7 +69,6 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Right Button */}
           <button
             onClick={() => scrollSlider("right")}
             className="absolute right-[-50px] top-[40%] bg-white text-white p-3 rounded-full z-10"

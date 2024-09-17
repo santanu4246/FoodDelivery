@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import FoodCategoryRouter from "./routes/FoodCategoryRoutes.js";
 import RestrudentRouter from "./routes/RestrudentRoutes.js";
 import AdminRouter from "./routes/AdminRouter.js";
-
+import MenuRouter from "./routes/MenuRouter.js";
 const app = express();
 dotenv.config();
 
@@ -25,6 +25,7 @@ app.use(
 app.use("/", AdminRouter);
 app.use("/", FoodCategoryRouter);
 app.use("/", RestrudentRouter);
+app.use('/',MenuRouter)
 
 mongoose
   .connect(MONGO_URL)
