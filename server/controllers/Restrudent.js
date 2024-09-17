@@ -4,6 +4,7 @@ import {
   uploadOnCloudinary
 } from "../utils/Cloudinary.js";
 
+
 async function getAllRestrudents(req, res) {
   try {
     const response = await RestrudentModel.find({});
@@ -22,7 +23,9 @@ async function getAllRestrudents(req, res) {
 async function getRestrudentById(req, res) {
   const { id } = req.params;
   try {
-    const response = await RestrudentModel.findById(id);
+    const response = await RestrudentModel.findById(id).populate("menu");
+    console.log(response);
+    
     if (!response) {
       return res
         .status(400)

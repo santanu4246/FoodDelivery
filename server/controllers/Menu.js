@@ -19,16 +19,16 @@ const addmenu = async (req, res) => {
 
 const deletemenu = async (req, res) => {
   try {
-    const { menuId } = req.params;
+    const { id } = req.params;
 
-    const menu = await MenuModel.findById(menuId);
+    const menu = await MenuModel.findById(id);
     if (!menu) {
       return res.status(404).json({ msg: "Menu not found", success: false });
     }
-    await MenuModel.findByIdAndDelete(menuId);
+    await MenuModel.findByIdAndDelete(id);
     await RestrudentModel.updateMany(
-      { menu: menuId },
-      { $pull: { menu: menuId } }
+      { menu: id },
+      { $pull: { menu: id } }
     );
 
     res.status(200).json({ msg: "Menu deleted successfully", success: true });
