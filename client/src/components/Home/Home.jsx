@@ -44,7 +44,7 @@ const Home = () => {
           {/* Left Button */}
           <button
             onClick={() => scrollSlider("left")}
-            className="absolute left-[-50px] top-[40%] bg-white text-white p-3 rounded-full z-10"
+            className="absolute left-[-65px] top-[40%] bg-white text-white p-3 rounded-full z-10"
           >
 
             <IoIosArrowBack className="text-[20px] text-black"/>
