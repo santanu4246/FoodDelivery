@@ -5,7 +5,7 @@ import {
 import CategoryModel from "../models/FoodCategoryModel.js";
 async function AddFoodCategory(req, res) {
   const { name } = req.body;
-  const file = req.file;
+  const file = req.file;  
   try {
     if (!name || !file) {
       res

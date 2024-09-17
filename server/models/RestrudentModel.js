@@ -7,7 +7,7 @@ const restaurantSchema = mongoose.Schema({
   location: { type: String, required: true },
   geolocation: { type: String },
   image: { type: String, required: true },
-  menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }],
+  menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "Menu" }],
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   perThali: {
     type: Number,
