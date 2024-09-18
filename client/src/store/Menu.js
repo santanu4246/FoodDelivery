@@ -36,5 +36,13 @@ export const useMenu = create((set) => ({
     } catch (error) {
       console.log(error);
     }
+  },
+  updateFood: async (foodid) => {
+    try {
+      const res = await axios.put(`${BASE_URL}/update-food/${foodid}`);
+      console.log(res.data.food);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }));

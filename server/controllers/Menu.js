@@ -43,7 +43,7 @@ const deletemenu = async (req, res) => {
 async function getmenu(req, res) {
   const { restuid } = req.params;
   console.log(restuid);
-  
+
   try {
     const restrudent = await RestrudentModel.findById(restuid);
     if (!restrudent) {
@@ -66,4 +66,8 @@ async function getmenu(req, res) {
   }
 }
 
-export { addmenu, deletemenu, getmenu };
+async function updateFood(req, res) {
+  const { foodid } = req.params;
+}
+
+export { addmenu, deletemenu, getmenu, updateFood };
