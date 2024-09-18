@@ -52,7 +52,6 @@ async function getmenu(req, res) {
         .json({ msg: "Restrurant not found!", success: false });
     }
     const menu = await MenuModel.find({ _id: { $in: restrudent.menu } });
-    console.log(menu);
 
     return res
       .status(200)

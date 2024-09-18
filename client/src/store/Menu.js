@@ -32,7 +32,6 @@ export const useMenu = create((set) => ({
   getMenu: async (restuid) => {
     try {
       const response = await axios.get(`${BASE_URL}/getmenu/${restuid}`);
-      console.log(response);
       set({ menuList: response.data.menu });
     } catch (error) {
       console.log(error);
