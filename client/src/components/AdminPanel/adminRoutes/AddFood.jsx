@@ -1,35 +1,55 @@
 import React, { useState } from "react";
 
-function AddFood() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null);
-  const [isVegetarian, setIsVegetarian] = useState(false);
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+function AddFood() {
+  const [title, setTitle] = useState(""); 
+  const [foodName, setFoodName] = useState(""); 
+  const [price, setPrice] = useState(""); 
+  const [isVegetarian, setIsVegetarian] = useState(false); 
+  const [foodItems, setFoodItems] = useState([]); 
+  const [foodImage, setFoodImage] = useState(null); 
+
+ 
+  const addFoodItem = () => {
+    const newFoodItem = {
+      name: foodName,
+      price: parseFloat(price),
+      veg: isVegetarian,
+      image: foodImage, 
+    };
+    setFoodItems([...foodItems, newFoodItem]);
+
+  
+    setFoodName("");
+    setPrice("");
+    setIsVegetarian(false);
+    setFoodImage(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleFoodImageChange = (e) => {
+    setFoodImage(e.target.files[0]); 
+  };
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ title, description, price, image, isVegetarian });
+    console.log({title,foodItems});
+    
+    setFoodItems([])
+    setTitle("")
   };
 
   return (
-    <div className="h-full w-full flex justify-center bg-gray-100 py-5">
+    <div className="min-h-full w-full flex justify-center bg-gray-100 py-5">
       <div className="max-h-[140vh] w-[50%] bg-white shadow-2xl p-10 rounded-lg">
         <h2 className="uppercase text-center pb-5 text-black text-[30px] font-extrabold">
-          Add Food Item
+          Add Food Items to Menu
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col">
-            <label
-              htmlFor="title"
-              className="text-black text-[18px] font-bold mb-2"
-            >
-              Food Title
+            <label htmlFor="title" className="text-black text-[18px] font-bold mb-2">
+              Menu Title
             </label>
             <input
               type="text"
@@ -41,27 +61,22 @@ function AddFood() {
             />
           </div>
 
+          {/* Adding food items */}
           <div className="flex flex-col">
-            <label
-              htmlFor="description"
-              className="text-black text-[18px] font-bold mb-2"
-            >
-              Description
+            <label htmlFor="foodName" className="text-black text-[18px] font-bold mb-2">
+              Food Item Name
             </label>
-            <textarea
-              id="description"
+            <input
+              type="text"
+              id="foodName"
               className="border-2 border-gray-300 p-2 rounded-md text-black"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            ></textarea>
+              value={foodName}
+              onChange={(e) => setFoodName(e.target.value)}
+            />
           </div>
 
           <div className="flex flex-col">
-            <label
-              htmlFor="price"
-              className="text-black text-[18px] font-bold mb-2"
-            >
+            <label htmlFor="price" className="text-black text-[18px] font-bold mb-2">
               Price
             </label>
             <input
@@ -70,23 +85,6 @@ function AddFood() {
               className="border-2 border-gray-300 p-2 rounded-md text-black"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label
-              htmlFor="image"
-              className="text-black text-[18px] font-bold mb-2"
-            >
-              Food Image
-            </label>
-            <input
-              type="file"
-              id="image"
-              className="border-2 border-gray-300 p-2 rounded-md"
-              onChange={handleImageChange}
-              required
             />
           </div>
 
@@ -98,19 +96,46 @@ function AddFood() {
               checked={isVegetarian}
               onChange={(e) => setIsVegetarian(e.target.checked)}
             />
-            <label
-              htmlFor="isVegetarian"
-              className="text-black text-[18px] font-bold mb-2"
-            >
+            <label htmlFor="isVegetarian" className="text-black text-[18px] font-bold mb-2">
               Vegetarian
             </label>
           </div>
+
+          {/* Upload food item image */}
+          <div className="flex flex-col">
+            <label htmlFor="foodImage" className="text-black text-[18px] font-bold mb-2">
+              Food Item Image
+            </label>
+            <input
+              type="file"
+              id="foodImage"
+              className="border-2 border-gray-300 p-2 rounded-md"
+              onChange={handleFoodImageChange}
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={addFoodItem} // Button to add the current food item to the array
+            className="bg-blue-500 text-white p-2 rounded-md font-bold w-full"
+          >
+            Add Food Item
+          </button>
+
+          <ul className="list-disc pl-5">
+            {foodItems.map((item, index) => (
+              <li key={index} className="text-black">
+                {item.name} - ${item.price} - {item.veg ? "Vegetarian" : "Non-Vegetarian"}
+              </li>
+            ))}
+          </ul>
+
 
           <button
             type="submit"
             className="bg-[#111111] text-white p-3 rounded-md font-bold w-full"
           >
-            Add Food
+            Submit Menu
           </button>
         </form>
       </div>

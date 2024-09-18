@@ -24,14 +24,12 @@ function RestrurantData() {
     if (id) getRestrurant();
   }, [id]);
 
-  // Handle title click to show corresponding food items
+  
   const handleTitleClick = (index) => {
-    setSelectedMenuIndex(index); // Update the selected menu index
+    setSelectedMenuIndex(index); 
   };
 
-  // Safeguard against undefined menu data
   const currentMenu = restrurantData.menu?.[selectedMenuIndex];
-
   return (
     <div className="min-h-screen w-full px-[8%] py-[5%] bg-gray-50 text-gray-900">
       <div className="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8">
