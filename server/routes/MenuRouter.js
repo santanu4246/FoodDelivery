@@ -5,5 +5,5 @@ MenuRouter.post("/addmenu/:id", addmenu);
 MenuRouter.post("/deletemenu/:id", deletemenu);
 MenuRouter.get("/getmenu/:restuid", getmenu);
 // MenuRouter.put("/update-menu/:menuid", updateMenu);
-MenuRouter.put("/update-food/:foodid", updateFood);
+MenuRouter.put("/update-food/:menuid/:foodid", updateFood);
 export default MenuRouter

@@ -37,9 +37,12 @@ export const useMenu = create((set) => ({
       console.log(error);
     }
   },
-  updateFood: async (formData,foodid) => {
+  updateFood: async (formData, menuid, foodid) => {
     try {
-      const res = await axios.put(`${BASE_URL}/update-food/${foodid}`,{formData});
+      const res = await axios.put(
+        `${BASE_URL}/update-food/${menuid}/${foodid}`,
+        { formData }
+      );
       console.log(res.data.food);
     } catch (error) {
       console.log(error);

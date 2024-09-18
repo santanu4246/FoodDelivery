@@ -67,9 +67,21 @@ async function getmenu(req, res) {
 }
 
 async function updateFood(req, res) {
-  const { foodid } = req.params;
-  console.log(foodid);
-  
+  const { menuid, foodid } = req.params;
+  console.clear();
+  try {
+    const menu = await MenuModel.findById(menuid);
+    if (!menu) {
+      return res.status(404).json({ msg: "Menu not found", success: false });
+    }
+    console.log(menu);
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Error while updating food",
+      success: false,
+      error
+    });
+  }
 }
 
 export { addmenu, deletemenu, getmenu, updateFood };

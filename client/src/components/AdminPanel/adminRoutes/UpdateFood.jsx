@@ -16,8 +16,7 @@ function UpdateFood({ food, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ title, description, image, price, isVegetarian });
-    console.log(food._id);
+    console.log(food._id,food.menuid);
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -25,7 +24,7 @@ function UpdateFood({ food, onClose }) {
     formData.append("price", price);
     formData.append("isVegetarian", isVegetarian);
 
-    await updateFood(formData, food._id);
+    await updateFood(formData,food.menuid, food._id);
     // onClose();
   };
 

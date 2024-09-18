@@ -5,7 +5,8 @@ import { useMenu } from "../../../store/Menu";
 function EditFood() {
   const [selectedFood, setSelectedFood] = useState(null);
 
-  const handleUpdateClick = (food) => {
+  const handleUpdateClick = (food, menuid) => {
+    food.menuid = menuid;
     setSelectedFood(food);
   };
 
@@ -55,7 +56,7 @@ function EditFood() {
                 <div className="flex justify-between w-full mt-8 px-4">
                   <button
                     className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-all"
-                    onClick={() => handleUpdateClick(food)}
+                    onClick={() => handleUpdateClick(food, item._id)}
                   >
                     Update
                   </button>
