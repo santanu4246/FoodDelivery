@@ -26,6 +26,7 @@ export const useAdminAuthentication = create((set) => ({
 
       
       if (response.status === 200) {
+        
         localStorage.setItem("restrurantID", response?.data?.user?.restrurant?._id);
         set({
           adminType: response.data.user.type,

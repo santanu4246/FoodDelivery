@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UpdateFood from "./UpdateFood";
+import { useAdminAuthentication } from "../../../store/Authentication";
+import { useMenu } from "../../../store/Menu";
 
 function EditFood() {
   const foodItems = [
-    { id: 1, name: "Pizza", description: "Cheesy goodness with toppings", imageUrl: "", price: 100 },
-    { id: 2, name: "Burger", description: "Juicy chicken patty with fresh lettuce", imageUrl: "", price: 200 },
-    { id: 3, name: "Biryani", description: "Delicious", imageUrl: "", price: 110 },
+    {
+      id: 1,
+      name: "Pizza",
+      description: "Cheesy goodness with toppings",
+      imageUrl: "",
+      price: 100
+    },
+    {
+      id: 2,
+      name: "Burger",
+      description: "Juicy chicken patty with fresh lettuce",
+      imageUrl: "",
+      price: 200
+    },
+    {
+      id: 3,
+      name: "Biryani",
+      description: "Delicious",
+      imageUrl: "",
+      price: 110
+    }
   ];
 
   const [selectedFood, setSelectedFood] = useState(null);
@@ -18,11 +38,21 @@ function EditFood() {
     setSelectedFood(null);
   };
 
+  const { getMenu } = useMenu();
+  useEffect(() => {
+    const restuid = localStorage.getItem("restrurantID");
+    if (restuid) {
+      getMenu(restuid);
+    }
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         {foodItems.map((food, index) => (
-          <div key={index} className="h-auto w-[350px] bg-white rounded-lg shadow-lg flex flex-col items-center p-6">
+          <div
+            key={index}
+            className="h-auto w-[350px] bg-white rounded-lg shadow-lg flex flex-col items-center p-6"
+          >
             <div className="img h-[200px] w-[200px] bg-gray-200 rounded-full overflow-hidden">
               <img
                 src={food.imageUrl}
@@ -32,7 +62,9 @@ function EditFood() {
             </div>
 
             <div className="mt-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-800">{food.name}</h2>
+              <h2 className="text-xl font-semibold text-gray-800">
+                {food.name}
+              </h2>
               <p className="text-gray-500 mt-2">{food.description}</p>
               <p className="text-green-500 mt-2 font-semibold">{food.price}</p>
             </div>
@@ -52,7 +84,9 @@ function EditFood() {
         ))}
       </div>
 
-      {selectedFood && <UpdateFood food={selectedFood} onClose={closeUpdateForm} />}
+      {selectedFood && (
+        <UpdateFood food={selectedFood} onClose={closeUpdateForm} />
+      )}
     </div>
   );
 }
