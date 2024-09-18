@@ -15,14 +15,14 @@ function EditFood() {
 
   const { getMenu, menuList } = useMenu();
   useEffect(() => {
-    const restuid = localStorage.getItem("restrurantID"); 
+    const restuid = localStorage.getItem("restrurantID");
     if (restuid) {
       getMenu(restuid);
     }
   }, [getMenu]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex flex-col items-center p-6">
+    <div className="text-black min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex flex-col items-center p-6">
       {menuList.map((item) => (
         <div key={item.id} className="w-full mb-8">
           <h1 className="text-3xl font-bold text-center mb-4">{item.title}</h1>
