@@ -38,14 +38,20 @@ export const useMenu = create((set) => ({
     }
   },
   updateFood: async (formData, menuid, foodid) => {
+    
     try {
       const res = await axios.put(
         `${BASE_URL}/update-food/${menuid}/${foodid}`,
-        { formData }
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data" // Important for FormData
+          }
+        }
       );
       console.log(res.data.food);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }));

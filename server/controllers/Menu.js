@@ -68,13 +68,15 @@ async function getmenu(req, res) {
 
 async function updateFood(req, res) {
   const { menuid, foodid } = req.params;
+  const { title } = req.body;
   console.clear();
+  console.log(title);
+  
   try {
     const menu = await MenuModel.findById(menuid);
     if (!menu) {
       return res.status(404).json({ msg: "Menu not found", success: false });
     }
-    console.log(menu);
   } catch (error) {
     return res.status(500).json({
       msg: "Error while updating food",
