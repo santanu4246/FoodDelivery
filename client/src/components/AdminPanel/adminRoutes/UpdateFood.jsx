@@ -1,21 +1,31 @@
 import React, { useState } from "react";
+import { useMenu } from "../../../store/Menu";
 
 function UpdateFood({ food, onClose }) {
   const [title, setTitle] = useState(food.name);
   const [description, setDescription] = useState(food.description);
   const [image, setImage] = useState(food.imageUrl);
-  const [price, setPrice] = useState(food.price || '');
+  const [price, setPrice] = useState(food.price || "");
   const [isVegetarian, setIsVegetarian] = useState(food.isVegetarian || false);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const { updateFood } = useMenu();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ title, description, image, price, isVegetarian });
     console.log(food._id);
-    
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("image", image);
+    formData.append("price", price);
+    formData.append("isVegetarian", isVegetarian);
+
+    await updateFood(formData, food._id);
     // onClose();
   };
 
@@ -41,7 +51,7 @@ function UpdateFood({ food, onClose }) {
               className="border-2 border-gray-300 p-2 rounded-md text-black"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              required
+              // required
             ></textarea>
           </div>
 
