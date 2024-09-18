@@ -14,7 +14,9 @@ function UpdateFood({ food, onClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({ title, description, image, price, isVegetarian });
-    onClose();
+    console.log(food._id);
+    
+    // onClose();
   };
 
   return (

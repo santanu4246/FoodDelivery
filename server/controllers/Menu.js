@@ -68,6 +68,8 @@ async function getmenu(req, res) {
 
 async function updateFood(req, res) {
   const { foodid } = req.params;
+  console.log(foodid);
+  
 }
 
 export { addmenu, deletemenu, getmenu, updateFood };

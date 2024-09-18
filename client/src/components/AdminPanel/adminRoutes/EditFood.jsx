@@ -24,14 +24,14 @@ function EditFood() {
   return (
     <div className="text-black min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex flex-col items-center p-6">
       {menuList.map((item) => (
-        <div key={item.id} className="w-full mb-8">
+        <div key={`${item._id}-${item.name}`} className="w-full mb-8">
           <h1 className="text-3xl font-bold text-center mb-4">{item.title}</h1>
 
           {/* Display foods in a row (horizontally) */}
           <div className="flex flex-wrap justify-center gap-6">
             {item.food.map((food) => (
               <div
-                key={food.id}
+                key={`${food.id}-${food.name}`}
                 className="h-auto w-[300px] bg-white rounded-lg shadow-lg flex flex-col items-center p-6"
               >
                 <div className="img h-[150px] w-[150px] bg-gray-200 rounded-full overflow-hidden">
