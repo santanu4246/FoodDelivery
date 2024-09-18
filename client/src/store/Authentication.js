@@ -23,12 +23,16 @@ export const useAdminAuthentication = create((set) => ({
         username,
         password
       });
+
+      
       if (response.status === 200) {
+        localStorage.setItem("restrurantID", response?.data?.user?.restrurant?._id);
         set({
           adminType: response.data.user.type,
           admin: response.data.user,
           isAuthenticated: true
         });
+       
       }
       return response.data.msg;
     } catch (error) {
@@ -58,6 +62,7 @@ export const useAdminAuthentication = create((set) => ({
   logoutAdmin: async () => {
     try {
       await axios.get(`${BASE_URL}/admin/logout`);
+      localStorage.removeItem("restrurantID");
       set({ admin: null, adminType: null, isAuthenticated: false });
     } catch (error) {
       throw error;

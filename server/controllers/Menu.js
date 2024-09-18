@@ -5,6 +5,8 @@ const addmenu = async (req, res) => {
     const { title, food } = req.body;
     const newmenu = new MenuModel({ title, food });
     const response = await newmenu.save();
+    console.log(response);
+    
     res
       .status(201)
       .json({ msg: "Menu added successfully", success: true, menu: response });
@@ -13,7 +15,7 @@ const addmenu = async (req, res) => {
       { $push: { menu: response._id } }
     );
   } catch (error) {
-    res.send({ msg: "Error while adding menu", success: false, error: error });
+    res.json({ msg: "Error while adding menu", success: false, error: error });
   }
 };
 

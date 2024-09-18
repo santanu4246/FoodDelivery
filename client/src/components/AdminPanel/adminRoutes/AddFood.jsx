@@ -1,47 +1,65 @@
 import React, { useState } from "react";
-
-
+import { useMenu } from "../../../store/Menu";
+import { toast } from "react-toastify";
 function AddFood() {
   const [title, setTitle] = useState(""); 
   const [foodName, setFoodName] = useState(""); 
   const [price, setPrice] = useState(""); 
   const [isVegetarian, setIsVegetarian] = useState(false); 
   const [foodItems, setFoodItems] = useState([]); 
-  const [foodImage, setFoodImage] = useState(null); 
+  // const [foodImage, setFoodImage] = useState(null); 
+  const { addMenu } = useMenu();  // Fetching addMenu from store
 
- 
   const addFoodItem = () => {
     const newFoodItem = {
       name: foodName,
       price: parseFloat(price),
       veg: isVegetarian,
-      image: foodImage, 
+      // image: foodImage, 
     };
     setFoodItems([...foodItems, newFoodItem]);
 
-  
+    // Clear inputs
     setFoodName("");
     setPrice("");
     setIsVegetarian(false);
-    setFoodImage(null);
+    // setFoodImage(null);
   };
 
-  const handleFoodImageChange = (e) => {
-    setFoodImage(e.target.files[0]); 
-  };
-
+  // const handleFoodImageChange = (e) => {
+  //   setFoodImage(e.target.files[0]); 
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({title,foodItems});
-    
-    setFoodItems([])
-    setTitle("")
+
+    // const formData = new FormData();
+    // formData.append("title", title);
+
+    // // Append each food item to formData
+    // foodItems.forEach((food, index) => {
+    //   formData.append(`food[${index}][name]`, food.name);
+    //   formData.append(`food[${index}][price]`, food.price);
+    //   formData.append(`food[${index}][veg]`, food.veg);
+    //   // formData.append(`food[${index}][image]`, food.image); 
+    // });
+
+    try {
+      await addMenu(title, foodItems);  
+      toast.success("Menu submitted successfully!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to submit the menu.");
+    }
+
+   
+    setFoodItems([]);
+    setTitle("");
   };
 
   return (
     <div className="min-h-full w-full flex justify-center bg-gray-100 py-5">
-      <div className="max-h-[140vh] w-[50%] bg-white shadow-2xl p-10 rounded-lg">
+      <div className="h-full w-[50%] bg-white shadow-2xl p-10 rounded-lg">
         <h2 className="uppercase text-center pb-5 text-black text-[30px] font-extrabold">
           Add Food Items to Menu
         </h2>
@@ -102,7 +120,7 @@ function AddFood() {
           </div>
 
           {/* Upload food item image */}
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <label htmlFor="foodImage" className="text-black text-[18px] font-bold mb-2">
               Food Item Image
             </label>
@@ -112,11 +130,11 @@ function AddFood() {
               className="border-2 border-gray-300 p-2 rounded-md"
               onChange={handleFoodImageChange}
             />
-          </div>
+          </div> */}
 
           <button
             type="button"
-            onClick={addFoodItem} // Button to add the current food item to the array
+            onClick={addFoodItem} 
             className="bg-blue-500 text-white p-2 rounded-md font-bold w-full"
           >
             Add Food Item
@@ -129,7 +147,6 @@ function AddFood() {
               </li>
             ))}
           </ul>
-
 
           <button
             type="submit"

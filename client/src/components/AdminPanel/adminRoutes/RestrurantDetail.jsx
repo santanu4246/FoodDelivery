@@ -59,6 +59,7 @@ const RestaurantDetail = () => {
     if (image !== null) formData.append("image", image);
     try {
       await updateRestrurant(admin.restrurant._id, formData);
+      
       toast.success("Admin updated successfully");
     } catch (error) {
       console.log(error);
