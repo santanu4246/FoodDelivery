@@ -7,9 +7,10 @@ import NewAddFood from "./NewAddFood";
 function EditFood() {
   const [selectedFood, setSelectedFood] = useState(null);
   const [deleteClick, setDeleteClick] = useState(false);
-  const [foodToDelete, setFoodToDelete] = useState(null); // Track which food to delete
-  const [addfood, setaddfood] = useState(false)
-  const [MenuId, setMenuId] = useState('')
+  const [foodToDelete, setFoodToDelete] = useState(null);
+  const [addfood, setaddfood] = useState(false);
+  const [MenuId, setMenuId] = useState("");
+
   const handleUpdateClick = (food, menuid) => {
     food.menuid = menuid;
     setSelectedFood(food);
@@ -20,6 +21,7 @@ function EditFood() {
   };
 
   const { getMenu, menuList, deleteMenu } = useMenu();
+
   useEffect(() => {
     const restuid = localStorage.getItem("restrurantID");
     if (restuid) {
@@ -38,59 +40,61 @@ function EditFood() {
   };
 
   const handelAddFood = (menuid) => {
-    setaddfood(true)
-    setMenuId(menuid)
-  }
+    setaddfood(true);
+    setMenuId(menuid);
+  };
+
   return (
-    <div className="text-gray-900 min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 flex flex-col items-center p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-100 flex flex-col items-center p-8">
       {menuList.map((item) => (
-        <div key={`${item._id}-${item.name}`} className="w-full mb-12">
-          <h1 className="text-4xl font-bold text-center text-indigo-800 mb-6">
+        <div
+          key={`${item._id}-${item.name}`}
+          className="w-full bg-white rounded-lg shadow-lg p-6 mb-8"
+        >
+          <h1 className="text-3xl font-bold text-center text-indigo-900 mb-4">
             {item.title}
           </h1>
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center space-x-4 mb-6">
             <button
               onClick={() => deletemenu(item._id)}
-              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               Delete Menu
             </button>
-            <button onClick={()=>handelAddFood(item._id)}>Add Food</button>
+            <button
+              onClick={() => handelAddFood(item._id)}
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              Add Food
+            </button>
           </div>
-          <div className="flex flex-wrap justify-center gap-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {item.food.map((food) => (
               <div
                 key={`${food.id}-${food.name}`}
-                className="h-auto w-[300px] bg-white rounded-lg shadow-lg flex flex-col items-center p-6 transition-transform transform hover:scale-105 hover:shadow-2xl"
+                className="bg-indigo-50 p-6 rounded-lg shadow-md flex flex-col justify-between transition-transform transform hover:scale-105"
               >
-                <div className="img h-[150px] w-[150px] bg-gray-100 rounded-full overflow-hidden border-4 border-indigo-300">
-                  <img
-                    src={food.imageUrl || "/placeholder-image.jpg"}
-                    alt={`${food.name} Image`}
-                    className="object-cover w-full h-full transition-transform duration-300 hover:scale-110"
-                  />
-                </div>
-
-                <div className="mt-6 text-center">
-                  <h2 className="text-2xl font-semibold text-gray-800">
+                <div className="text-center">
+                  <h2 className="text-xl font-semibold text-indigo-800 mb-2">
                     {food.name}
                   </h2>
-                  <p className="text-gray-500 mt-2">{food.description}</p>
-                  <p className="text-green-500 mt-2 font-semibold">
+                  <p className="text-gray-600 mb-2">{food.description}</p>
+                  <p className="text-lg font-semibold text-gray-600">
                     ₹{food.price}
                   </p>
                 </div>
 
-                <div className="flex justify-between w-full mt-8 px-4 gap-4">
+                <div className="mt-4 flex justify-around">
                   <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
+                    className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
                     onClick={() => handleUpdateClick(food, item._id)}
                   >
                     Update
                   </button>
                   <button
                     className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
-                    onClick={() => handleDeleteClick(food, item._id)} // Attach deleteClick handler
+                    onClick={() => handleDeleteClick(food, item._id)}
                   >
                     Delete
                   </button>
@@ -116,11 +120,9 @@ function EditFood() {
         <UpdateFood food={selectedFood} onClose={closeUpdateForm} />
       )}
 
-      {
-        addfood && (
-          <NewAddFood onClose={() => setaddfood(false)} MenuId={MenuId}/>
-        )
-      }
+      {addfood && (
+        <NewAddFood onClose={() => setaddfood(false)} MenuId={MenuId} />
+      )}
     </div>
   );
 }
