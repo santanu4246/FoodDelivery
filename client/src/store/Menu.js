@@ -62,4 +62,13 @@ export const useMenu = create((set) => ({
       console.error(error);
     }
   },
+  deleteMenu: async (menuid) => {
+    try {
+      const res = await axios.delete(`${BASE_URL}/deletemenu/${menuid}`);
+      toast.success(res.data.msg);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }));

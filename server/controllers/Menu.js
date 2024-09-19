@@ -77,15 +77,15 @@ async function updateFood(req, res) {
     isVegetarian,
     menuid,
     foodid,
-  }); 
+  });
 
   try {
     const menu = await MenuModel.findById(menuid);
     if (!menu) {
-      return res.status(404).json({ msg: "Menu not found"});
+      return res.status(404).json({ msg: "Menu not found" });
     }
 
-    const foodItem = await menu.food.id(foodid);
+    const foodItem = menu.food.id(foodid);
     if (!foodItem) {
       res.status(404).json({ msg: "Food item not found" });
     }
@@ -114,21 +114,22 @@ async function deleteFood(req, res) {
   const { menuid, foodid } = req.params;
   try {
     const menu = await MenuModel.findById(menuid);
-    if(!menu){
-      return res.json({msg:"Menu not found"})
+    if (!menu) {
+      return res.json({ msg: "Menu not found" });
     }
     const foodItem = await menu.food.id(foodid);
-    if(!foodItem){
-      return res.json("foodItem not found")
+    if (!foodItem) {
+      return res.json("foodItem not found");
     }
-  
-    menu.food.pull({ _id: foodid });  
-    await menu.save();  
+
+    menu.food.pull({ _id: foodid });
+    await menu.save();
 
     res.status(200).json({ msg: "Food deleted successfully" });
-
   } catch (error) {
-    res.status(500).json({msg:"Error while deleting food",error:error.message})
+    res
+      .status(500)
+      .json({ msg: "Error while deleting food", error: error.message });
   }
 }
-export { addmenu, deletemenu, getmenu, updateFood,deleteFood };
+export { addmenu, deletemenu, getmenu, updateFood, deleteFood };

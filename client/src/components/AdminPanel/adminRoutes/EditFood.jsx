@@ -17,7 +17,7 @@ function EditFood() {
     setSelectedFood(null);
   };
 
-  const { getMenu, menuList } = useMenu();
+  const { getMenu, menuList,deleteMenu } = useMenu();
   useEffect(() => {
     const restuid = localStorage.getItem("restrurantID");
     if (restuid) {
@@ -30,13 +30,15 @@ function EditFood() {
     setFoodToDelete(food); 
     setDeleteClick(true); 
   };
-
+  const deletemenu = async (menuid)=>{
+    await deleteMenu(menuid)
+  }
   return (
     <div className="text-black min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex flex-col items-center p-6">
       {menuList.map((item) => (
         <div key={`${item._id}-${item.name}`} className="w-full mb-8">
           <h1 className="text-3xl font-bold text-center mb-4">{item.title}</h1>
-
+          <button onClick={()=> deletemenu(item._id)}>DeleteMenu</button>
           {/* Display foods in a row (horizontally) */}
           <div className="flex flex-wrap justify-center gap-6">
             {item.food.map((food) => (
