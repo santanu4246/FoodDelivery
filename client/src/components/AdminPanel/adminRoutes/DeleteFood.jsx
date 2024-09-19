@@ -1,9 +1,10 @@
 import React from 'react';
 
-const DeleteFood = ({ foodName, onDelete }) => {
+const DeleteFood = ({ food, onDelete }) => {
 
   const handleDelete = () => {
-    onDelete(foodName); 
+    onDelete(food.name);
+    
   };
 
   const handleOverlayClick = (e) => {
@@ -19,7 +20,7 @@ const DeleteFood = ({ foodName, onDelete }) => {
       aria-hidden="true"
     >
       <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg text-center">
-        <h2 className="text-xl font-semibold mb-4">Delete {foodName}?</h2>
+        <h2 className="text-xl font-semibold mb-4">Delete {food.name}?</h2>
         <p className="text-gray-600 mb-6">Are you sure you want to delete this item?</p>
         <div className="flex justify-center gap-4">
           <button

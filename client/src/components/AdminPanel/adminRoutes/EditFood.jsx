@@ -25,9 +25,10 @@ function EditFood() {
     }
   }, [getMenu]);
 
-  const handleDeleteClick = (food) => {
-    setFoodToDelete(food); // Set food to delete
-    setDeleteClick(true);  // Show DeleteFood component
+  const handleDeleteClick = (food,menuid) => {
+    food.menuid = menuid;
+    setFoodToDelete(food); 
+    setDeleteClick(true); 
   };
 
   return (
@@ -45,7 +46,7 @@ function EditFood() {
               >
                 <div className="img h-[150px] w-[150px] bg-gray-200 rounded-full overflow-hidden">
                   <img
-                    src={food.imageUrl || "/placeholder-image.jpg"} // Fallback image
+                    src={food.imageUrl || "/placeholder-image.jpg"}
                     alt={`${food.name} Image`}
                     className="object-cover w-full h-full"
                   />
@@ -70,7 +71,7 @@ function EditFood() {
                   </button>
                   <button
                     className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all"
-                    onClick={() => handleDeleteClick(food)} // Attach deleteClick handler
+                    onClick={() => handleDeleteClick(food,item._id)} // Attach deleteClick handler
                   >
                     Delete
                   </button>
@@ -82,7 +83,7 @@ function EditFood() {
       ))}
       {
         deleteClick &&  (
-            <DeleteFood foodName={foodToDelete.name} onDelete={() => {
+            <DeleteFood food={foodToDelete}  onDelete={() => {
               console.log(`${foodToDelete.name} deleted`);
               setDeleteClick(false);
               setFoodToDelete(null);
