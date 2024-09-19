@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
-import { Home, Nav, Footer, Admin, Dashboard } from "./utils/utils";
-import RestaurantDetail from "./components/AdminPanel/adminRoutes/RestrurantDetail.jsx";
+import { Home, Nav, Footer, Admin, Cart } from "./utils/utils";
+
 import RestrurantData from "./components/RestrurantDetail/RestrurantData.jsx";
 function App() {
   const location = useLocation();
@@ -33,6 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/restrurant/:id" element={<RestrurantData />} />
         <Route path="/admin/*" element={<Admin />} />
+        <Route path="/Cart" element={<Cart />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
       <ToastContainer />

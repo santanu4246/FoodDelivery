@@ -7,7 +7,7 @@ function RestrurantData() {
   const { id } = useParams();
   const { getRestrurantById } = useAdminAuthentication();
   const [restrurantData, setRestrurantData] = useState([]);
-  const [selectedMenuIndex, setSelectedMenuIndex] = useState(0); // Set default selected index to 0
+  const [selectedMenuIndex, setSelectedMenuIndex] = useState(0); 
 
   useEffect(() => {
     async function getRestrurant() {
@@ -15,7 +15,7 @@ function RestrurantData() {
         const res = await getRestrurantById(id);
         setRestrurantData(res);
         if (res.menu && res.menu.length > 0) {
-          setSelectedMenuIndex(0); // Automatically select the first menu item if available
+          setSelectedMenuIndex(0); 
         }
       } catch (error) {
         console.log(error);
