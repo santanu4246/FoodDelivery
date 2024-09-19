@@ -68,7 +68,7 @@ async function getmenu(req, res) {
 
 async function updateFood(req, res) {
   const { menuid, foodid } = req.params;
-  const { title, description, price, isVegetarian } = req.body; // Access the updated fields
+  const { title, description, price, isVegetarian } = req.body;
 
   console.log("Received Data:", {
     title,
@@ -87,20 +87,17 @@ async function updateFood(req, res) {
 
     const foodItem = menu.food.id(foodid);
     if (!foodItem) {
-      res.status(404).json({ msg: "Food item not found" });
+      return res.status(404).json({ msg: "Food item not found" });
     }
 
-    if (title) foodItem.title = title;
+    if (title) foodItem.name = title;
     if (description) foodItem.description = description;
     if (price) foodItem.price = price;
     if (isVegetarian !== undefined) foodItem.isVegetarian = isVegetarian;
 
     await menu.save();
 
-    res.status(200).json({
-      msg: "Food updated successfully",
-      food: foodItem,
-    });
+    res.status(200).json({msg: "Food updated successfully",food: foodItem,});
   } catch (error) {
     console.log("Error in updateFood:", error.message);
     res.status(500).json({
