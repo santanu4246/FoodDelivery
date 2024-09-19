@@ -35,7 +35,7 @@ const deletemenu = async (req, res) => {
     res.status(500).json({
       msg: "Error while deleting menu",
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -61,27 +61,51 @@ async function getmenu(req, res) {
     return res.status(500).json({
       msg: "Error while fetching menu",
       success: false,
-      error
+      error,
     });
   }
 }
 
 async function updateFood(req, res) {
   const { menuid, foodid } = req.params;
-  const { title } = req.body;
-  console.clear();
-  console.log(title);
-  
+  const { title, description, price, isVegetarian } = req.body; // Access the updated fields
+
+  console.log("Received Data:", {
+    title,
+    description,
+    price,
+    isVegetarian,
+    menuid,
+    foodid,
+  }); 
+
   try {
     const menu = await MenuModel.findById(menuid);
     if (!menu) {
-      return res.status(404).json({ msg: "Menu not found", success: false });
+      return res.status(404).json({ msg: "Menu not found"});
     }
+
+    const foodItem = menu.food.id(foodid);
+    if (!foodItem) {
+      res.status(404).json({ msg: "Food item not found" });
+    }
+
+    if (title) foodItem.title = title;
+    if (description) foodItem.description = description;
+    if (price) foodItem.price = price;
+    if (isVegetarian !== undefined) foodItem.isVegetarian = isVegetarian;
+
+    await menu.save();
+
+    res.status(200).json({
+      msg: "Food updated successfully",
+      food: foodItem,
+    });
   } catch (error) {
-    return res.status(500).json({
+    console.log("Error in updateFood:", error.message);
+    res.status(500).json({
       msg: "Error while updating food",
-      success: false,
-      error
+      error: error.message,
     });
   }
 }

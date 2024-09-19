@@ -4,7 +4,7 @@ import { useMenu } from "../../../store/Menu";
 function UpdateFood({ food, onClose }) {
   const [title, setTitle] = useState(food.name);
   const [description, setDescription] = useState(food.description);
-  const [image, setImage] = useState(food.imageUrl);
+  const [image, setImage] = useState(null); 
   const [price, setPrice] = useState(food.price || "");
   const [isVegetarian, setIsVegetarian] = useState(food.isVegetarian || false);
 
@@ -16,16 +16,20 @@ function UpdateFood({ food, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(food._id,food.menuid);
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("image", image);
-    formData.append("price", price);
-    formData.append("isVegetarian", isVegetarian);
+    console.log(food._id, food.menuid);
+  
 
-    await updateFood(formData,food.menuid, food._id);
-    // onClose();
+    const updatedFoodData = {
+      title,
+      description,
+      price,
+      isVegetarian,
+    };
+  
+    console.log("Updated Food Data:", updatedFoodData);
+  
+    await updateFood(updatedFoodData, food.menuid, food._id);
+    onClose();
   };
 
   return (

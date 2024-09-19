@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-import { useAdminAuthentication } from "./Authentication";
+import { toast } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL; // Ensure VITE_BASE_URL is properly set in your environment
 
@@ -43,13 +43,8 @@ export const useMenu = create((set) => ({
       const res = await axios.put(
         `${BASE_URL}/update-food/${menuid}/${foodid}`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data" // Important for FormData
-          }
-        }
       );
-      console.log(res.data.food);
+      toast.success(res.data.msg);
     } catch (error) {
       console.error(error);
     }
