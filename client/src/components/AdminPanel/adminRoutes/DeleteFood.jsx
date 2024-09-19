@@ -1,10 +1,12 @@
 import React from 'react';
-
+import { useMenu } from '../../../store/Menu';
 const DeleteFood = ({ food, onDelete }) => {
-
-  const handleDelete = () => {
+    const {deleteFood} = useMenu()
+  const handleDelete = async () => {
     onDelete(food.name);
+    console.log(food.menuid,food._id);
     
+     await deleteFood(food.menuid,food._id);
   };
 
   const handleOverlayClick = (e) => {

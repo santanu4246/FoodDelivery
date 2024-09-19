@@ -51,6 +51,8 @@ export const useMenu = create((set) => ({
     }
   },
   deleteFood: async (menuid, foodid) => {
+    console.log(menuid,foodid);
+    
     try {
       const res = await axios.delete(
         `${BASE_URL}/delete-food/${menuid}/${foodid}`,

@@ -121,9 +121,12 @@ async function deleteFood(req, res) {
     if(!foodItem){
       return res.json("foodItem not found")
     }
-    foodItem.findByIdAndDelete(foodid);
-    await menu.save();
-    res.status(200).json({msg:"Food deleted successfully"})
+  
+    menu.food.pull({ _id: foodid });  
+    await menu.save();  
+
+    res.status(200).json({ msg: "Food deleted successfully" });
+
   } catch (error) {
     res.status(500).json({msg:"Error while deleting food",error:error.message})
   }
