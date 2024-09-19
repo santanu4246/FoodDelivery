@@ -9,11 +9,11 @@ const NewAddFood = ({ onClose, MenuId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Create the updated food data object
+  
     const updatedFoodData = {
       title,
       description,
-      price: parseFloat(price), // Ensure price is a number
+      price: parseFloat(price),
       isVegetarian,
     };
 
@@ -21,20 +21,20 @@ const NewAddFood = ({ onClose, MenuId }) => {
 
     
     await addFood(updatedFoodData,MenuId)
-    // Clear form fields and close the form
+
     setTitle("");
     setDescription("");
     setPrice("");
     setIsVegetarian(false);
-    onClose(); // Close the modal
+    onClose(); 
   };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-[400px]">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-[400px] text-black">
         <h2 className="text-2xl font-bold mb-4">Add New Food</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4 ">
             <label className="block text-gray-700 font-semibold mb-2">
               Title
             </label>
@@ -55,7 +55,7 @@ const NewAddFood = ({ onClose, MenuId }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+              
             />
           </div>
 
