@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import UpdateFood from "./UpdateFood";
 import { useMenu } from "../../../store/Menu";
+import DeleteFood from "./DeleteFood";
 
 function EditFood() {
   const [selectedFood, setSelectedFood] = useState(null);
+  const [deleteClick, setDeleteClick] = useState(false);
+  const [foodToDelete, setFoodToDelete] = useState(null); // Track which food to delete
 
   const handleUpdateClick = (food, menuid) => {
     food.menuid = menuid;
@@ -21,6 +24,11 @@ function EditFood() {
       getMenu(restuid);
     }
   }, [getMenu]);
+
+  const handleDeleteClick = (food) => {
+    setFoodToDelete(food); // Set food to delete
+    setDeleteClick(true);  // Show DeleteFood component
+  };
 
   return (
     <div className="text-black min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex flex-col items-center p-6">
@@ -60,7 +68,10 @@ function EditFood() {
                   >
                     Update
                   </button>
-                  <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all">
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-all"
+                    onClick={() => handleDeleteClick(food)} // Attach deleteClick handler
+                  >
                     Delete
                   </button>
                 </div>
@@ -69,7 +80,15 @@ function EditFood() {
           </div>
         </div>
       ))}
-
+      {
+        deleteClick &&  (
+            <DeleteFood foodName={foodToDelete.name} onDelete={() => {
+              console.log(`${foodToDelete.name} deleted`);
+              setDeleteClick(false);
+              setFoodToDelete(null);
+            }} />
+        )
+      }
       {selectedFood && (
         <UpdateFood food={selectedFood} onClose={closeUpdateForm} />
       )}

@@ -2,6 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 import { toast } from "react-toastify";
 
+
 const BASE_URL = import.meta.env.VITE_BASE_URL; // Ensure VITE_BASE_URL is properly set in your environment
 
 // Get restaurant ID from local storage
@@ -48,5 +49,15 @@ export const useMenu = create((set) => ({
     } catch (error) {
       console.error(error);
     }
-  }
+  },
+  deleteFood: async (menuid, foodid) => {
+    try {
+      const res = await axios.delete(
+        `${BASE_URL}/delete-food/${menuid}/${foodid}`,
+      );
+      toast.success(res.data.msg);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 }));
