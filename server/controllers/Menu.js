@@ -97,13 +97,51 @@ async function updateFood(req, res) {
 
     await menu.save();
 
-    res.status(200).json({msg: "Food updated successfully",food: foodItem,});
+    res.status(200).json({ msg: "Food updated successfully", food: foodItem });
   } catch (error) {
     console.log("Error in updateFood:", error.message);
     res.status(500).json({
       msg: "Error while updating food",
       error: error.message,
     });
+  }
+}
+async function addFood(req, res) {
+  const { menuid } = req.params;
+  const { title, description, price, isVegetarian } = req.body;
+  
+  console.log("Data:", {
+    title,
+    description,
+    price,
+    isVegetarian,
+    menuid,
+  });
+
+  try {
+    const menu = await MenuModel.findById(menuid);
+
+    if (!menu) {
+      return res.status(404).json({ msg: "Menu not found" });
+    }
+
+    
+    const newFood = {
+      name: title,
+      description: description,
+      price: price,
+      veg: isVegetarian,
+    };
+
+ 
+    menu.food.push(newFood);
+
+
+    await menu.save();
+
+    res.status(200).json({ msg: "Food added successfully", food: newFood });
+  } catch (error) {
+    res.status(500).json({ msg: "Error while adding food", error: error.message });
   }
 }
 
@@ -129,4 +167,4 @@ async function deleteFood(req, res) {
       .json({ msg: "Error while deleting food", error: error.message });
   }
 }
-export { addmenu, deletemenu, getmenu, updateFood, deleteFood };
+export { addmenu, deletemenu, getmenu, updateFood, deleteFood,addFood };

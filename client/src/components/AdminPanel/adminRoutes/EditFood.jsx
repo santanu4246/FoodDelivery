@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import UpdateFood from "./UpdateFood";
 import { useMenu } from "../../../store/Menu";
 import DeleteFood from "./DeleteFood";
+import NewAddFood from "./NewAddFood";
 
 function EditFood() {
   const [selectedFood, setSelectedFood] = useState(null);
   const [deleteClick, setDeleteClick] = useState(false);
   const [foodToDelete, setFoodToDelete] = useState(null); // Track which food to delete
-
+  const [addfood, setaddfood] = useState(false)
+  const [MenuId, setMenuId] = useState('')
   const handleUpdateClick = (food, menuid) => {
     food.menuid = menuid;
     setSelectedFood(food);
@@ -35,6 +37,10 @@ function EditFood() {
     await deleteMenu(menuid);
   };
 
+  const handelAddFood = (menuid) => {
+    setaddfood(true)
+    setMenuId(menuid)
+  }
   return (
     <div className="text-gray-900 min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 flex flex-col items-center p-8">
       {menuList.map((item) => (
@@ -49,6 +55,7 @@ function EditFood() {
             >
               Delete Menu
             </button>
+            <button onClick={()=>handelAddFood(item._id)}>Add Food</button>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             {item.food.map((food) => (
@@ -70,7 +77,7 @@ function EditFood() {
                   </h2>
                   <p className="text-gray-500 mt-2">{food.description}</p>
                   <p className="text-green-500 mt-2 font-semibold">
-                    ₹ {food.price}
+                    ₹{food.price}
                   </p>
                 </div>
 
@@ -108,6 +115,12 @@ function EditFood() {
       {selectedFood && (
         <UpdateFood food={selectedFood} onClose={closeUpdateForm} />
       )}
+
+      {
+        addfood && (
+          <NewAddFood onClose={() => setaddfood(false)} MenuId={MenuId}/>
+        )
+      }
     </div>
   );
 }

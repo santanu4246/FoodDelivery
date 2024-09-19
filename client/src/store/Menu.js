@@ -70,5 +70,16 @@ export const useMenu = create((set) => ({
       console.error(error);
       throw error;
     }
-  }
+  },
+  addFood: async (formData, menuid) => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/add-food/${menuid}`,
+        formData,
+      );
+      toast.success(res.data.msg);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 }));
