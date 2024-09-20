@@ -11,7 +11,7 @@ const Login = ({ setlogin }) => {
   const [isNameBox, setIsNameBox] = useState(false);
   const otpInputRefs = useRef([]);
 
-  const { sendotp, verifyOtp, createUser } = UserAuth();
+  const { sendotp, verifyOtp, createUser, logout } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {

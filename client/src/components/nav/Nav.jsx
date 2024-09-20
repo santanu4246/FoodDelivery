@@ -9,7 +9,7 @@ const Nav = () => {
   const handleClick = () => {
     setLocationVisible((prev) => !prev);
   };
-  const { user } = UserAuth();
+  const { user, logout } = UserAuth();
 
   return (
     <div className="flex flex-col">
@@ -29,7 +29,12 @@ const Nav = () => {
             </div>
           </div>
           {user !== null ? (
-            <button className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300">
+            <button
+              onClick={async () => {
+                await logout();
+              }}
+              className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
+            >
               Logout
             </button>
           ) : (

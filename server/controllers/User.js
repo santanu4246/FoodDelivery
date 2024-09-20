@@ -106,4 +106,14 @@ async function createuser(req, res) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
-export { SendOtp, VerifyOtp, createuser };
+async function logout(req, res) {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Logout failed" });
+  }
+}
+
+export { SendOtp, VerifyOtp, createuser, logout };

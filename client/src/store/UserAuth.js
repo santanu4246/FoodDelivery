@@ -45,6 +45,15 @@ export const UserAuth = create(
         } catch (error) {
           console.log(error);
         }
+      },
+      logout: async () => {
+        try {
+          const res = await axios.post(`${BASE_URL}/logout`);
+          set({ user: null });
+          return res.data;
+        } catch (error) {
+          console.log(error);
+        }
       }
     }),
     {
