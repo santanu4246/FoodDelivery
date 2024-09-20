@@ -34,7 +34,7 @@ async function VerifyOtp(req, res) {
     if (otpData.otp !== otp) {
       return res.status(400).json({ msg: "Invalid OTP" });
     }
-    const existingUser =await UserModel.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       const token = jwt.sign(
         {
@@ -70,4 +70,40 @@ async function VerifyOtp(req, res) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
-export { SendOtp, VerifyOtp };
+
+async function createuser(req, res) {
+  const { email, name } = req.body;
+  try {
+    const existingUser = await UserModel.findOne({ email });
+    if (!existingUser) {
+      const newUser = new UserModel({ email, name });
+      await newUser.save();
+      const token = jwt.sign(
+        {
+          id: newUser._id,
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "30d" }
+      );
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true,
+        sameSite: "None"
+      });
+
+      return res.status(200).json({
+        message: "Otp verified successfully",
+        user: newUser
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+export { SendOtp, VerifyOtp, createuser };

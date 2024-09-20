@@ -27,5 +27,17 @@ export const UserAuth = create((set) => ({
     } catch (error) {
       console.log(error);
     }
+  },
+  createUser: async (email, name) => {
+    try {
+      const res = await axios.post(`${BASE_URL}/createuser`, {
+        email,
+        name
+      });
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }));

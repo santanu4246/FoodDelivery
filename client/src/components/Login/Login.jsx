@@ -7,9 +7,11 @@ const Login = ({ setlogin }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [otpId, setOtpId] = useState("");
+  const [name, setName] = useState("");
+  const [isNameBox, setIsNameBox] = useState(false);
   const otpInputRefs = useRef([]);
 
-  const { sendotp, verifyOtp } = UserAuth();
+  const { sendotp, verifyOtp, createUser } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {
@@ -45,6 +47,9 @@ const Login = ({ setlogin }) => {
     const enteredOtp = otp.join("");
     if (enteredOtp.length === 4) {
       const res = await verifyOtp(email, otpId, enteredOtp);
+      if (res.isExisting === false) {
+        setIsNameBox(true);
+      }
     } else {
       alert("Please enter the complete OTP.");
     }
@@ -66,6 +71,32 @@ const Login = ({ setlogin }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
       <div className="bg-white p-[1.5rem] rounded-lg shadow-md w-96 relative">
+        {isNameBox && (
+          <div className="bg-red-500 fixed top-0 right-0 w-64 p-4 shadow-lg rounded-lg">
+            <label
+              htmlFor="namexxx"
+              className="block text-white font-bold mb-2"
+            >
+              Enter your name
+            </label>
+            <input
+              id="namexxx"
+              type="text"
+              className="w-full px-3 py-2 mb-4 text-gray-700 bg-white rounded border border-gray-300 focus:outline-none focus:border-red-700"
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
+            <button
+              onClick={async () => {
+                await createUser(email, name);
+                setIsNameBox(false);
+              }}
+              className="w-full bg-white text-red-500 font-semibold py-2 rounded hover:bg-red-700 hover:text-white transition duration-300 ease-in-out"
+            >
+              Submit
+            </button>
+          </div>
+        )}
         <button
           onClick={handleClose}
           className="absolute top-[15px] right-[15px] text-gray-500 hover:text-gray-800"
