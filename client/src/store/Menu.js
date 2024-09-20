@@ -6,7 +6,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL; // Ensure VITE_BASE_URL is prope
 
 // Get restaurant ID from local storage
 
-export const useMenu = create((set) => ({
+export const useMenu = create((set, get) => ({
   menu: [],
   menuList: [],
   cart: [],
@@ -78,9 +78,11 @@ export const useMenu = create((set) => ({
       console.error(error);
     }
   },
-  addToCart: async (food) => {
+  addToCart: async (food, menuid) => {
     set((state) => ({
       cart: [...state.cart, food]
     }));
+    const cart = get().cart;
+    console.log(cart);
   }
 }));
