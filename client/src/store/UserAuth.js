@@ -9,10 +9,10 @@ export const UserAuth = create((set) => ({
   user: null,
   sendotp: async (email) => {
     try {
-        axios.post(`${BASE_URL}/sendotp`, { email });
+      const res = await axios.post(`${BASE_URL}/sendotp`, { email });
+      return res.data.OtpId;
     } catch (error) {
-        console.log(error);
-        
+      console.log(error);
     }
   }
 }));
