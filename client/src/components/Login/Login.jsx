@@ -1,15 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
-const Login = ({setlogin}) => {
-  const [email, setEmail] = useState('');
+import { UserAuth } from "../../store/UserAuth";
+const Login = ({ setlogin }) => {
+  const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState(new Array(4).fill(''));
+  const [otp, setOtp] = useState(new Array(4).fill(""));
   const otpInputRefs = useRef([]);
 
-  const handleSendOtp = () => {
+  const { sendotp } = UserAuth();
+
+  const handleSendOtp = async () => {
     if (email) {
-      console.log("OTP sent to:", email);
+      await sendotp(email);
       setOtpSent(true);
     } else {
       alert("Please enter a valid email.");
@@ -29,18 +32,18 @@ const Login = ({setlogin}) => {
   };
 
   const handleOtpKeyDown = (e, index) => {
-    if (e.key === 'Backspace') {
-      if (index > 0 && otp[index] === '') {
+    if (e.key === "Backspace") {
+      if (index > 0 && otp[index] === "") {
         otpInputRefs.current[index - 1]?.focus();
       }
     }
   };
 
   const handleOtpSubmit = () => {
-    const enteredOtp = otp.join('');
+    const enteredOtp = otp.join("");
     if (enteredOtp.length === 4) {
       console.log("Entered OTP:", enteredOtp);
-      alert('OTP Verified');
+      alert("OTP Verified");
     } else {
       alert("Please enter the complete OTP.");
     }
@@ -49,13 +52,13 @@ const Login = ({setlogin}) => {
   const handleClose = () => {
     setOtpSent(false);
     setlogin(false);
-    setEmail('');
-    setOtp(new Array(4).fill(''));
+    setEmail("");
+    setOtp(new Array(4).fill(""));
   };
 
   const handleUndo = () => {
     setOtpSent(false);
-    setOtp(new Array(4).fill(''));
+    setOtp(new Array(4).fill(""));
     otpInputRefs.current[0]?.focus(); // Focus on the first input
   };
 
@@ -67,14 +70,16 @@ const Login = ({setlogin}) => {
           className="absolute top-[15px] right-[15px] text-gray-500 hover:text-gray-800"
           title="Close"
         >
-          <RxCross1 className='text-[20px]'/>
+          <RxCross1 className="text-[20px]" />
         </button>
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        
+
         {!otpSent ? (
           <>
             <div className="mb-[1rem]">
-              <label htmlFor="email" className="block font-[600] mb-2">Email</label>
+              <label htmlFor="email" className="block font-[600] mb-2">
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -95,7 +100,9 @@ const Login = ({setlogin}) => {
         ) : (
           <>
             <div className="mb-4">
-              <label htmlFor="otp" className="block font-[600] mb-2">Enter OTP</label>
+              <label htmlFor="otp" className="block font-[600] mb-2">
+                Enter OTP
+              </label>
               <div className="flex justify-between">
                 {otp.map((_, index) => (
                   <input
@@ -106,7 +113,7 @@ const Login = ({setlogin}) => {
                     value={otp[index]}
                     onChange={(e) => handleOtpChange(e.target, index)}
                     onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                    ref={(el) => otpInputRefs.current[index] = el}
+                    ref={(el) => (otpInputRefs.current[index] = el)}
                   />
                 ))}
               </div>

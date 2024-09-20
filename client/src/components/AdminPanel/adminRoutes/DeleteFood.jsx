@@ -7,6 +7,7 @@ const DeleteFood = ({ food, onDelete }) => {
     console.log(food.menuid, food._id);
 
     await deleteFood(food.menuid, food._id);
+    
     const restrurantID = localStorage.getItem("restrurantID");
     await getMenu(restrurantID);
   };
