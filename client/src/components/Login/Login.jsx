@@ -6,13 +6,15 @@ const Login = ({ setlogin }) => {
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(new Array(4).fill(""));
+  const [otpId, setOtpId] = useState("");
   const otpInputRefs = useRef([]);
 
-  const { sendotp } = UserAuth();
+  const { sendotp,verifyOtp } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {
-      await sendotp(email);
+      const res = await sendotp(email);
+      setOtpId(res);
       setOtpSent(true);
     } else {
       alert("Please enter a valid email.");
@@ -39,11 +41,12 @@ const Login = ({ setlogin }) => {
     }
   };
 
-  const handleOtpSubmit = () => {
+  const handleOtpSubmit = async() => {
     const enteredOtp = otp.join("");
     if (enteredOtp.length === 4) {
-      console.log("Entered OTP:", enteredOtp);
-      alert("OTP Verified");
+      const res = await verifyOtp(email,otpId,otp);
+      console.log(res);
+      
     } else {
       alert("Please enter the complete OTP.");
     }

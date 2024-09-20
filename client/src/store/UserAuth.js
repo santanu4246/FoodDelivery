@@ -14,5 +14,13 @@ export const UserAuth = create((set) => ({
     } catch (error) {
       console.log(error);
     }
+  },
+  verifyOtp: async (otpid, otp) => {
+    try {
+      const res = await axios.post(`${BASE_URL}/verifyotp`, { email,otpid,otp });
+      return res.data.OtpId;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }));

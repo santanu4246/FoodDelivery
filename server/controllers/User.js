@@ -3,7 +3,6 @@ import mailSender from "../utils/Nodemailer.js";
 import otpModel from "../models/OtpModel.js";
 async function SendOtp(req, res) {
   const { email } = req.body;
-  console.log(email);
 
   try {
     const otp = generateOtp(4);
