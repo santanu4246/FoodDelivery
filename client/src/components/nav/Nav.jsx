@@ -34,7 +34,7 @@ const Nav = () => {
           </button>
         </div>
       </nav>
-      {login && <Login setlogin={setlogin}/>}
+      {login && <Login setlogin={setlogin} />}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
     </div>
   );

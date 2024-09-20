@@ -9,7 +9,7 @@ const Login = ({ setlogin }) => {
   const [otpId, setOtpId] = useState("");
   const otpInputRefs = useRef([]);
 
-  const { sendotp,verifyOtp } = UserAuth();
+  const { sendotp, verifyOtp } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {
@@ -41,12 +41,10 @@ const Login = ({ setlogin }) => {
     }
   };
 
-  const handleOtpSubmit = async() => {
+  const handleOtpSubmit = async () => {
     const enteredOtp = otp.join("");
     if (enteredOtp.length === 4) {
-      const res = await verifyOtp(email,otpId,otp);
-      console.log(res);
-      
+      const res = await verifyOtp(email, otpId, enteredOtp);
     } else {
       alert("Please enter the complete OTP.");
     }
