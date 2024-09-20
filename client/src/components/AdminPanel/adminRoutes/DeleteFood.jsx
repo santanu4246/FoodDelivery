@@ -1,29 +1,33 @@
-import React from 'react';
-import { useMenu } from '../../../store/Menu';
+import React from "react";
+import { useMenu } from "../../../store/Menu";
 const DeleteFood = ({ food, onDelete }) => {
-    const {deleteFood} = useMenu()
+  const { deleteFood, getMenu } = useMenu();
   const handleDelete = async () => {
     onDelete(food.name);
-    console.log(food.menuid,food._id);
-    
-     await deleteFood(food.menuid,food._id);
+    console.log(food.menuid, food._id);
+
+    await deleteFood(food.menuid, food._id);
+    const restrurantID = localStorage.getItem("restrurantID");
+    await getMenu(restrurantID);
   };
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      onDelete(null); 
+      onDelete(null);
     }
   };
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-      onClick={handleOverlayClick} 
+      onClick={handleOverlayClick}
       aria-hidden="true"
     >
       <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg text-center">
         <h2 className="text-xl font-semibold mb-4">Delete {food.name}?</h2>
-        <p className="text-gray-600 mb-6">Are you sure you want to delete this item?</p>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete this item?
+        </p>
         <div className="flex justify-center gap-4">
           <button
             className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg"
