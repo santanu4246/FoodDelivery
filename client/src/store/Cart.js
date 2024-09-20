@@ -12,14 +12,11 @@ const useCart = create(
       // Add item function
       addItem: (item) => {
         set((state) => {
-          // Check if the item already exists in the cart
           const existingItem = state.cart.find((cartItem) => cartItem._id === item._id);
-          
           if (existingItem) {
-            // If item exists, increase its quantity
             return {
               cart: state.cart.map((cartItem) =>
-                cartitem._id === item._id
+                cartItem._id === item._id
                   ? { ...cartItem, quantity: cartItem.quantity + 1 }
                   : cartItem
               ),
@@ -27,9 +24,8 @@ const useCart = create(
               totalItems: state.totalItems + 1,
             };
           } else {
-            // If item does not exist, add it to the cart
             return {
-              cart: [...state.cart, { ...item, quantity: 1 }], // Add item with quantity = 1
+              cart: [...state.cart, { ...item, quantity: 1 }], 
               total: state.total + item.price,
               totalItems: state.totalItems + 1,
             };

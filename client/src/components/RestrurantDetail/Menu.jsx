@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useMenu } from "../../store/Menu";
+import { useNavigate } from "react-router-dom";
 import useCart from "../../store/Cart";
 
 const Menu = ({ menu }) => {
+  const navigate = useNavigate();
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
   useEffect(() => {
     if (menu && menu.length > 0) {
@@ -12,7 +13,9 @@ const Menu = ({ menu }) => {
   const handleTitleClick = (index) => {
     setSelectedMenuIndex(index);
   };
-
+const handelClick = (index) => {
+  navigate('/cart')
+}
   const currentMenu = menu?.[selectedMenuIndex];
 
   const { addItem } = useCart();
@@ -68,7 +71,8 @@ const Menu = ({ menu }) => {
                       {/* Display the price */}
                       <button
                         onClick={async () => {
-                          await addItem(vegItem, currentMenu._id);
+                          handelClick()
+                          await addItem(vegItem, currentMenu._id)
                         }}
                         className="px-[20px] text-[15px] ml-[10px] bg-[green] text-white rounded-[5px]"
                       >

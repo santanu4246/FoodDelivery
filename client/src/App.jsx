@@ -33,7 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/restrurant/:id" element={<RestrurantData />} />
         <Route path="/admin/*" element={<Admin />} />
-        <Route path="/Cart" element={<Cart />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
       <ToastContainer />
