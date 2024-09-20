@@ -23,7 +23,10 @@ const CartItem = ({name, price, quantity, increment, decrement }) => {
           <span className="text-lg font-semibold">{quantity}</span>
           <button
             onClick={increment}
-            className="flex items-center justify-center p-2 bg-green-500 hover:bg-green-600 text-white rounded-full transition"
+            className={`flex items-center justify-center p-2 rounded-full transition text-white ${
+              quantity === 10 ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+            }`}
+            disabled={quantity === 10}
           >
             <FaPlus />
           </button>

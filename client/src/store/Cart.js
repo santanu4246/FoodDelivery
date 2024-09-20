@@ -13,26 +13,36 @@ const useCart = create(
       addItem: (item) => {
         set((state) => {
           const existingItem = state.cart.find((cartItem) => cartItem._id === item._id);
+      
           if (existingItem) {
+            // Check if the current quantity is already at or above 10
+            if (existingItem.quantity >= 10) {
+              return state; // Return the current state if quantity is at maximum
+            }
+      
             return {
               cart: state.cart.map((cartItem) =>
                 cartItem._id === item._id
-                  ? { ...cartItem, quantity: cartItem.quantity + 1 }
+                  ? {
+                      ...cartItem,
+                      quantity: cartItem.quantity + 1 > 10 ? 10 : cartItem.quantity + 1, // Cap at 10
+                    }
                   : cartItem
               ),
-              total: state.total + item.price,
-              totalItems: state.totalItems + 1,
+              total: state.total + (existingItem.quantity < 10 ? item.price : 0), // Only add price if under 10
+              totalItems: state.totalItems + (existingItem.quantity < 10 ? 1 : 0), // Only increase total items if under 10
             };
           } else {
+            // Add new item if not already in the cart
             return {
-              cart: [...state.cart, { ...item, quantity: 1 }], 
+              cart: [...state.cart, { ...item, quantity: 1 }],
               total: state.total + item.price,
               totalItems: state.totalItems + 1,
             };
           }
         });
       },
-
+      
       // Remove item function
       removeItem: (itemId) => {
         set((state) => {
@@ -53,21 +63,24 @@ const useCart = create(
       // Increment item quantity
       incrementQuantity: (itemId) => {
         set((state) => {
-          const itemToUpdate = state.cart.find((item) => item._id === itemId);
-
+          const itemToUpdate = state.cart.find((item) => item._id === itemId); // Assuming 'id' instead of '_id'
+      
           if (!itemToUpdate) {
             return state;
           }
-
+      
           return {
             cart: state.cart.map((item) =>
-              item._id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+              item._id === itemId
+                ? { ...item, quantity: item.quantity > 10 ? 10 : item.quantity + 1 }
+                : item
             ),
-            total: state.total + itemToUpdate.price,
-            totalItems: state.totalItems + 1,
+            total: state.total + (itemToUpdate.quantity < 10 ? itemToUpdate.price : 0), // Only add to total if quantity < 10
+            totalItems: state.totalItems + (itemToUpdate.quantity < 10 ? 1 : 0), // Only increase total items if quantity < 10
           };
-        });
+        })
       },
+      
 
       // Decrement item quantity
       decrementQuantity: (itemId) => {
