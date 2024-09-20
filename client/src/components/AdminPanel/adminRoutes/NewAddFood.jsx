@@ -5,28 +5,28 @@ const NewAddFood = ({ onClose, MenuId }) => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [isVegetarian, setIsVegetarian] = useState(false);
-    const {addFood} = useMenu()
+  const { addFood, getMenu } = useMenu();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-  
+
     const updatedFoodData = {
       title,
       description,
       price: parseFloat(price),
-      isVegetarian,
+      isVegetarian
     };
 
     console.log("New Food Added: ", updatedFoodData);
 
-    
-    await addFood(updatedFoodData,MenuId)
+    await addFood(updatedFoodData, MenuId);
+    const restrurantID = localStorage.getItem("restrurantID");
+    await getMenu(restrurantID);
 
     setTitle("");
     setDescription("");
     setPrice("");
     setIsVegetarian(false);
-    onClose(); 
+    onClose();
   };
 
   return (
@@ -55,7 +55,6 @@ const NewAddFood = ({ onClose, MenuId }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              
             />
           </div>
 

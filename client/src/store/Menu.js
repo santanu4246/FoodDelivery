@@ -76,6 +76,5 @@ export const useMenu = create((set, get) => ({
     } catch (error) {
       console.error(error);
     }
-  },
-
+  }
 }));
