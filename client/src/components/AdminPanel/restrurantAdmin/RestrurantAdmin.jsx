@@ -4,7 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "../../Dashboard/Dashboard.jsx";
 import AddFood from "../adminRoutes/AddFood.jsx";
 import EditFood from "../adminRoutes/EditFood";
-import Food from "../adminRoutes/Food";
+import AddFooditems from "../adminRoutes/AddFooditems.jsx";
 import RestrurantDetail from "../adminRoutes/RestrurantDetail";
 import { useAdminAuthentication } from "../../../store/Authentication.js";
 
@@ -22,7 +22,7 @@ const routesOfAdmin = [
   { name: "Dashboard", path: "" },
   { name: "Add Food", path: "/addfood" },
   { name: "Edit Food", path: "/editfood" },
-  { name: "Food", path: "/food" },
+  { name: "AddFooditems", path: "/adddFooditems" },
   { name: "Restrurant Detail", path: "/restrurantdetail" }
 ];
 
@@ -76,7 +76,7 @@ function RestrurantAdmin() {
           />
           <Route path="/addfood" element={<AddFood />} />
           <Route path="/editfood" element={<EditFood />} />
-          <Route path="/food" element={<Food />} />
+          <Route path="/adddFooditems" element={<AddFooditems />} />
           <Route path="/restrurantdetail" element={<RestrurantDetail />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>

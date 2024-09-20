@@ -3,28 +3,10 @@ import { useMenu } from "../../../store/Menu";
 import { toast } from "react-toastify";
 function AddFood() {
   const [title, setTitle] = useState(""); 
-  const [foodName, setFoodName] = useState(""); 
-  const [price, setPrice] = useState(""); 
-  const [isVegetarian, setIsVegetarian] = useState(false); 
-  const [foodItems, setFoodItems] = useState([]); 
+ 
   // const [foodImage, setFoodImage] = useState(null); 
   const { addMenu } = useMenu();  // Fetching addMenu from store
 
-  const addFoodItem = () => {
-    const newFoodItem = {
-      name: foodName,
-      price: parseFloat(price),
-      veg: isVegetarian,
-      // image: foodImage, 
-    };
-    setFoodItems([...foodItems, newFoodItem]);
-
-    // Clear inputs
-    setFoodName("");
-    setPrice("");
-    setIsVegetarian(false);
-    // setFoodImage(null);
-  };
 
   // const handleFoodImageChange = (e) => {
   //   setFoodImage(e.target.files[0]); 
@@ -45,7 +27,7 @@ function AddFood() {
     // });
 
     try {
-      await addMenu(title, foodItems);  
+      await addMenu(title);
       toast.success("Menu submitted successfully!");
     } catch (error) {
       console.log(error);
@@ -78,75 +60,6 @@ function AddFood() {
               required
             />
           </div>
-
-          {/* Adding food items */}
-          <div className="flex flex-col">
-            <label htmlFor="foodName" className="text-black text-[18px] font-bold mb-2">
-              Food Item Name
-            </label>
-            <input
-              type="text"
-              id="foodName"
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
-              value={foodName}
-              onChange={(e) => setFoodName(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="price" className="text-black text-[18px] font-bold mb-2">
-              Price
-            </label>
-            <input
-              type="number"
-              id="price"
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isVegetarian"
-              className="mr-2"
-              checked={isVegetarian}
-              onChange={(e) => setIsVegetarian(e.target.checked)}
-            />
-            <label htmlFor="isVegetarian" className="text-black text-[18px] font-bold mb-2">
-              Vegetarian
-            </label>
-          </div>
-
-          {/* Upload food item image */}
-          {/* <div className="flex flex-col">
-            <label htmlFor="foodImage" className="text-black text-[18px] font-bold mb-2">
-              Food Item Image
-            </label>
-            <input
-              type="file"
-              id="foodImage"
-              className="border-2 border-gray-300 p-2 rounded-md"
-              onChange={handleFoodImageChange}
-            />
-          </div> */}
-
-          <button
-            type="button"
-            onClick={addFoodItem} 
-            className="bg-blue-500 text-white p-2 rounded-md font-bold w-full"
-          >
-            Add Food Item
-          </button>
-
-          <ul className="list-disc pl-5">
-            {foodItems.map((item, index) => (
-              <li key={index} className="text-black">
-                {item.name} - ${item.price} - {item.veg ? "Vegetarian" : "Non-Vegetarian"}
-              </li>
-            ))}
-          </ul>
 
           <button
             type="submit"

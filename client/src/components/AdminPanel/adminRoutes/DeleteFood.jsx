@@ -1,20 +1,20 @@
 import React from "react";
 import { useMenu } from "../../../store/Menu";
+
 const DeleteFood = ({ food, onDelete }) => {
   const { deleteFood, getMenu } = useMenu();
-  const handleDelete = async () => {
-    onDelete(food.name);
-    console.log(food.menuid, food._id);
 
+  const handleDelete = async () => {
     await deleteFood(food.menuid, food._id);
-    
+
     const restrurantID = localStorage.getItem("restrurantID");
-    await getMenu(restrurantID);
+    await getMenu(restrurantID); // Refetch menu after deletion
+    onDelete();
   };
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      onDelete(null);
+      onDelete();
     }
   };
 
@@ -34,13 +34,13 @@ const DeleteFood = ({ food, onDelete }) => {
             className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg"
             onClick={handleDelete}
           >
-            Delete
+            Yes, Delete
           </button>
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded-lg"
-            onClick={() => onDelete(null)}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg"
+            onClick={onDelete}
           >
-            Cancel
+            No, Cancel
           </button>
         </div>
       </div>

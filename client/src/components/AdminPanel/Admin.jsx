@@ -1,26 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Dashboard from "../Dashboard/Dashboard";
-import AddFood from "./adminRoutes/AddFood";
-import EditFood from "./adminRoutes/EditFood";
-import Food from "./adminRoutes/Food";
-import RestrurantDetail from "./adminRoutes/RestrurantDetail";
 import AdminLogin from "./adminRoutes/AdminLogin";
 import { useAdminAuthentication } from "../../store/Authentication.js";
 import MasterAdmin from "./masteradmin/MasterAdmin.jsx";
 import RestrurantAdmin from "./restrurantAdmin/RestrurantAdmin.jsx";
-
-const routesOfAdmin = [
-  { name: "Dashboard", path: "" },
-  { name: "Add Food", path: "/addfood" },
-  { name: "Edit Food", path: "/editfood" },
-  { name: "Food", path: "/food" },
-  { name: "Restrurant Detail", path: "/restrurantdetail" }
-];
-
-
-
 const Admin = () => {
   const location = useLocation();
   const path = location.pathname;

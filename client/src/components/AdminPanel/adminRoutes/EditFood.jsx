@@ -8,11 +8,11 @@ function EditFood() {
   const [selectedFood, setSelectedFood] = useState(null);
   const [deleteClick, setDeleteClick] = useState(false);
   const [foodToDelete, setFoodToDelete] = useState(null);
-  const [addfood, setaddfood] = useState(false);
-  const [MenuId, setMenuId] = useState("");
+  const [addFood, setAddFood] = useState(false);
+  const [menuId, setMenuId] = useState("");
 
-  const handleUpdateClick = (food, menuid) => {
-    food.menuid = menuid;
+  const handleUpdateClick = (food, menuId) => {
+    food.menuId = menuId;
     setSelectedFood(food);
   };
 
@@ -21,7 +21,8 @@ function EditFood() {
   };
 
   const { getMenu, menuList, deleteMenu } = useMenu();
-
+  console.log(menuList);
+  
   useEffect(() => {
     const restuid = localStorage.getItem("restrurantID");
     if (restuid) {
@@ -29,26 +30,26 @@ function EditFood() {
     }
   }, [getMenu]);
 
-  const handleDeleteClick = (food, menuid) => {
-    food.menuid = menuid;
+  const handleDeleteClick = (food, menuId) => {
+    food.menuId = menuId;
     setFoodToDelete(food);
     setDeleteClick(true);
   };
 
-  const deletemenu = async (menuid) => {
-    await deleteMenu(menuid);
+  const deletemenu = async (menuId) => {
+    await deleteMenu(menuId);
   };
 
-  const handelAddFood = (menuid) => {
-    setaddfood(true);
-    setMenuId(menuid);
+  const handleAddFood = (menuId) => {
+    setAddFood(true);
+    setMenuId(menuId);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-100 flex flex-col items-center p-8">
       {menuList.map((item) => (
         <div
-          key={`${item._id}-${item.name}`}
+          key={item._id}
           className="w-full bg-white rounded-lg shadow-lg p-6 mb-8"
         >
           <h1 className="text-3xl font-bold text-center text-indigo-900 mb-4">
@@ -62,7 +63,7 @@ function EditFood() {
               Delete Menu
             </button>
             <button
-              onClick={() => handelAddFood(item._id)}
+              onClick={() => handleAddFood(item._id)}
               className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               Add Food
@@ -72,7 +73,7 @@ function EditFood() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {item.food.map((food) => (
               <div
-                key={`${food.id}-${food.name}`}
+                key={food._id}
                 className="bg-indigo-50 p-6 rounded-lg shadow-md flex flex-col justify-between transition-transform transform hover:scale-105"
               >
                 <div className="text-center">
@@ -109,7 +110,6 @@ function EditFood() {
         <DeleteFood
           food={foodToDelete}
           onDelete={() => {
-            console.log(`${foodToDelete.name} deleted`);
             setDeleteClick(false);
             setFoodToDelete(null);
           }}
@@ -120,8 +120,8 @@ function EditFood() {
         <UpdateFood food={selectedFood} onClose={closeUpdateForm} />
       )}
 
-      {addfood && (
-        <NewAddFood onClose={() => setaddfood(false)} MenuId={MenuId} />
+      {addFood && (
+        <NewAddFood onClose={() => setAddFood(false)} menuId={menuId} />
       )}
     </div>
   );

@@ -8,6 +8,7 @@ import RestrudentRouter from "./routes/RestrudentRoutes.js";
 import AdminRouter from "./routes/AdminRouter.js";
 import MenuRouter from "./routes/MenuRouter.js";
 import userRouter from "./routes/UserRoutes.js";
+import FoodRouter from "./routes/FoodRoutes.js";
 const app = express();
 dotenv.config();
 
@@ -27,7 +28,9 @@ app.use("/", AdminRouter);
 app.use("/", FoodCategoryRouter);
 app.use("/", RestrudentRouter);
 app.use('/',MenuRouter)
+app.use('/',FoodRouter)
 app.use('/',userRouter)
+
 mongoose
   .connect(MONGO_URL)
   .then(() => {

@@ -4,30 +4,21 @@ import { useMenu } from "../../../store/Menu";
 function UpdateFood({ food, onClose }) {
   const [title, setTitle] = useState(food.name);
   const [description, setDescription] = useState(food.description);
-  const [image, setImage] = useState(null); 
   const [price, setPrice] = useState(food.price || "");
   const [isVegetarian, setIsVegetarian] = useState(food.isVegetarian || false);
-
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  };
 
   const { updateFood } = useMenu();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(food._id, food.menuid);
-  
 
     const updatedFoodData = {
-      title,
+      name: title, // Update the key to match the backend
       description,
       price,
       isVegetarian,
     };
-  
-    console.log("Updated Food Data:", updatedFoodData);
-  
+
     await updateFood(updatedFoodData, food.menuid, food._id);
     onClose();
   };
@@ -35,13 +26,13 @@ function UpdateFood({ food, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] max-w-lg">
-        <h2 className="text-2xl font-bold mb-6 text-black">Update Food Item</h2>
+        <h2 className="text-2xl font-bold mb-6">Update Food Item</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col">
-            <label className="font-bold mb-2 text-black">Food Title</label>
+            <label className="font-bold mb-2">Food Title</label>
             <input
               type="text"
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
+              className="border-2 border-gray-300 p-2 rounded-md"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -49,31 +40,21 @@ function UpdateFood({ food, onClose }) {
           </div>
 
           <div className="flex flex-col">
-            <label className="font-bold mb-2 text-black">Description</label>
+            <label className="font-bold mb-2">Description</label>
             <textarea
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
+              className="border-2 border-gray-300 p-2 rounded-md"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              // required
             ></textarea>
           </div>
 
           <div className="flex flex-col">
-            <label className="font-bold mb-2 text-black">Price</label>
+            <label className="font-bold mb-2">Price</label>
             <input
               type="number"
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
+              className="border-2 border-gray-300 p-2 rounded-md"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="font-bold mb-2 text-black">Food Image</label>
-            <input
-              type="file"
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
-              onChange={handleImageChange}
             />
           </div>
 
@@ -84,7 +65,7 @@ function UpdateFood({ food, onClose }) {
               checked={isVegetarian}
               onChange={(e) => setIsVegetarian(e.target.checked)}
             />
-            <label className="font-bold text-black">Vegetarian</label>
+            <label className="font-bold">Vegetarian</label>
           </div>
 
           <div className="flex justify-between mt-6">
