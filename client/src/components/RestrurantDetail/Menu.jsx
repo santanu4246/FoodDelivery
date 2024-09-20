@@ -57,10 +57,13 @@ const Menu = ({ menu }) => {
                   .map((vegItem, idx) => (
                     <li
                       key={idx}
-                      className="text-lg text-gray-600 hover:text-gray-800 transition-colors"
+                      className="text-lg text-gray-600 hover:text-gray-800 flex justify-between gap-[10px] transition-colors"
                     >
                       {vegItem.name} - ₹{vegItem.price}{" "}
                       {/* Display the price */}
+                      <button className="px-[20px] text-[15px] ml-[10px] bg-[green] text-white rounded-[5px]">
+                        Add
+                      </button>
                     </li>
                   ))}
               </ul>
@@ -77,10 +80,13 @@ const Menu = ({ menu }) => {
                   .map((nonVegItem, idx) => (
                     <li
                       key={idx}
-                      className="text-lg text-gray-600 hover:text-gray-800 transition-colors"
+                      className="text-lg text-gray-600 hover:text-gray-800 flex justify-between transition-colors"
                     >
                       {nonVegItem.name} - ₹{nonVegItem.price}{" "}
                       {/* Display the price */}
+                      <button className="px-[20px] text-[15px] ml-[10px] bg-[green] text-white rounded-[5px]">
+                        Add
+                      </button>
                     </li>
                   ))}
               </ul>
