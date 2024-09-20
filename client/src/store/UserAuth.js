@@ -5,6 +5,6 @@ export const UserAuth = create ((set)=>{
     user: null;
 
     sendotp: async(email)=>{
-        axios.post('/sendotp',email)
+        axios.post(`${BASE_URL}/sendotp`,{email})
     }
 })
