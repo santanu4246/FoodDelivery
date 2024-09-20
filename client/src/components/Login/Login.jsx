@@ -49,6 +49,8 @@ const Login = ({ setlogin }) => {
       const res = await verifyOtp(email, otpId, enteredOtp);
       if (res.isExisting === false) {
         setIsNameBox(true);
+      } else {
+        handleClose();
       }
     } else {
       alert("Please enter the complete OTP.");
@@ -90,6 +92,7 @@ const Login = ({ setlogin }) => {
               onClick={async () => {
                 await createUser(email, name);
                 setIsNameBox(false);
+                handleClose();
               }}
               className="w-full bg-white text-red-500 font-semibold py-2 rounded hover:bg-red-700 hover:text-white transition duration-300 ease-in-out"
             >
