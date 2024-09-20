@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Location from "./Location";
 import { CiLocationOn } from "react-icons/ci";
 import Login from "../Login/Login";
+import { UserAuth } from "../../store/UserAuth";
 const Nav = () => {
   const [locationVisible, setLocationVisible] = useState(false);
   const [login, setlogin] = useState(false);
   const handleClick = () => {
     setLocationVisible((prev) => !prev);
   };
+  const { user } = UserAuth();
 
   return (
     <div className="flex flex-col">
@@ -26,13 +28,20 @@ const Nav = () => {
               Location
             </div>
           </div>
-          <button
-            onClick={() => setlogin(true)}
-            className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
-          >
-            Log in
-          </button>
+          {user !== null ? (
+            <button className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300">
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => setlogin(true)}
+              className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
+            >
+              Log in
+            </button>
+          )}
         </div>
+        <div className="">{user !== null && <p>{user.name}</p>}</div>
       </nav>
       {login && <Login setlogin={setlogin} />}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
