@@ -2,7 +2,7 @@ import React from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 
 // Individual Cart Item Component
-const CartItem = ({ name, price, quantity, increment, decrement }) => {
+const CartItem = ({name, price, quantity, increment, decrement }) => {
   const totalPrice = price * quantity;
 
   return (

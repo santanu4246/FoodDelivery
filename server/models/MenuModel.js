@@ -6,7 +6,8 @@ const foodSchema = mongoose.Schema({
   price: { type: Number, required: true },
   desc: { type: String },
   rating: { type: Number },
-  veg: { type: Boolean, required: true }
+  veg: { type: Boolean, required: true },
+  quantity: { type: Number }
 });
 
 const menuSchema = new mongoose.Schema({
