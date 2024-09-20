@@ -17,7 +17,7 @@ const useCart = create(
           if (existingItem) {
             // Check if the current quantity is already at or above 10
             if (existingItem.quantity >= 10) {
-              return state; // Return the current state if quantity is at maximum
+              return state; 
             }
       
             return {
@@ -33,7 +33,7 @@ const useCart = create(
               totalItems: state.totalItems + (existingItem.quantity < 10 ? 1 : 0), // Only increase total items if under 10
             };
           } else {
-            // Add new item if not already in the cart
+            
             return {
               cart: [...state.cart, { ...item, quantity: 1 }],
               total: state.total + item.price,
@@ -63,7 +63,7 @@ const useCart = create(
       // Increment item quantity
       incrementQuantity: (itemId) => {
         set((state) => {
-          const itemToUpdate = state.cart.find((item) => item._id === itemId); // Assuming 'id' instead of '_id'
+          const itemToUpdate = state.cart.find((item) => item._id === itemId);
       
           if (!itemToUpdate) {
             return state;
@@ -75,8 +75,8 @@ const useCart = create(
                 ? { ...item, quantity: item.quantity > 10 ? 10 : item.quantity + 1 }
                 : item
             ),
-            total: state.total + (itemToUpdate.quantity < 10 ? itemToUpdate.price : 0), // Only add to total if quantity < 10
-            totalItems: state.totalItems + (itemToUpdate.quantity < 10 ? 1 : 0), // Only increase total items if quantity < 10
+            total: state.total + (itemToUpdate.quantity < 10 ? itemToUpdate.price : 0), 
+            totalItems: state.totalItems + (itemToUpdate.quantity < 10 ? 1 : 0), 
           };
         })
       },
