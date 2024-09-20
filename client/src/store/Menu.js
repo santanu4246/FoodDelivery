@@ -9,7 +9,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL; // Ensure VITE_BASE_URL is prope
 export const useMenu = create((set, get) => ({
   menu: [],
   menuList: [],
-  cart: [],
 
   // Function to add a new menu
   addMenu: async (title, fooditems) => {
@@ -78,11 +77,5 @@ export const useMenu = create((set, get) => ({
       console.error(error);
     }
   },
-  addToCart: async (food, menuid) => {
-    set((state) => ({
-      cart: [...state.cart, food]
-    }));
-    const cart = get().cart;
-    console.log(cart);
-  }
+
 }));

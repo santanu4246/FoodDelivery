@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMenu } from "../../store/Menu";
+import useCart from "../../store/Cart";
 
 const Menu = ({ menu }) => {
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
@@ -14,7 +15,7 @@ const Menu = ({ menu }) => {
 
   const currentMenu = menu?.[selectedMenuIndex];
 
-  const { addToCart } = useMenu();
+  const { addItem } = useCart();
 
   return (
     <div className="mt-8 flex flex-col md:flex-row md:gap-10">
@@ -65,7 +66,12 @@ const Menu = ({ menu }) => {
                     >
                       {vegItem.name} - ₹{vegItem.price}{" "}
                       {/* Display the price */}
-                      <button className="px-[20px] text-[15px] ml-[10px] bg-[green] text-white rounded-[5px]">
+                      <button
+                        onClick={async () => {
+                          await addItem(vegItem, currentMenu._id);
+                        }}
+                        className="px-[20px] text-[15px] ml-[10px] bg-[green] text-white rounded-[5px]"
+                      >
                         Add
                       </button>
                     </li>
@@ -90,7 +96,7 @@ const Menu = ({ menu }) => {
                       {/* Display the price */}
                       <button
                         onClick={async () => {
-                          await addToCart(nonVegItem, currentMenu._id);
+                          await addItem(nonVegItem, currentMenu._id);
                         }}
                         className="px-[20px] text-[15px] ml-[10px] bg-[green] text-white rounded-[5px]"
                       >
