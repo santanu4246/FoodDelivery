@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useCart from "../../store/Cart";
 import { useMenu } from "../../store/Menu";
+import { UserAuth } from "../../store/UserAuth";
 
 const Menu = () => {
   const { id } = useParams();
   const [MenuIndex, setMenuIndex] = useState(0);
 
   const { MenuWithFoodList, getMenuWithFoodList } = useMenu();
-
+  const { addToCart } = UserAuth();
   useEffect(() => {
     if (id) getMenuWithFoodList(id);
   }, [id]);
@@ -52,7 +53,12 @@ const Menu = () => {
                     <span className="text-green-600 font-bold">
                       ${item.price}
                     </span>
-                    <button className="px-4 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                    <button
+                      onClick={async () => {
+                        await addToCart(item);
+                      }}
+                      className="px-4 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                    >
                       Add
                     </button>
                   </div>
@@ -80,7 +86,12 @@ const Menu = () => {
                     <span className="text-cyan-600 font-bold">
                       ${item.price}
                     </span>
-                    <button className="px-4 py-1 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition">
+                    <button
+                      onClick={async () => {
+                        await addToCart(item);
+                      }}
+                      className="px-4 py-1 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition"
+                    >
                       Add
                     </button>
                   </div>

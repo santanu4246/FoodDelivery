@@ -1,5 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
+import { toast } from "react-toastify";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -8,7 +9,7 @@ axios.defaults.withCredentials = true;
 
 export const UserAuth = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       sendotp: async (email) => {
         try {
@@ -50,6 +51,22 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
           set({ user: null });
+          return res.data;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      addToCart: async (food) => {
+        const user = get().user._id;
+        if (user === null) {
+          toast.warn("Login to add food to cart");
+          return;
+        }
+        try {
+          const res = await axios.post(
+            `${BASE_URL}/add-to-cart`,
+            food
+          );
           return res.data;
         } catch (error) {
           console.log(error);

@@ -116,4 +116,15 @@ async function logout(req, res) {
   }
 }
 
-export { SendOtp, VerifyOtp, createuser, logout };
+async function addToCart(req, res) {
+  try {
+    const { food } = req.body;
+    const userid = req.id;
+    console.log(userid);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+
+export { SendOtp, addToCart, VerifyOtp, createuser, logout };
