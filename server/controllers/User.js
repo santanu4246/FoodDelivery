@@ -161,7 +161,7 @@ async function addToCart(req, res) {
       };
       cart.items.push(obj);
     }
-    
+
     await cart.save();
     return res.status(200).json({ msg: "Food added to cart" });
   } catch (error) {
@@ -170,4 +170,38 @@ async function addToCart(req, res) {
   }
 }
 
-export { SendOtp, addToCart, VerifyOtp, createuser, logout };
+async function getCart(req, res) {
+  const { role } = req;
+  if (role !== "user") {
+    return res.status(401).json({ msg: "Unauthorized" });
+  }
+
+  try {
+    const userid = req.id;
+    const user = await UserModel.findById(userid);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    const cart = await CartModel.findById(user.cart)
+      .populate({
+        path: "items.restaurant",
+        model: "Restrurant" // Change this to your actual restaurant model name
+      })
+      .populate({
+        path: "items.foods._id",
+        model: "Food" // Change this to your actual food model name
+      });
+
+    if (!cart) {
+      return res.status(404).json({ msg: "Cart not found" });
+    }
+
+    return res.status(200).json({ msg: "Cart fetched successfully", cart });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+
+export { SendOtp, addToCart, VerifyOtp, createuser, logout, getCart };

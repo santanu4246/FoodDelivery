@@ -11,6 +11,7 @@ export const UserAuth = create(
   persist(
     (set, get) => ({
       user: null,
+      cart: null,
       sendotp: async (email) => {
         try {
           const res = await axios.post(`${BASE_URL}/sendotp`, { email });
@@ -65,6 +66,14 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/add-to-cart`, { food });
           return res.data;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      getCart: async () => {
+        try {
+          const res = await axios.get(`${BASE_URL}/get-cart`);
+          set({ cart: res.data.cart });
         } catch (error) {
           console.log(error);
         }
