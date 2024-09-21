@@ -75,7 +75,7 @@ function RestrurantData() {
         <hr className="mt-8 border-t-1 border-gray-300" />
 
         {/* Menu Section */}
-        <Menu  menu={restrurantData.menu}/>
+        <Menu />
       </div>
     </div>
   );

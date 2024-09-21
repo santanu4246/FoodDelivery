@@ -1,5 +1,6 @@
 import FoodModel from "../models/FoodSchema.js";
 import MenuModel from "../models/MenuModel.js";
+import RestrurantModel from "../models/RestrudentModel.js";
 
 async function addFood(req, res) {
   const { title, description, price, isVegetarian } = req.body;
@@ -98,7 +99,7 @@ async function AddFoodToDatabase(req, res) {
       price: foodPrice,
       veg: isVegetarian,
       menu: starterType,
-      restaurant:restuid
+      restaurant: restuid
     });
 
     await newFood.save();
@@ -117,4 +118,46 @@ async function AddFoodToDatabase(req, res) {
   }
 }
 
-export { addFood, updateFood, deleteFood, AddFoodToDatabase };
+async function getFoodByMenuId(req, res) {
+  try {
+    const menuid = req.params.menuid;
+    const menu = await MenuModel.findById(menuid);
+    if (!menu) {
+      return res.status(404).json({ msg: "Menu not found" });
+    }
+    console.log(menu);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Error while getting food" });
+  }
+}
+
+async function getMenuWithFoodList(req, res) {
+  const { restuid } = req.params;
+  try {
+    const menu = await RestrurantModel.findById(restuid)
+      .populate("menu")
+      .select("menu");
+    let menuList = menu.menu.map((item) => ({
+      title: item.title,
+      menuid: item._id
+    }));
+    for (const menu of menuList) {
+      const foods = await FoodModel.find({ menu: menu.menuid.toString() });
+      menu.foods = foods;
+    }
+    return res.status(200).json({ msg: "Menu fetched successfully", menu: menuList });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Error while getting food" });
+  }
+}
+
+export {
+  addFood,
+  getMenuWithFoodList,
+  updateFood,
+  deleteFood,
+  AddFoodToDatabase,
+  getFoodByMenuId
+};

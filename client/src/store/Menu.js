@@ -8,6 +8,7 @@ export const useMenu = create((set, get) => ({
   menu: [],
   menuList: [],
   menuDropDownList: [],
+  MenuWithFoodList: [],
 
   addMenu: async (title) => {
     const restaurantId = localStorage.getItem("restrurantID");
@@ -102,6 +103,28 @@ export const useMenu = create((set, get) => ({
         foodData
       );
       toast.success("Food addedd successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getFoodByMenuId: async (menuid) => {
+    try {
+      const { data } = await axios.get(
+        `${BASE_URL}/get-food-by-menu-id/${menuid}`
+      );
+      return data.foods;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getMenuWithFoodList: async (restuid) => {
+    try {
+      const { data } = await axios.get(
+        `${BASE_URL}/get-menu-with-food-list/${restuid}`
+      );
+      set({ MenuWithFoodList: data.menu });
     } catch (error) {
       console.log(error);
     }
