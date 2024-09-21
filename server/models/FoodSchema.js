@@ -10,7 +10,11 @@ const foodSchema = mongoose.Schema({
   menu: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Menu"
-  }
+  },
+  restaurant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Restrurant"
+  },
 });
 
 const FoodModel = mongoose.model("Food", foodSchema);

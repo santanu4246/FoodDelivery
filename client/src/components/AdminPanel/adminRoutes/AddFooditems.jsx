@@ -129,11 +129,13 @@ function AddFooditems() {
       starterType,
       isVegetarian
     });
+    const restuid = localStorage.getItem("restrurantID");
     await addFoodToDatabase({
       foodName,
       foodPrice,
       starterType,
-      isVegetarian
+      isVegetarian,
+      restuid
     });
     setFoodName("");
     setFoodPrice("");
