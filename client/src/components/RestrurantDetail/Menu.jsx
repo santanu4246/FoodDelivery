@@ -63,7 +63,7 @@ const Menu = () => {
 
         {/* Nonveg Food Section */}
         <div>
-          <h2 className="text-lg font-semibold text-red-700 mb-4">
+          <h2 className="text-lg font-semibold text-cyan-700 mb-4">
             Nonveg Food Items
           </h2>
           {MenuWithFoodList.length > 0 &&
@@ -71,14 +71,16 @@ const Menu = () => {
               if (item.veg === false) {
                 return (
                   <div
-                    className="flex justify-between items-center mb-3 bg-red-50 p-3 rounded-lg"
+                    className="flex justify-between items-center mb-3 bg-cyan-50 p-3 rounded-lg"
                     key={index}
                   >
-                    <span className="font-medium">{item.name}</span>
-                    <span className="text-red-600 font-bold">
+                    <span className="font-medium text-cyan-700">
+                      {item.name}
+                    </span>
+                    <span className="text-cyan-600 font-bold">
                       ${item.price}
                     </span>
-                    <button className="px-4 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                    <button className="px-4 py-1 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition">
                       Add
                     </button>
                   </div>
