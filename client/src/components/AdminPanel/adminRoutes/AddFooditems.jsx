@@ -110,13 +110,16 @@
 
 // export default AddFooditems;
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMenu } from "../../../store/Menu";
 
 function AddFooditems() {
   const [foodName, setFoodName] = useState("");
   const [foodPrice, setFoodPrice] = useState("");
   const [starterType, setStarterType] = useState("");
   const [isVegetarian, setIsVegetarian] = useState(false);
+
+  const { getmenulist, menuDropDownList } = useMenu();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -127,6 +130,10 @@ function AddFooditems() {
       isVegetarian
     });
   };
+
+  useEffect(() => {
+    getmenulist();
+  }, []);
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -173,9 +180,11 @@ function AddFooditems() {
             <option value="" disabled>
               Select starter
             </option>
-            <option value="Soup">Soup</option>
-            <option value="Salad">Salad</option>
-            <option value="Appetizer">Appetizer</option>
+            {
+              menuDropDownList.map((item,index)=>{
+                return <option value={item.title.toLowerCase()} key={index}>{item.title}</option>
+              })
+            }
           </select>
         </div>
         <div className="flex items-center">

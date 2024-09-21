@@ -6,7 +6,11 @@ const foodSchema = mongoose.Schema({
   price: { type: Number, required: true },
   desc: { type: String },
   rating: { type: Number },
-  veg: { type: Boolean, required: true }
+  veg: { type: Boolean, required: true },
+  menu: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Menu"
+  }
 });
 
 const FoodModel = mongoose.model("Food", foodSchema);

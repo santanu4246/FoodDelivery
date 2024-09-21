@@ -11,7 +11,7 @@ const addmenu = async (req, res) => {
     res.status(201).json({
       msg: "Menu added successfully",
       success: true,
-      menu: response,
+      menu: response
     });
 
     await RestrudentModel.updateOne(
@@ -22,7 +22,7 @@ const addmenu = async (req, res) => {
     res.status(500).json({
       msg: "Error while adding menu",
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 };
@@ -45,7 +45,7 @@ const deletemenu = async (req, res) => {
     res.status(500).json({
       msg: "Error while deleting menu",
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 };
@@ -64,7 +64,7 @@ const getmenu = async (req, res) => {
 
     // Populate the menu's food array with details from FoodModel
     const menus = await MenuModel.find({
-      _id: { $in: restrudent.menu },
+      _id: { $in: restrudent.menu }
     }).populate("food");
 
     res
@@ -74,9 +74,23 @@ const getmenu = async (req, res) => {
     res.status(500).json({
       msg: "Error while fetching menu",
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 };
 
-export { addmenu, deletemenu, getmenu };
+async function getMenuList(req, res) {
+  const { restuid } = req.params;
+  console.log(restuid);
+
+  try {
+    const response = await RestrudentModel.findById(restuid)
+      .populate("menu")
+      .select("menu");
+    return res.status(200).json({ menu: response.menu });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { addmenu, deletemenu, getmenu, getMenuList };
