@@ -161,6 +161,7 @@ async function addToCart(req, res) {
       };
       cart.items.push(obj);
     }
+    
     await cart.save();
     return res.status(200).json({ msg: "Food added to cart" });
   } catch (error) {
