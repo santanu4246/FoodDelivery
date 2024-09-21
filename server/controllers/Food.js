@@ -101,7 +101,7 @@ async function AddFoodToDatabase(req, res) {
     });
 
     await newFood.save();
-    menu.food.push(newFood);
+    menu.food.push(newFood._id);
     await menu.save();
     res.status(200).json({
       msg: "Food added successfully",

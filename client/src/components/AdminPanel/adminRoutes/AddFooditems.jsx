@@ -135,6 +135,9 @@ function AddFooditems() {
       starterType,
       isVegetarian
     });
+    setFoodName("");
+    setFoodPrice("");
+    setIsVegetarian(false);
   };
 
   useEffect(() => {
