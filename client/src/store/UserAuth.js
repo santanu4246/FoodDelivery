@@ -63,10 +63,7 @@ export const UserAuth = create(
           return;
         }
         try {
-          const res = await axios.post(
-            `${BASE_URL}/add-to-cart`,
-            food
-          );
+          const res = await axios.post(`${BASE_URL}/add-to-cart`, { food });
           return res.data;
         } catch (error) {
           console.log(error);

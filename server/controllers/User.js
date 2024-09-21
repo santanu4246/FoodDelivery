@@ -2,6 +2,7 @@ import UserModel from "../models/UserModel.js";
 import mailSender from "../utils/Nodemailer.js";
 import otpModel from "../models/OtpModel.js";
 import jwt from "jsonwebtoken";
+import CartModel from "../models/CartModel.js";
 async function SendOtp(req, res) {
   const { email } = req.body;
 
@@ -117,10 +118,51 @@ async function logout(req, res) {
 }
 
 async function addToCart(req, res) {
+  const { role } = req;
+  if (role !== "user") {
+    return res.status(401).json({ msg: "Unauthorized" });
+  }
   try {
     const { food } = req.body;
     const userid = req.id;
-    console.log(userid);
+    const user = await UserModel.findById(userid);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    if (!user.cart) {
+      const newCart = new CartModel({
+        user: user._id
+      });
+      await newCart.save();
+      user.cart = newCart._id;
+      await user.save();
+    }
+
+    const cart = await CartModel.findById(user.cart);
+    if (!cart) {
+      return res.status(404).json({ msg: "Cart not found" });
+    }
+
+    const isRestaurantExist = cart.items.find(
+      (item) => item.restaurant.toString() === food.restaurant.toString()
+    );
+
+    if (isRestaurantExist) {
+      cart.items.forEach((item) => {
+        if (item.restaurant.toString() === food.restaurant.toString()) {
+          item.foods.push(food);
+        }
+      });
+    } else {
+      const obj = {
+        restaurant: food.restaurant,
+        foods: [food]
+      };
+      cart.items.push(obj);
+    }
+    await cart.save();
+    return res.status(200).json({ msg: "Food added to cart" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
