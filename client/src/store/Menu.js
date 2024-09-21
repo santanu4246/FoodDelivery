@@ -90,7 +90,18 @@ export const useMenu = create((set, get) => ({
     try {
       restuid = localStorage.getItem("restrurantID");
       const { data } = await axios.get(`${BASE_URL}/get-menu-list/${restuid}`);
-      set({menuDropDownList:data.menu})
+      set({ menuDropDownList: data.menu });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  addFoodToDatabase: async (foodData) => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/addfood-to-database`,
+        foodData
+      );
+      toast.success("Food addedd successfully");
     } catch (error) {
       console.log(error);
     }

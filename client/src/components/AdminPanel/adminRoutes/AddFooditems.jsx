@@ -119,11 +119,17 @@ function AddFooditems() {
   const [starterType, setStarterType] = useState("");
   const [isVegetarian, setIsVegetarian] = useState(false);
 
-  const { getmenulist, menuDropDownList } = useMenu();
+  const { getmenulist, menuDropDownList, addFoodToDatabase } = useMenu();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({
+      foodName,
+      foodPrice,
+      starterType,
+      isVegetarian
+    });
+    await addFoodToDatabase({
       foodName,
       foodPrice,
       starterType,
@@ -136,7 +142,7 @@ function AddFooditems() {
   }, []);
 
   return (
-    <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
+    <div className="text-black max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-semibold mb-6 text-center">
         Add Food Items
       </h2>
@@ -180,11 +186,13 @@ function AddFooditems() {
             <option value="" disabled>
               Select starter
             </option>
-            {
-              menuDropDownList.map((item,index)=>{
-                return <option value={item.title.toLowerCase()} key={index}>{item.title}</option>
-              })
-            }
+            {menuDropDownList.map((item, index) => {
+              return (
+                <option value={item._id} key={index}>
+                  {item.title}
+                </option>
+              );
+            })}
           </select>
         </div>
         <div className="flex items-center">
