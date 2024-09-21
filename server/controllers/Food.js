@@ -87,6 +87,33 @@ async function deleteFood(req, res) {
 async function AddFoodToDatabase(req, res) {
   const { foodName, foodPrice, starterType, isVegetarian } = req.body;
   console.log(foodName, foodPrice, starterType, isVegetarian);
+  try {
+    const menu = await MenuModel.findById(starterType);
+    if (!menu) {
+      return res.status(404).json({ msg: "Menu not found" });
+    }
+
+    const newFood = new FoodModel({
+      name: foodName,
+      price: foodPrice,
+      veg: isVegetarian,
+      menu: starterType
+    });
+
+    await newFood.save();
+    menu.food.push(newFood);
+    await menu.save();
+    res.status(200).json({
+      msg: "Food added successfully",
+      food: newFood
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: "Error while adding food",
+      error: error.message
+    });
+  }
 }
 
 export { addFood, updateFood, deleteFood, AddFoodToDatabase };
