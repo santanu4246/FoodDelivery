@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { UserAuth } from "../../store/UserAuth";
 import { IoLocationSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 function RestuCard({ item, count }) {
+  const navigate = useNavigate();
   return (
     <div className="bg-white items-center justify-between flex w-[70%] border border-gray-200 rounded-lg shadow-sm overflow-hidden m-2">
       <div className="flex">
@@ -27,7 +29,12 @@ function RestuCard({ item, count }) {
         </div>
       </div>
       <div className="">
-        <button className="mr-[20px] rounded-[7px] text-[white] font-[500] py-[5px] px-[2rem] bg-[#ff008c]">
+        <button
+          onClick={() => {
+            navigate(`/payment/${item._id}`);
+          }}
+          className="mr-[20px] rounded-[7px] text-[white] font-[500] py-[5px] px-[2rem] bg-[#ff008c]"
+        >
           Proceed payment
         </button>
       </div>
@@ -41,7 +48,7 @@ function Cart() {
     getCart();
   }, []);
   return (
-    <div className="flex flex-col items-center my-[2rem]" >
+    <div className="flex flex-col items-center my-[2rem]">
       {cart?.items?.map((item) => {
         console.log(item);
         return (
