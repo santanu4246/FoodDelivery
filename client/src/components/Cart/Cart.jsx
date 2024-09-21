@@ -50,7 +50,6 @@ function Cart() {
   return (
     <div className="flex flex-col items-center my-[2rem]">
       {cart?.items?.map((item) => {
-        console.log(item);
         return (
           <RestuCard
             item={item.restaurant}

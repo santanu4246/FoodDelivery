@@ -82,7 +82,8 @@ export const UserAuth = create(
     {
       name: "user",
       partialize: (state) => ({
-        user: state.user
+        user: state.user,
+        cart: state.cart
       }),
       storage: createJSONStorage(() => sessionStorage)
     }
