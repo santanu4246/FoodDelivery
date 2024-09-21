@@ -14,6 +14,12 @@ function Payment() {
     }
   }, [cart, id]);
 
+  // Calculate total price
+  const totalPrice = foodList.reduce(
+    (total, item) => total + item._id.price,
+    0
+  );
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Food Items</h1>
@@ -34,6 +40,21 @@ function Payment() {
             </button>
           </div>
         ))}
+      </div>
+
+      <div className="w-full flex justify-between gap-[20px]">
+        <div className=""></div>
+        <div className="">
+          {/* Total Price Display */}
+          <div className="mt-4 text-xl font-semibold">
+            Total: ${totalPrice.toFixed(2)}
+          </div>
+
+          {/* Payment Button */}
+          <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200">
+            Proceed to Payment
+          </button>
+        </div>
       </div>
     </div>
   );
