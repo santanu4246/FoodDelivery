@@ -85,25 +85,20 @@ async function updateFood(req, res) {
 }
 
 async function deleteFood(req, res) {
-  const { menuid, foodid } = req.params;
+  const {foodid } = req.params;
   try {
-    const menu = await MenuModel.findById(menuid);
-    if (!menu) {
-      return res.json({ msg: "Menu not found" });
-    }
-
     const foodItem = await FoodModel.findById(foodid);
     if (!foodItem) {
       return res.status(404).json({ msg: "Food item not found" });
     }
-
-    // Remove the food reference from MenuModel
-    menu.food.pull(foodid);
-    await menu.save();
-
     // Delete the food item from FoodModel
     await FoodModel.findByIdAndDelete(foodid);
-
+    const menu = await MenuModel.findById(foodItem.menu);
+    if (!menu) { 
+      return res.status(404).json({ msg: "Menu not found" });
+    }
+    menu.food.pull(foodid);
+    await menu.save();
     res.status(200).json({ msg: "Food deleted successfully" });
   } catch (error) {
     res

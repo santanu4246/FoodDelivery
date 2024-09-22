@@ -51,9 +51,9 @@ export const useMenu = create((set, get) => ({
     }
   },
 
-  deleteFood: async (menuid, foodid) => {
+  deleteFood: async (foodid) => {
     try {
-      const res = await axios.delete(`${BASE_URL}/menu/${menuid}/${foodid}`);
+      const res = await axios.delete(`${BASE_URL}/menu-delete/${foodid}`);
       toast.success(res.data.msg);
     } catch (error) {
       console.error("Error deleting food:", error);

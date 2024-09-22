@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMenu } from "../../../store/Menu";
 import UpdateFood from "./UpdateFood";
+import DeleteFood from "./DeleteFood";
 
 const EditFood = () => {
   const { getfoodbyrestuid } = useMenu();
@@ -8,7 +9,7 @@ const EditFood = () => {
   const [foodsItem, setfoodsItem] = useState([]);
   const [MenuItem, setMenuItem] = useState([]);
   const [isUpdate, setisUpdate] = useState(false);
-
+  const [isdelete, setisdelete] = useState(false);
   const fetchMenuItems = async () => {
     try {
       const response = await getfoodbyrestuid();
@@ -21,11 +22,14 @@ const EditFood = () => {
   useEffect(() => {
     fetchMenuItems();
   }, [getfoodbyrestuid]);
+
   const handelUpdate = (food, menuitem) => {
     setfoodsItem(food);
     setMenuItem(menuitem);
   };
-
+  const handelDelete = (food) => {
+    setfoodsItem(food);
+  };
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
@@ -68,7 +72,13 @@ const EditFood = () => {
                         >
                           Update
                         </button>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        <button
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => {
+                            setisdelete(true);
+                            handelDelete(food);
+                          }}
+                        >
                           Delete
                         </button>
                       </div>
@@ -101,7 +111,14 @@ const EditFood = () => {
                         >
                           Update
                         </button>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+
+                        <button
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => {
+                            setisdelete(true);
+                            handelDelete(food);
+                          }}
+                        >
                           Delete
                         </button>
                       </div>
@@ -122,6 +139,7 @@ const EditFood = () => {
           onClose={() => setisUpdate(false)}
         />
       )}
+      {isdelete && <DeleteFood foodItem={foodsItem} setisdelete={setisdelete} fetchMenuItems={fetchMenuItems}/>}
     </div>
   );
 };
