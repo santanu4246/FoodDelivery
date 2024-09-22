@@ -22,8 +22,6 @@ export const useMenu = create((set, get) => ({
         ...state,
         menu: [...state.menu, response.data.menu]
       }));
-
-      toast.success("Menu added successfully!");
     } catch (error) {
       console.error("Error adding menu:", error);
       toast.error("Failed to add menu.");
@@ -74,16 +72,6 @@ export const useMenu = create((set, get) => ({
       console.error("Error deleting menu:", error);
       toast.error("Failed to delete menu.");
       throw error;
-    }
-  },
-
-  addFood: async (formData, menuid) => {
-    try {
-      const res = await axios.post(`${BASE_URL}/addfood/${menuid}`, formData);
-      toast.success(res.data.msg);
-    } catch (error) {
-      console.error("Error adding food:", error);
-      toast.error("Failed to add food.");
     }
   },
 

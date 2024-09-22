@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useCart from "../../store/Cart";
 import { useMenu } from "../../store/Menu";
 import { UserAuth } from "../../store/UserAuth";
+import { toast } from "react-toastify";
 
 const Menu = () => {
   const { id } = useParams();
@@ -55,7 +56,11 @@ const Menu = () => {
                     </span>
                     <button
                       onClick={async () => {
-                        await addToCart(item);
+                        try {
+                          await addToCart(item);
+                        } catch (error) {
+                          toast.error(error);
+                        }
                       }}
                       className="px-4 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
                     >

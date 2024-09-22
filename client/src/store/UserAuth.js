@@ -25,7 +25,7 @@ export const UserAuth = create(
           const res = await axios.post(`${BASE_URL}/verifyotp`, {
             email,
             otpid,
-            otp
+            otp,
           });
           if (res.data.isExisting === true) {
             set({ user: res.data.user });
@@ -40,7 +40,7 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/createuser`, {
             email,
-            name
+            name,
           });
           set({ user: res.data.user });
           return res.data;
@@ -58,16 +58,18 @@ export const UserAuth = create(
         }
       },
       addToCart: async (food) => {
-        const user = get().user._id;
-        if (user === null) {
+        const user = get().user;
+        if (!user || !user._id) {
+         
           toast.warn("Login to add food to cart");
           return;
         }
         try {
           const res = await axios.post(`${BASE_URL}/add-to-cart`, { food });
+          toast.success(res.data.msg);
           return res.data;
         } catch (error) {
-          console.log(error);
+          console.log("error", error);
         }
       },
       getCart: async () => {
@@ -77,15 +79,15 @@ export const UserAuth = create(
         } catch (error) {
           console.log(error);
         }
-      }
+      },
     }),
     {
       name: "user",
       partialize: (state) => ({
         user: state.user,
-        cart: state.cart
+        cart: state.cart,
       }),
-      storage: createJSONStorage(() => sessionStorage)
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
