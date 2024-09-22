@@ -93,7 +93,7 @@ const EditFood = () => {
                       <div className="flex gap-5">
                         <button className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mr-2"
                           onClick={() => {
-                            handelUpdate(food)
+                            handelUpdate(food,menuItem)
                             setisUpdate(true)
                           }
                           }
