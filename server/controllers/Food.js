@@ -1,3 +1,4 @@
+import e from "express";
 import FoodModel from "../models/FoodSchema.js";
 import MenuModel from "../models/MenuModel.js";
 import RestrurantModel from "../models/RestrudentModel.js";
@@ -152,12 +153,33 @@ async function getMenuWithFoodList(req, res) {
     return res.status(500).json({ msg: "Error while getting food" });
   }
 }
+async function getFoodByRestuId(req, res) {
+  const { restuid } = req.params;
+  try {
+    const restaurant = await RestrurantModel.findById(restuid)
+      .populate({
+        path: 'menu',
+        populate: {
+          path: 'food',
+        },
+      })
+    const menuitems = restaurant.menu.map((item)=>({
+      title:item.title,
+      foods:item.food
+    }))
+    res.status(200).json({msg: "menu fecthed", menuitems:menuitems})
 
+  } catch (error) {
+    console.log(error);
+    res.json({msg:error})
+  }
+}
 export {
   addFood,
   getMenuWithFoodList,
   updateFood,
   deleteFood,
   AddFoodToDatabase,
-  getFoodByMenuId
+  getFoodByMenuId,
+  getFoodByRestuId
 };

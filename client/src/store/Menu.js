@@ -15,12 +15,12 @@ export const useMenu = create((set, get) => ({
 
     try {
       const response = await axios.post(`${BASE_URL}/addmenu/${restaurantId}`, {
-        title
+        title,
       });
 
       set((state) => ({
         ...state,
-        menu: [...state.menu, response.data.menu]
+        menu: [...state.menu, response.data.menu],
       }));
     } catch (error) {
       console.error("Error adding menu:", error);
@@ -96,6 +96,16 @@ export const useMenu = create((set, get) => ({
     }
   },
 
+  getfoodbyrestuid: async () => {
+    const restuid = localStorage.getItem("restrurantID");
+    try {
+      const res = await axios.get(`${BASE_URL}/get-food-by-restu-id/${restuid}`);
+      console.log(res.data); 
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
   getFoodByMenuId: async (menuid) => {
     try {
       const { data } = await axios.get(
@@ -116,5 +126,5 @@ export const useMenu = create((set, get) => ({
     } catch (error) {
       console.log(error);
     }
-  }
+  },
 }));
