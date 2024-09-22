@@ -5,26 +5,27 @@ import UpdateFood from "./UpdateFood";
 const EditFood = () => {
   const { getfoodbyrestuid } = useMenu();
   const [menuItems, setMenuItems] = useState([]);
-  const [foodsItem, setfoodsItem] = useState([])
-  const [MenuItem, setMenuItem] = useState([])
-  const [isUpdate, setisUpdate] = useState(false)
+  const [foodsItem, setfoodsItem] = useState([]);
+  const [MenuItem, setMenuItem] = useState([]);
+  const [isUpdate, setisUpdate] = useState(false);
+
+  const fetchMenuItems = async () => {
+    try {
+      const response = await getfoodbyrestuid();
+      setMenuItems(response.menuitems);
+    } catch (error) {
+      console.error("Failed to fetch menu items", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const response = await getfoodbyrestuid();
-        setMenuItems(response.menuitems);
-      } catch (error) {
-        console.error("Failed to fetch menu items", error);
-      }
-    };
     fetchMenuItems();
   }, [getfoodbyrestuid]);
   const handelUpdate = (food, menuitem) => {
-    setfoodsItem(food)
-    setMenuItem(menuitem)
-  }
-  console.log(foodsItem);
-  console.log(MenuItem);
+    setfoodsItem(food);
+    setMenuItem(menuitem);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
@@ -57,13 +58,13 @@ const EditFood = () => {
                         {food.name} - ₹{food.price}
                       </span>
                       <div className="flex gap-5">
-                        <button className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 
+                        <button
+                          className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 
                         rounded mr-2"
                           onClick={() => {
-                            handelUpdate(food, menuItem)
-                            setisUpdate(true)
-                          }
-                          }
+                            handelUpdate(food, menuItem);
+                            setisUpdate(true);
+                          }}
                         >
                           Update
                         </button>
@@ -91,12 +92,12 @@ const EditFood = () => {
                         {food.name} - ₹{food.price}
                       </span>
                       <div className="flex gap-5">
-                        <button className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mr-2"
+                        <button
+                          className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mr-2"
                           onClick={() => {
-                            handelUpdate(food,menuItem)
-                            setisUpdate(true)
-                          }
-                          }
+                            handelUpdate(food, menuItem);
+                            setisUpdate(true);
+                          }}
                         >
                           Update
                         </button>
@@ -117,6 +118,7 @@ const EditFood = () => {
         <UpdateFood
           foodItem={foodsItem}
           menuItem={MenuItem}
+          fetchMenuItems={fetchMenuItems}
           onClose={() => setisUpdate(false)}
         />
       )}

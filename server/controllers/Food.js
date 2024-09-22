@@ -52,25 +52,25 @@ async function updateFood(req, res) {
     if (prevStarterType !== starterType) {
       const prevMenu = await MenuModel.find({ title: prevStarterType });
       console.log("prevmenu", prevMenu);
-      
+
       if (!prevMenu || prevMenu.length === 0) {
         return res.status(404).json({ msg: "Previous menu not found" });
       }
       const prevMenuItem = prevMenu[0];
       console.log(prevMenuItem);
-      
+
       prevMenuItem.food.pull(foodid);
       await prevMenuItem.save();
 
       const newMenu = await MenuModel.find({ title: starterType });
       console.log("newmenu", newMenu);
-      
+
       if (!newMenu || newMenu.length === 0) {
         return res.status(404).json({ msg: "New menu not found" });
       }
       const newMenuItem = newMenu[0];
       console.log(newMenuItem);
-      
+
       newMenuItem.food.push(foodid);
       await newMenuItem.save();
     }

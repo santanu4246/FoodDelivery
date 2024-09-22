@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useMenu } from "../../../store/Menu";
 import { toast } from "react-toastify";
 
-const UpdateFood = ({ foodItem, menuItem, onClose }) => {
+const UpdateFood = ({ foodItem, menuItem, onClose,fetchMenuItems }) => {
   const { menuDropDownList, getmenulist, updateFood } = useMenu();
   const [foodName, setFoodName] = useState(foodItem?.name || "");
   const [foodPrice, setFoodPrice] = useState(foodItem?.price || "");
@@ -11,9 +11,7 @@ const UpdateFood = ({ foodItem, menuItem, onClose }) => {
   const [starterType, setStarterType] = useState(menuItem?.title);
   const [foodid, setfoodid] = useState("");
 
-  useEffect(() => {
-    getmenulist();
-  }, []);
+
   const updatedfood = {
     foodName,
     foodPrice,
@@ -23,13 +21,17 @@ const UpdateFood = ({ foodItem, menuItem, onClose }) => {
   };
   const handelsubmit = async (e) => {
     e.preventDefault();
-    console.log(updatedfood, foodid);
     try {
-      await updateFood(updatedfood, foodid);
+      await updateFood(updatedfood, foodid),
+      onClose();
+      await fetchMenuItems();
     } catch (error) {
       toast.error(error);
     }
   };
+  useEffect(() => {
+    getmenulist();
+  }, []);
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
       <div className="text-black max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
