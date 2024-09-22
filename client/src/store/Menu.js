@@ -41,12 +41,9 @@ export const useMenu = create((set, get) => ({
     }
   },
 
-  updateFood: async (formData, menuid, foodid) => {
+  updateFood: async (formData,foodid) => {
     try {
-      const res = await axios.put(
-        `${BASE_URL}/menu/${menuid}/${foodid}`,
-        formData
-      );
+      const res = await axios.put(`${BASE_URL}/menu/${foodid}`, formData);
       toast.success(res.data.msg);
     } catch (error) {
       console.error("Error updating food:", error);
@@ -99,8 +96,10 @@ export const useMenu = create((set, get) => ({
   getfoodbyrestuid: async () => {
     const restuid = localStorage.getItem("restrurantID");
     try {
-      const res = await axios.get(`${BASE_URL}/get-food-by-restu-id/${restuid}`);
-      console.log(res.data); 
+      const res = await axios.get(
+        `${BASE_URL}/get-food-by-restu-id/${restuid}`
+      );
+      console.log(res.data);
       return res.data;
     } catch (error) {
       throw error;

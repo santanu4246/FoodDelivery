@@ -15,7 +15,7 @@ async function addFood(req, res) {
       name: title,
       description,
       price,
-      veg: isVegetarian
+      veg: isVegetarian,
     });
 
     const savedFood = await newFood.save();
@@ -35,7 +35,7 @@ async function addFood(req, res) {
 }
 async function updateFood(req, res) {
   const { foodid } = req.params;
-  const { title, description, price, isVegetarian } = req.body;
+  const { foodName, foodPrice, starterType, isveg, prevStarterType } = req.body;
 
   try {
     const foodItem = await FoodModel.findById(foodid);
@@ -43,21 +43,47 @@ async function updateFood(req, res) {
       return res.status(404).json({ msg: "Food item not found" });
     }
 
-    if (title) foodItem.name = title;
-    if (description) foodItem.description = description;
-    if (price) foodItem.price = price;
-    if (isVegetarian !== undefined) foodItem.veg = isVegetarian;
+    if (foodName) foodItem.name = foodName;
+    if (foodPrice) foodItem.price = foodPrice;
+    if (isveg !== undefined) foodItem.veg = isveg;
 
     await foodItem.save();
+
+    if (prevStarterType !== starterType) {
+      const prevMenu = await MenuModel.find({ title: prevStarterType });
+      console.log("prevmenu", prevMenu);
+      
+      if (!prevMenu || prevMenu.length === 0) {
+        return res.status(404).json({ msg: "Previous menu not found" });
+      }
+      const prevMenuItem = prevMenu[0];
+      console.log(prevMenuItem);
+      
+      prevMenuItem.food.pull(foodid);
+      await prevMenuItem.save();
+
+      const newMenu = await MenuModel.find({ title: starterType });
+      console.log("newmenu", newMenu);
+      
+      if (!newMenu || newMenu.length === 0) {
+        return res.status(404).json({ msg: "New menu not found" });
+      }
+      const newMenuItem = newMenu[0];
+      console.log(newMenuItem);
+      
+      newMenuItem.food.push(foodid);
+      await newMenuItem.save();
+    }
 
     res.status(200).json({ msg: "Food updated successfully", food: foodItem });
   } catch (error) {
     res.status(500).json({
       msg: "Error while updating food",
-      error: error.message
+      error: error.message,
     });
   }
 }
+
 async function deleteFood(req, res) {
   const { menuid, foodid } = req.params;
   try {
@@ -100,7 +126,7 @@ async function AddFoodToDatabase(req, res) {
       price: foodPrice,
       veg: isVegetarian,
       menu: starterType,
-      restaurant: restuid
+      restaurant: restuid,
     });
 
     await newFood.save();
@@ -108,13 +134,13 @@ async function AddFoodToDatabase(req, res) {
     await menu.save();
     res.status(200).json({
       msg: "Food added successfully",
-      food: newFood
+      food: newFood,
     });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
       msg: "Error while adding food",
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -141,13 +167,15 @@ async function getMenuWithFoodList(req, res) {
       .select("menu");
     let menuList = menu.menu.map((item) => ({
       title: item.title,
-      menuid: item._id
+      menuid: item._id,
     }));
     for (const menu of menuList) {
       const foods = await FoodModel.find({ menu: menu.menuid.toString() });
       menu.foods = foods;
     }
-    return res.status(200).json({ msg: "Menu fetched successfully", menu: menuList });
+    return res
+      .status(200)
+      .json({ msg: "Menu fetched successfully", menu: menuList });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Error while getting food" });
@@ -156,22 +184,20 @@ async function getMenuWithFoodList(req, res) {
 async function getFoodByRestuId(req, res) {
   const { restuid } = req.params;
   try {
-    const restaurant = await RestrurantModel.findById(restuid)
-      .populate({
-        path: 'menu',
-        populate: {
-          path: 'food',
-        },
-      })
-    const menuitems = restaurant.menu.map((item)=>({
-      title:item.title,
-      foods:item.food
-    }))
-    res.status(200).json({msg: "menu fecthed", menuitems:menuitems})
-
+    const restaurant = await RestrurantModel.findById(restuid).populate({
+      path: "menu",
+      populate: {
+        path: "food",
+      },
+    });
+    const menuitems = restaurant.menu.map((item) => ({
+      title: item.title,
+      foods: item.food,
+    }));
+    res.status(200).json({ msg: "menu fecthed", menuitems: menuitems });
   } catch (error) {
     console.log(error);
-    res.json({msg:error})
+    res.json({ msg: error });
   }
 }
 export {
@@ -181,5 +207,5 @@ export {
   deleteFood,
   AddFoodToDatabase,
   getFoodByMenuId,
-  getFoodByRestuId
+  getFoodByRestuId,
 };
