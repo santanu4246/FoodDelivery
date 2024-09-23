@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useMenu } from "../../../store/Menu";
 import UpdateFood from "./UpdateFood";
 import DeleteFood from "./DeleteFood";
+import DeleteMenu from "./DeleteMenu";
 
 const EditFood = () => {
   const { getfoodbyrestuid } = useMenu();
@@ -10,6 +11,7 @@ const EditFood = () => {
   const [MenuItem, setMenuItem] = useState([]);
   const [isUpdate, setisUpdate] = useState(false);
   const [isdelete, setisdelete] = useState(false);
+  const [isdeleteMenu, setisdeleteMenu] = useState(false);
   const fetchMenuItems = async () => {
     try {
       const response = await getfoodbyrestuid();
@@ -30,6 +32,9 @@ const EditFood = () => {
   const handelDelete = (food) => {
     setfoodsItem(food);
   };
+  const handelMenuDelete = (menuitem) =>{
+    setMenuItem(menuitem);    
+  }
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
@@ -42,10 +47,17 @@ const EditFood = () => {
               key={index}
               className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300"
             >
+              <div className="flex w-[50%] items-center gap-10 justify-between">
               <h3 className="text-xl font-semibold text-gray-700 mb-4">
                 {menuItem.title}
               </h3>
-
+              <button  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                handelMenuDelete(menuItem),
+                setisdeleteMenu(true);
+              }}
+              >Delete</button>
+              </div>
               {/* Vegetarian Foods */}
               <h4 className="text-lg font-semibold text-green-600 mb-2">
                 Vegetarian
@@ -140,6 +152,9 @@ const EditFood = () => {
         />
       )}
       {isdelete && <DeleteFood foodItem={foodsItem} setisdelete={setisdelete} fetchMenuItems={fetchMenuItems}/>}
+      {
+        isdeleteMenu && <DeleteMenu MenuItem={MenuItem} fetchMenuItems={fetchMenuItems} setisdeleteMenu={setisdeleteMenu}/>
+      }
     </div>
   );
 };
