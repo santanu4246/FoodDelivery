@@ -81,12 +81,12 @@ const getmenu = async (req, res) => {
 
 async function getMenuList(req, res) {
   const { restuid } = req.params;
-  console.log(restuid);
-
   try {
     const response = await RestrudentModel.findById(restuid)
       .populate("menu")
       .select("menu");
+      console.log(response);
+      
     return res.status(200).json({ menu: response.menu });
   } catch (error) {
     console.log(error);

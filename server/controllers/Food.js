@@ -51,7 +51,6 @@ async function updateFood(req, res) {
 
     if (prevStarterType !== starterType) {
       const prevMenu = await MenuModel.find({ title: prevStarterType });
-      console.log("prevmenu", prevMenu);
 
       if (!prevMenu || prevMenu.length === 0) {
         return res.status(404).json({ msg: "Previous menu not found" });
@@ -63,13 +62,11 @@ async function updateFood(req, res) {
       await prevMenuItem.save();
 
       const newMenu = await MenuModel.find({ title: starterType });
-      console.log("newmenu", newMenu);
 
       if (!newMenu || newMenu.length === 0) {
         return res.status(404).json({ msg: "New menu not found" });
       }
       const newMenuItem = newMenu[0];
-      console.log(newMenuItem);
 
       newMenuItem.food.push(foodid);
       await newMenuItem.save();
@@ -85,7 +82,7 @@ async function updateFood(req, res) {
 }
 
 async function deleteFood(req, res) {
-  const {foodid } = req.params;
+  const { foodid } = req.params;
   try {
     const foodItem = await FoodModel.findById(foodid);
     if (!foodItem) {
@@ -94,7 +91,7 @@ async function deleteFood(req, res) {
     // Delete the food item from FoodModel
     await FoodModel.findByIdAndDelete(foodid);
     const menu = await MenuModel.findById(foodItem.menu);
-    if (!menu) { 
+    if (!menu) {
       return res.status(404).json({ msg: "Menu not found" });
     }
     menu.food.pull(foodid);
@@ -185,7 +182,9 @@ async function getFoodByRestuId(req, res) {
         path: "food",
       },
     });
+
     const menuitems = restaurant.menu.map((item) => ({
+      id: item._id,
       title: item.title,
       foods: item.food,
     }));

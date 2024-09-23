@@ -1,16 +1,20 @@
 import React, { useState } from 'react'
+import { useMenu } from '../../../store/Menu'
 
 const DeleteMenu = ({MenuItem,fetchMenuItems,setisdeleteMenu}) => {
-
-  const [MenuTitle, setMenuTitle] = useState(MenuItem.title)
-
+  const {deleteMenu} = useMenu()
   const onClose = ()=>{
     setisdeleteMenu(false)
   }
-  const handleDelete = (MenuTitle)=>{
-    setMenuTitle(MenuTitle)
+  const handleDelete = async (MenuID)=>{
+   try {
+     await deleteMenu(MenuID)
+     await fetchMenuItems()
+     setisdeleteMenu(false)
+   } catch (error) {
+    
+   }
   }
-  console.log(MenuTitle);
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
@@ -20,7 +24,7 @@ const DeleteMenu = ({MenuItem,fetchMenuItems,setisdeleteMenu}) => {
         </h2>
         <div className="flex justify-around">
           <button
-            onClick={() => handleDelete(MenuItem.title)}
+            onClick={() => handleDelete(MenuItem.id)}
             className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none"
           >
             Yes, Delete

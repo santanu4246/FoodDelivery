@@ -63,7 +63,7 @@ export const useMenu = create((set, get) => ({
 
   deleteMenu: async (menuid) => {
     try {
-      const res = await axios.delete(`${BASE_URL}/menu/${menuid}`);
+      const res = await axios.delete(`${BASE_URL}/deletemenu/${menuid}`);
       toast.success(res.data.msg);
     } catch (error) {
       console.error("Error deleting menu:", error);
@@ -99,7 +99,7 @@ export const useMenu = create((set, get) => ({
       const res = await axios.get(
         `${BASE_URL}/get-food-by-restu-id/${restuid}`
       );
-      console.log(res.data);
+      console.log(res);
       return res.data;
     } catch (error) {
       throw error;
