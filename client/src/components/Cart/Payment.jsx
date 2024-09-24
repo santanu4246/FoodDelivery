@@ -5,31 +5,24 @@ import { UserAuth } from "../../store/UserAuth";
 function Payment() {
   const { id } = useParams();
   const [foodList, setFoodList] = useState([]);
-  const { cart } = UserAuth();
-console.log(cart);
+  const { cart, incrementItem, decrementItem, removeItem } = UserAuth();
 
   useEffect(() => {
-    if(cart){
+    if (cart) {
       const foundFoods = cart.items.find((item) => item.restaurant._id === id);
-    
-    
-    if (foundFoods && foundFoods.foods) {
-      setFoodList(foundFoods.foods);
-    } else {
-      setFoodList([]); 
+      if (foundFoods && foundFoods.foods) {
+        setFoodList(foundFoods.foods);
+      }
     }
-  }
   }, [cart, id]);
 
-  // Calculate total price, ensuring _id and price exist
   const totalPrice = foodList.reduce((total, item) => {
     if (item._id && item._id.price) {
-      return total + item._id.price;
+      return total + item.quantity * item._id.price;
     }
-    return total; 
+    return total;
   }, 0);
 
-  console.log(foodList); 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Food Items</h1>
@@ -45,14 +38,34 @@ console.log(cart);
                 <p className="text-gray-700">
                   Price: ${item._id?.price?.toFixed(2)}
                 </p>
+                <p className="text-gray-700">
+                  Quantity: {item.quantity}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => decrementItem(item._id?._id)}
+                    className="bg-red-500 text-white py-1 px-2 rounded"
+                  >
+                    -
+                  </button>
+                  <button
+                    onClick={() => incrementItem(item._id?._id)}
+                    className="bg-green-500 text-white py-1 px-2 rounded"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-              <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+              <button
+                onClick={() => removeItem(item._id?._id)}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+              >
                 Remove
               </button>
             </div>
           ))
         ) : (
-          <p>No items in the cart.</p> // Show this if the list is empty
+          <p>No items in the cart.</p>
         )}
       </div>
 

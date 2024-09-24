@@ -51,7 +51,7 @@ export const UserAuth = create(
       logout: async () => {
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
-          set({ user: null });
+          set({ user: null, cart: null });
           return res.data;
         } catch (error) {
           console.log(error);
@@ -60,7 +60,6 @@ export const UserAuth = create(
       addToCart: async (food) => {
         const user = get().user;
         if (!user || !user._id) {
-         
           toast.warn("Login to add food to cart");
           return;
         }
@@ -76,6 +75,38 @@ export const UserAuth = create(
         try {
           const res = await axios.get(`${BASE_URL}/get-cart`);
           set({ cart: res.data.cart });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      incrementItem: async (foodId) => {
+        try {
+          const res = await axios.post(`${BASE_URL}/increment-item`, {
+            foodId,
+          });
+          toast.success(res.data.msg);
+
+          get().getCart();
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      decrementItem: async (foodId) => {
+        try {
+          const res = await axios.post(`${BASE_URL}/decrement-item`, {
+            foodId,
+          });
+          toast.success(res.data.msg);
+          get().getCart();
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      removeItem: async (foodId) => {
+        try {
+          const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
+          toast.success(res.data.msg);
+          get().getCart();
         } catch (error) {
           console.log(error);
         }

@@ -6,7 +6,10 @@ import {
   createuser,
   logout,
   addToCart,
-  getCart
+  getCart,
+  incrementItem,
+  decrementItem,
+  removeItem
 } from "../controllers/User.js";
 const userRouter = express.Router();
 userRouter.post("/sendotp", SendOtp);
@@ -15,4 +18,7 @@ userRouter.post("/createuser", createuser);
 userRouter.post(`/logout`, logout);
 userRouter.post(`/add-to-cart`, AuthToken, addToCart);
 userRouter.get(`/get-cart`, AuthToken, getCart);
+userRouter.post("/increment-item",AuthToken, incrementItem);
+userRouter.post("/decrement-item", AuthToken,decrementItem);
+userRouter.post("/remove-item", AuthToken,removeItem);
 export default userRouter;

@@ -3,6 +3,8 @@ import mailSender from "../utils/Nodemailer.js";
 import otpModel from "../models/OtpModel.js";
 import jwt from "jsonwebtoken";
 import CartModel from "../models/CartModel.js";
+import mongoose from "mongoose";
+
 async function SendOtp(req, res) {
   const { email } = req.body;
 
@@ -42,7 +44,7 @@ async function VerifyOtp(req, res) {
           id: existingUser._id,
           email: existingUser.email,
           name: existingUser.name,
-          role: existingUser.role
+          role: existingUser.role,
         },
         process.env.JWT_SECRET,
         { expiresIn: "30d" }
@@ -52,19 +54,19 @@ async function VerifyOtp(req, res) {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: "None"
+        sameSite: "None",
       });
 
       return res.status(200).json({
         message: "Otp verified successfully",
         user: existingUser,
-        isExisting: true
+        isExisting: true,
       });
     }
     return res.status(200).json({
       message: "Otp verified successfully",
       user: null,
-      isExisting: false
+      isExisting: false,
     });
   } catch (error) {
     console.log(error.message);
@@ -84,7 +86,7 @@ async function createuser(req, res) {
           id: newUser._id,
           email: newUser.email,
           name: newUser.name,
-          role: newUser.role
+          role: newUser.role,
         },
         process.env.JWT_SECRET,
         { expiresIn: "30d" }
@@ -94,12 +96,12 @@ async function createuser(req, res) {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: "None"
+        sameSite: "None",
       });
 
       return res.status(200).json({
         message: "Otp verified successfully",
-        user: newUser
+        user: newUser,
       });
     }
   } catch (error) {
@@ -111,7 +113,6 @@ async function logout(req, res) {
   try {
     res.clearCookie("token");
     res.status(200).json({ message: "Logout successful" });
-    
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Logout failed" });
@@ -133,7 +134,7 @@ async function addToCart(req, res) {
 
     if (!user.cart) {
       const newCart = new CartModel({
-        user: user._id
+        user: user._id,
       });
       await newCart.save();
       user.cart = newCart._id;
@@ -158,7 +159,7 @@ async function addToCart(req, res) {
     } else {
       const obj = {
         restaurant: food.restaurant,
-        foods: [food]
+        foods: [food],
       };
       cart.items.push(obj);
     }
@@ -179,6 +180,8 @@ async function getCart(req, res) {
 
   try {
     const userid = req.id;
+    console.log(userid);
+
     const user = await UserModel.findById(userid);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
@@ -187,11 +190,11 @@ async function getCart(req, res) {
     const cart = await CartModel.findById(user.cart)
       .populate({
         path: "items.restaurant",
-        model: "Restrurant" // Change this to your actual restaurant model name
+        model: "Restrurant",
       })
       .populate({
         path: "items.foods._id",
-        model: "Food" // Change this to your actual food model name
+        model: "Food",
       });
 
     if (!cart) {
@@ -204,5 +207,105 @@ async function getCart(req, res) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
+async function incrementItem(req, res) {
+  try {
+    const { foodId } = req.body;
+    const userid = req.id;
 
-export { SendOtp, addToCart, VerifyOtp, createuser, logout, getCart };
+    const cart = await CartModel.findOne({ user: userid });
+    if (!cart) {
+      return res.status(404).json({ msg: "Cart not found" });
+    }
+
+    const item = cart.items.find((item) =>
+      item.foods.some((food) => food._id.equals(foodId))
+    );
+    console.log("increment items", item);
+    
+    if (item) {
+      const foodItem = item.foods.find((food) => food._id.equals(foodId));
+      if (foodItem) {
+        foodItem.quantity += 1;
+        await cart.save();
+        return res.status(200).json({ msg: "Item quantity increased" });
+      }
+    }
+    return res.status(404).json({ msg: "Item not found in cart" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+
+
+async function decrementItem(req, res) {
+  try {
+    const { foodId } = req.body;
+    const userid = req.id;
+
+    const cart = await CartModel.findOne({ user: userid });
+    if (!cart) {
+      return res.status(404).json({ msg: "Cart not found" });
+    }
+
+    const item = cart.items.find((item) =>
+      item.foods.some((food) => food._id.equals(foodId))
+    );
+    console.log("decrement items", item);
+    if (item) {
+      const foodItem = item.foods.find((food) => food._id.equals(foodId));
+      if (foodItem) {
+        if (foodItem.quantity > 1) {
+          foodItem.quantity -= 1; 
+        } else {
+          return res.status(400).json({ msg: "Quantity cannot go below 1." });
+        }
+        await cart.save();
+        return res.status(200).json({ msg: "Item quantity decreased" });
+      }
+    }
+    return res.status(404).json({ msg: "Item not found in cart" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+
+
+async function removeItem(req, res) {
+  try {
+    const { foodId } = req.body;
+    const userId = req.id;
+
+    const cart = await CartModel.findOne({ user: userId });
+    if (!cart) {
+      return res.status(404).json({ msg: "Cart not found" });
+    }
+
+    cart.items.forEach((item) => {
+      item.foods = item.foods.filter((food) => !food._id.equals(foodId));
+    });
+
+  
+    cart.items = cart.items.filter((item) => item.foods.length > 0);
+
+    await cart.save();
+    return res.status(200).json({ msg: "Item removed from cart" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+
+
+export {
+  SendOtp,
+  addToCart,
+  VerifyOtp,
+  createuser,
+  logout,
+  getCart,
+  incrementItem,
+  decrementItem,
+  removeItem,
+};
