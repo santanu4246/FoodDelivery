@@ -2,6 +2,7 @@ import e from "express";
 import FoodModel from "../models/FoodSchema.js";
 import MenuModel from "../models/MenuModel.js";
 import RestrurantModel from "../models/RestrudentModel.js";
+import CartModel from "../models/CartModel.js";
 
 async function addFood(req, res) {
   const { title, description, price, isVegetarian } = req.body;
@@ -88,14 +89,19 @@ async function deleteFood(req, res) {
     if (!foodItem) {
       return res.status(404).json({ msg: "Food item not found" });
     }
-    // Delete the food item from FoodModel
     await FoodModel.findByIdAndDelete(foodid);
     const menu = await MenuModel.findById(foodItem.menu);
     if (!menu) {
       return res.status(404).json({ msg: "Menu not found" });
     }
     menu.food.pull(foodid);
+
     await menu.save();
+    await CartModel.updateMany(
+      { "items.foods._id": foodid },
+      { $pull: { "items.$[].foods": { _id: foodid } } }
+    );
+
     res.status(200).json({ msg: "Food deleted successfully" });
   } catch (error) {
     res

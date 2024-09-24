@@ -47,6 +47,7 @@ function Cart() {
   useEffect(() => {
     getCart();
   }, []);
+  
   return (
     <div className="flex flex-col items-center my-[2rem]">
       {cart?.items?.map((item) => {
