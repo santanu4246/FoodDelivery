@@ -36,7 +36,7 @@ function Payment() {
               <div>
                 <h2 className="text-lg font-semibold">{item._id?.name}</h2>
                 <p className="text-gray-700">
-                  Price: ${item._id?.price?.toFixed(2)}
+                  Price: ₹{item._id?.price?.toFixed(2)}
                 </p>
                 <p className="text-gray-700">
                   Quantity: {item.quantity}
@@ -74,7 +74,7 @@ function Payment() {
         <div>
           {/* Total Price Display */}
           <div className="mt-4 text-xl font-semibold">
-            Total: ${totalPrice.toFixed(2)}
+            Total: ₹{totalPrice.toFixed(2)}
           </div>
 
           {/* Payment Button */}

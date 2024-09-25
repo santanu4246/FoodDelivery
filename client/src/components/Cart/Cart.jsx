@@ -44,23 +44,28 @@ function RestuCard({ item, count }) {
 
 function Cart() {
   const { getCart, cart } = UserAuth();
+
   useEffect(() => {
     getCart();
   }, []);
 
   return (
     <div className="flex flex-col items-center my-[2rem]">
-      {cart?.items?.map((item) => {
-        return (
+      {/* Check if the cart has items */}
+      {cart?.items && cart.items.length > 0 ? (
+        cart.items.map((item) => (
           <RestuCard
             item={item.restaurant}
             count={item.foods.length}
             key={item._id}
           />
-        );
-      })}
+        ))
+      ) : (
+        <div className="text-black h-[30vh] flex items-center justify-center">No items in cart</div>
+      )}
     </div>
   );
 }
+
 
 export default Cart;

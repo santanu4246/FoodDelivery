@@ -105,8 +105,8 @@ export const UserAuth = create(
       removeItem: async (foodId) => {
         try {
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
-          toast.success(res.data.msg);
           get().getCart();
+          toast.success(res.data.msg);
         } catch (error) {
           console.log(error);
         }

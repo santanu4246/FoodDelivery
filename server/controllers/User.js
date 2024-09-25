@@ -128,6 +128,8 @@ async function addToCart(req, res) {
     const { food } = req.body;
     const userid = req.id;
     const user = await UserModel.findById(userid);
+    console.log("user", user);
+
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -136,12 +138,15 @@ async function addToCart(req, res) {
       const newCart = new CartModel({
         user: user._id,
       });
+
       await newCart.save();
       user.cart = newCart._id;
+
       await user.save();
     }
 
     const cart = await CartModel.findById(user.cart);
+
     if (!cart) {
       return res.status(404).json({ msg: "Cart not found" });
     }
@@ -221,7 +226,7 @@ async function incrementItem(req, res) {
       item.foods.some((food) => food._id.equals(foodId))
     );
     console.log("increment items", item);
-    
+
     if (item) {
       const foodItem = item.foods.find((food) => food._id.equals(foodId));
       if (foodItem) {
@@ -236,7 +241,6 @@ async function incrementItem(req, res) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
-
 
 async function decrementItem(req, res) {
   try {
@@ -256,7 +260,7 @@ async function decrementItem(req, res) {
       const foodItem = item.foods.find((food) => food._id.equals(foodId));
       if (foodItem) {
         if (foodItem.quantity > 1) {
-          foodItem.quantity -= 1; 
+          foodItem.quantity -= 1;
         } else {
           return res.status(400).json({ msg: "Quantity cannot go below 1." });
         }
@@ -270,7 +274,6 @@ async function decrementItem(req, res) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
-
 
 async function removeItem(req, res) {
   try {
@@ -286,7 +289,6 @@ async function removeItem(req, res) {
       item.foods = item.foods.filter((food) => !food._id.equals(foodId));
     });
 
-  
     cart.items = cart.items.filter((item) => item.foods.length > 0);
 
     await cart.save();
@@ -296,7 +298,6 @@ async function removeItem(req, res) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
-
 
 export {
   SendOtp,
