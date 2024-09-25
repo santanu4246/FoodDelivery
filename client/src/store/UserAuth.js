@@ -12,6 +12,8 @@ export const UserAuth = create(
     (set, get) => ({
       user: null,
       cart: null,
+      totalPrice: 0,
+      totalItems: 0,
       sendotp: async (email) => {
         try {
           const res = await axios.post(`${BASE_URL}/sendotp`, { email });
@@ -74,7 +76,11 @@ export const UserAuth = create(
       getCart: async () => {
         try {
           const res = await axios.get(`${BASE_URL}/get-cart`);
-          set({ cart: res.data.cart });
+          set({
+            cart: res.data.cart,
+            totalPrice: res.data.cart.totalPrice,
+            totalItems: res.data.cart.totalItems
+          });
         } catch (error) {
           console.log(error);
         }

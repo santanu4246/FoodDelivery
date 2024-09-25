@@ -168,12 +168,80 @@ async function addToCart(req, res) {
       };
       cart.items.push(obj);
     }
-
+    await updateCartTotals(cart._id);
     await cart.save();
     return res.status(200).json({ msg: "Food added to cart" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+// Utility function to update cart totals
+async function updateCartTotals(cartId) {
+  try {
+    // Find the cart and populate the nested food field
+    const cart = await CartModel.findById(cartId)
+      .populate({
+        path: "items.restaurant",
+        model: "Restrurant",
+        select: "name",
+      })
+      .populate({
+        path: "items.foods.food",
+        model: "Food",
+        select: "price name",
+      })
+      .exec();
+
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+
+    console.log("Full populated cart:", JSON.stringify(cart, null, 2));
+    const cartItems = cart.items.map((item) => item.foods);
+    console.log("Cart Items:", cartItems);
+    const food = cartItems.map((item) => item.map((foodItem) => foodItem));
+    console.log("Food:", food);
+
+    let totalItems = 0;
+    let totalPrice = 0;
+
+    // Loop through each item in the cart to calculate totals
+    cart.items.forEach((item) => {
+      console.log("Restaurant:", item.restaurant);
+      console.log("Foods:", item.foods);
+
+      if (item.foods.length > 0) {
+        item.foods.forEach((foodItem) => {
+          console.log("Food Item:", foodItem);
+
+          // Check if food field is populated and exists
+          if (foodItem.food && foodItem.food.price) {
+            console.log("Populated Food:", foodItem.food); // Log populated food details
+            totalItems += foodItem.quantity;
+            totalPrice += foodItem.quantity * foodItem.food.price;
+          } else {
+            console.log("Food not populated or missing price", foodItem);
+          }
+        });
+      }
+    });
+
+    console.log("Total Items:", totalItems);
+    console.log("Total Price:", totalPrice);
+
+    // Update cart with calculated totals
+    cart.totalItems = totalItems;
+    cart.totalPrice = totalPrice;
+
+    // Save the updated cart
+    await cart.save();
+    console.log("Updated cart:", cart);
+
+    
+  } catch (error) {
+    console.log("Error in updateCartTotals: ", error);
+    throw new Error(error.message || "Error updating cart totals");
   }
 }
 
@@ -225,13 +293,14 @@ async function incrementItem(req, res) {
     const item = cart.items.find((item) =>
       item.foods.some((food) => food._id.equals(foodId))
     );
-    console.log("increment items", item);
 
     if (item) {
       const foodItem = item.foods.find((food) => food._id.equals(foodId));
       if (foodItem) {
         foodItem.quantity += 1;
+        await updateCartTotals(cart._id);
         await cart.save();
+
         return res.status(200).json({ msg: "Item quantity increased" });
       }
     }
@@ -262,8 +331,9 @@ async function decrementItem(req, res) {
         if (foodItem.quantity > 1) {
           foodItem.quantity -= 1;
         } else {
-          return res.status(400).json({ msg: "Quantity cannot go below 1." });
+          return res.json({ msg: "Quantity cannot go below 1." });
         }
+        await updateCartTotals(cart._id);
         await cart.save();
         return res.status(200).json({ msg: "Item quantity decreased" });
       }
@@ -290,8 +360,9 @@ async function removeItem(req, res) {
     });
 
     cart.items = cart.items.filter((item) => item.foods.length > 0);
-
+    await updateCartTotals(cart._id);
     await cart.save();
+
     return res.status(200).json({ msg: "Item removed from cart" });
   } catch (error) {
     console.log(error);

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const CartSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -9,7 +8,7 @@ const CartSchema = new mongoose.Schema({
     {
       restaurant: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Restrurant"
+        ref: "Restaurant"
       },
       foods: [
         {
@@ -24,7 +23,15 @@ const CartSchema = new mongoose.Schema({
         }
       ]
     }
-  ]
+  ],
+  totalPrice: {
+    type: Number,
+    default: 0
+  },
+  totalItems: {
+    type: Number,
+    default: 0
+  }
 });
 
 const CartModel = mongoose.model("Cart", CartSchema);
