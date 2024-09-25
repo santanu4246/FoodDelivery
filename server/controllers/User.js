@@ -45,7 +45,7 @@ async function VerifyOtp(req, res) {
           id: existingUser._id,
           email: existingUser.email,
           name: existingUser.name,
-          role: existingUser.role
+          role: existingUser.role,
         },
         process.env.JWT_SECRET,
         { expiresIn: "30d" }
@@ -55,19 +55,19 @@ async function VerifyOtp(req, res) {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: "None"
+        sameSite: "None",
       });
 
       return res.status(200).json({
         message: "Otp verified successfully",
         user: existingUser,
-        isExisting: true
+        isExisting: true,
       });
     }
     return res.status(200).json({
       message: "Otp verified successfully",
       user: null,
-      isExisting: false
+      isExisting: false,
     });
   } catch (error) {
     console.log(error.message);
@@ -87,7 +87,7 @@ async function createuser(req, res) {
           id: newUser._id,
           email: newUser.email,
           name: newUser.name,
-          role: newUser.role
+          role: newUser.role,
         },
         process.env.JWT_SECRET,
         { expiresIn: "30d" }
@@ -97,12 +97,12 @@ async function createuser(req, res) {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: "None"
+        sameSite: "None",
       });
 
       return res.status(200).json({
         message: "Otp verified successfully",
-        user: newUser
+        user: newUser,
       });
     }
   } catch (error) {
@@ -137,7 +137,7 @@ async function addToCart(req, res) {
 
     if (!user.cart) {
       const newCart = new CartModel({
-        user: user._id
+        user: user._id,
       });
 
       await newCart.save();
@@ -167,13 +167,13 @@ async function addToCart(req, res) {
     } else {
       const obj = {
         restaurant: food.restaurant,
-        foods: [food]
+        foods: [food],
       };
       cart.items.push(obj);
       restuid = food.restaurant;
     }
-    await updateCartTotals(cart._id);
     await cart.save();
+    await updateCartTotals(cart._id);
     return res.status(200).json({ msg: "Food added to cart" });
   } catch (error) {
     console.log(error);
@@ -190,14 +190,15 @@ async function updateCartTotals(cartId) {
 
     console.log("______________________________________________");
 
-    let array = []
+    let array = [];
 
     for (const restu of restaurants) {
       const obj = {
-        restaurant:restu,
-        totalPrice: 0
-      }
+        restaurant: restu,
+        totalPrice: 0,
+      };
       let total = 0;
+      let totalQuantity = 0;
       const item = cart.items.find(
         (item) => item.restaurant.toString() === restu.toString()
       );
@@ -207,11 +208,12 @@ async function updateCartTotals(cartId) {
           "price -_id"
         );
         total += quantity * foodData.price;
+        totalQuantity += quantity;
       }
       obj.totalPrice = total;
       array.push(obj);
     }
-    console.log(array);
+    return array;
   } catch (error) {
     console.log("Error in updateCartTotals: ", error);
     throw new Error(error.message || "Error updating cart totals");
@@ -236,18 +238,18 @@ async function getCart(req, res) {
     const cart = await CartModel.findById(user.cart)
       .populate({
         path: "items.restaurant",
-        model: "Restrurant"
+        model: "Restrurant",
       })
       .populate({
         path: "items.foods._id",
-        model: "Food"
+        model: "Food",
       });
 
     if (!cart) {
       return res.status(404).json({ msg: "Cart not found" });
     }
-
-    return res.status(200).json({ msg: "Cart fetched successfully", cart });
+    const totalPrice = await updateCartTotals(cart._id);
+    return res.status(200).json({ msg: "Cart fetched successfully", cart ,totalPrice});
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -272,9 +274,11 @@ async function incrementItem(req, res) {
       if (foodItem) {
         foodItem.quantity += 1;
         await cart.save();
-        await updateCartTotals(cart._id);
+        const totalPrice = await updateCartTotals(cart._id);
 
-        return res.status(200).json({ msg: "Item quantity increased" });
+        return res
+          .status(200)
+          .json({ msg: "Item quantity increased", totalPrice: totalPrice });
       }
     }
     return res.status(404).json({ msg: "Item not found in cart" });
@@ -307,8 +311,11 @@ async function decrementItem(req, res) {
           return res.json({ msg: "Quantity cannot go below 1." });
         }
         await cart.save();
-        await updateCartTotals(cart._id);
-        return res.status(200).json({ msg: "Item quantity decreased" });
+        const totalPrice = await updateCartTotals(cart._id);
+
+        return res
+          .status(200)
+          .json({ msg: "Item quantity decreased", totalPrice: totalPrice });
       }
     }
     return res.status(404).json({ msg: "Item not found in cart" });
@@ -333,10 +340,9 @@ async function removeItem(req, res) {
     });
 
     cart.items = cart.items.filter((item) => item.foods.length > 0);
-    await updateCartTotals(cart._id);
     await cart.save();
-
-    return res.status(200).json({ msg: "Item removed from cart" });
+    const totalPrice = await updateCartTotals(cart._id);
+    return res.status(200).json({ msg: "Item removed from cart" ,totalPrice:totalPrice});
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -352,5 +358,5 @@ export {
   getCart,
   incrementItem,
   decrementItem,
-  removeItem
+  removeItem,
 };

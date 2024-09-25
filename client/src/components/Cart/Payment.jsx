@@ -6,6 +6,7 @@ function Payment() {
   const { id } = useParams();
   const [foodList, setFoodList] = useState([]);
   const { cart, incrementItem, decrementItem, removeItem,totalPrice } = UserAuth();
+  localStorage.setItem("paymentrestrurantID", id);
   useEffect(() => {
     if (cart) {
       const foundFoods = cart.items.find((item) => item.restaurant._id === id);
@@ -15,12 +16,7 @@ function Payment() {
     }
   }, [cart, id]);
 
-  // const totalPrice = foodList.reduce((total, item) => {
-  //   if (item._id && item._id.price) {
-  //     return total + item.quantity * item._id.price;
-  //   }
-  //   return total;
-  // }, 0);
+  
 
   return (
     <div className="p-4">
