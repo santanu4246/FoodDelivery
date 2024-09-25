@@ -4,6 +4,7 @@ import otpModel from "../models/OtpModel.js";
 import jwt from "jsonwebtoken";
 import CartModel from "../models/CartModel.js";
 import mongoose from "mongoose";
+import FoodModel from "../models/FoodSchema.js";
 
 async function SendOtp(req, res) {
   const { email } = req.body;
@@ -44,7 +45,7 @@ async function VerifyOtp(req, res) {
           id: existingUser._id,
           email: existingUser.email,
           name: existingUser.name,
-          role: existingUser.role,
+          role: existingUser.role
         },
         process.env.JWT_SECRET,
         { expiresIn: "30d" }
@@ -54,19 +55,19 @@ async function VerifyOtp(req, res) {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: "None",
+        sameSite: "None"
       });
 
       return res.status(200).json({
         message: "Otp verified successfully",
         user: existingUser,
-        isExisting: true,
+        isExisting: true
       });
     }
     return res.status(200).json({
       message: "Otp verified successfully",
       user: null,
-      isExisting: false,
+      isExisting: false
     });
   } catch (error) {
     console.log(error.message);
@@ -86,7 +87,7 @@ async function createuser(req, res) {
           id: newUser._id,
           email: newUser.email,
           name: newUser.name,
-          role: newUser.role,
+          role: newUser.role
         },
         process.env.JWT_SECRET,
         { expiresIn: "30d" }
@@ -96,12 +97,12 @@ async function createuser(req, res) {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: "None",
+        sameSite: "None"
       });
 
       return res.status(200).json({
         message: "Otp verified successfully",
-        user: newUser,
+        user: newUser
       });
     }
   } catch (error) {
@@ -136,7 +137,7 @@ async function addToCart(req, res) {
 
     if (!user.cart) {
       const newCart = new CartModel({
-        user: user._id,
+        user: user._id
       });
 
       await newCart.save();
@@ -155,6 +156,8 @@ async function addToCart(req, res) {
       (item) => item.restaurant.toString() === food.restaurant.toString()
     );
 
+    let restuid = isRestaurantExist;
+
     if (isRestaurantExist) {
       cart.items.forEach((item) => {
         if (item.restaurant.toString() === food.restaurant.toString()) {
@@ -164,9 +167,10 @@ async function addToCart(req, res) {
     } else {
       const obj = {
         restaurant: food.restaurant,
-        foods: [food],
+        foods: [food]
       };
       cart.items.push(obj);
+      restuid = food.restaurant;
     }
     await updateCartTotals(cart._id);
     await cart.save();
@@ -180,65 +184,26 @@ async function addToCart(req, res) {
 async function updateCartTotals(cartId) {
   try {
     // Find the cart and populate the nested food field
-    const cart = await CartModel.findById(cartId)
-      .populate({
-        path: "items.restaurant",
-        model: "Restrurant",
-        select: "name",
-      })
-      .populate({
-        path: "items.foods.food",
-        model: "Food",
-        select: "price name",
-      })
-      .exec();
+    let cart = await CartModel.findById(cartId).select("items");
 
-    if (!cart) {
-      throw new Error("Cart not found");
-    }
+    let restaurants = cart.items.map((item) => item.restaurant);
 
-    console.log("Full populated cart:", JSON.stringify(cart, null, 2));
-    const cartItems = cart.items.map((item) => item.foods);
-    console.log("Cart Items:", cartItems);
-    const food = cartItems.map((item) => item.map((foodItem) => foodItem));
-    console.log("Food:", food);
+    console.log("______________________________________________");
 
-    let totalItems = 0;
-    let totalPrice = 0;
-
-    // Loop through each item in the cart to calculate totals
-    cart.items.forEach((item) => {
-      console.log("Restaurant:", item.restaurant);
-      console.log("Foods:", item.foods);
-
-      if (item.foods.length > 0) {
-        item.foods.forEach((foodItem) => {
-          console.log("Food Item:", foodItem);
-
-          // Check if food field is populated and exists
-          if (foodItem.food && foodItem.food.price) {
-            console.log("Populated Food:", foodItem.food); // Log populated food details
-            totalItems += foodItem.quantity;
-            totalPrice += foodItem.quantity * foodItem.food.price;
-          } else {
-            console.log("Food not populated or missing price", foodItem);
-          }
-        });
+    for (const restu of restaurants) {
+      let total = 0;
+      const item = cart.items.find(
+        (item) => item.restaurant.toString() === restu.toString()
+      );
+      for (const food of item.foods) {
+        let quantity = food.quantity;
+        const foodData = await FoodModel.findById(food._id.toString()).select(
+          "price -_id"
+        );
+        total += quantity * foodData.price;
       }
-    });
-
-    console.log("Total Items:", totalItems);
-    console.log("Total Price:", totalPrice);
-
-    // Update cart with calculated totals
-    cart.totalItems = totalItems;
-    cart.totalPrice = totalPrice;
-
-    // Save the updated cart
-    await cart.save();
-    console.log("Updated cart:", cart);
-
-    
+      console.log(total);
+    }
   } catch (error) {
     console.log("Error in updateCartTotals: ", error);
     throw new Error(error.message || "Error updating cart totals");
@@ -263,11 +228,11 @@ async function getCart(req, res) {
     const cart = await CartModel.findById(user.cart)
       .populate({
         path: "items.restaurant",
-        model: "Restrurant",
+        model: "Restrurant"
       })
       .populate({
         path: "items.foods._id",
-        model: "Food",
+        model: "Food"
       });
 
     if (!cart) {
@@ -298,8 +263,8 @@ async function incrementItem(req, res) {
       const foodItem = item.foods.find((food) => food._id.equals(foodId));
       if (foodItem) {
         foodItem.quantity += 1;
-        await updateCartTotals(cart._id);
         await cart.save();
+        await updateCartTotals(cart._id);
 
         return res.status(200).json({ msg: "Item quantity increased" });
       }
@@ -324,7 +289,7 @@ async function decrementItem(req, res) {
     const item = cart.items.find((item) =>
       item.foods.some((food) => food._id.equals(foodId))
     );
-    console.log("decrement items", item);
+    // console.log("decrement items", item);
     if (item) {
       const foodItem = item.foods.find((food) => food._id.equals(foodId));
       if (foodItem) {
@@ -333,8 +298,8 @@ async function decrementItem(req, res) {
         } else {
           return res.json({ msg: "Quantity cannot go below 1." });
         }
-        await updateCartTotals(cart._id);
         await cart.save();
+        await updateCartTotals(cart._id);
         return res.status(200).json({ msg: "Item quantity decreased" });
       }
     }
@@ -379,5 +344,5 @@ export {
   getCart,
   incrementItem,
   decrementItem,
-  removeItem,
+  removeItem
 };
