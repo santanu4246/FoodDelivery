@@ -173,14 +173,14 @@ async function addToCart(req, res) {
       restuid = food.restaurant;
     }
     await cart.save();
-    await updateCartTotals(cart._id);
-    return res.status(200).json({ msg: "Food added to cart" });
+    const totalPrice =await updateCartTotals(cart._id);
+    return res.status(200).json({ msg: "Food added to cart" ,totalPrice});
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
-// Utility function to update cart totals
+
 async function updateCartTotals(cartId) {
   try {
     // Find the cart and populate the nested food field

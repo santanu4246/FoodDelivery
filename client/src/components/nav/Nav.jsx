@@ -12,7 +12,7 @@ const Nav = () => {
   const handleClick = () => {
     setLocationVisible((prev) => !prev);
   };
-  const { user, logout } = UserAuth();
+  const { user, logout, totalCartQuantity } = UserAuth();
 
   return (
     <div className="bg-gray-50 shadow-md">
@@ -72,12 +72,12 @@ const Nav = () => {
             <p className="text-gray-800 font-medium">{user.name}</p>
           </div>
         )}
-        
+
         {/* Cart Icon */}
         <div className="relative flex items-center cursor-pointer">
           <FaCartShopping className="text-2xl text-gray-700 hover:text-red-600 transition duration-200 ml-2" />
           {/* Optional: Add cart item count here */}
-
+          <span>{totalCartQuantity}</span>
         </div>
       </nav>
 

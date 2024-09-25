@@ -14,7 +14,7 @@ export const UserAuth = create(
       cart: null,
       totalPrice: 0,
       totalItems: 0,
-
+      totalCartQuantity: 0,
       sendotp: async (email) => {
         try {
           const res = await axios.post(`${BASE_URL}/sendotp`, { email });
@@ -70,7 +70,9 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/add-to-cart`, { food });
           console.log(res);
-
+          const totalprice = res.data.totalPrice;
+          set({ totalCartQuantity: totalprice.length });
+          
           toast.success(res.data.msg);
           return res.data;
         } catch (error) {
@@ -100,7 +102,7 @@ export const UserAuth = create(
           });
           const totalprice = res.data.totalPrice;
           console.log(totalprice);
-
+          set({ totalCartQuantity: totalprice.length });
           totalprice.map((item, index) => {
             if (item.restaurant === restuid) {
               set({ totalPrice: item.totalPrice });
@@ -120,7 +122,7 @@ export const UserAuth = create(
           });
           const totalprice = res.data.totalPrice;
           console.log(totalprice);
-
+          set({ totalCartQuantity: totalprice.length });
           totalprice.map((item, index) => {
             if (item.restaurant === restuid) {
               set({ totalPrice: item.totalPrice });
@@ -136,6 +138,7 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
           const totalprice = res.data.totalPrice;
+          set({ totalCartQuantity: totalprice.length });
           if (totalprice.length === 0) {
             set({ totalPrice: 0 });
           } else {
@@ -158,6 +161,7 @@ export const UserAuth = create(
         user: state.user,
         cart: state.cart,
         totalPrice: state.totalPrice,
+        totalCartQuantity: state.totalCartQuantity
       }),
       storage: createJSONStorage(() => sessionStorage),
     }
