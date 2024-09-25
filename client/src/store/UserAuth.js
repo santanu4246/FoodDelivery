@@ -6,7 +6,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 axios.defaults.withCredentials = true;
-const restuid = localStorage.getItem("paymentrestrurantID");
+const restuid = sessionStorage.getItem("paymentrestrurantID");
 export const UserAuth = create(
   persist(
     (set, get) => ({
@@ -54,7 +54,7 @@ export const UserAuth = create(
       logout: async () => {
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
-          set({ user: null, cart: null, totalPrice: 0 });
+          set({ user: null, cart: null, totalPrice: 0, totalItems: 0 });
 
           return res.data;
         } catch (error) {
@@ -72,7 +72,14 @@ export const UserAuth = create(
           console.log(res);
           const totalprice = res.data.totalPrice;
           set({ totalCartQuantity: totalprice.length });
+          const relevantTotal = totalprice.find(
+            (item) => item.restaurant === restuid
+          );
+          console.log(relevantTotal);
           
+          if (relevantTotal) {
+            set({ totalPrice: relevantTotal.totalPrice });
+          }
           toast.success(res.data.msg);
           return res.data;
         } catch (error) {
@@ -83,11 +90,14 @@ export const UserAuth = create(
         try {
           const res = await axios.get(`${BASE_URL}/get-cart`);
           const totalprice = res.data.totalPrice;
-          totalprice.map((item, index) => {
-            if (item.restaurant === restuid) {
-              set({ totalPrice: item.totalPrice });
-            }
-          });
+          const relevantTotal = totalprice.find(
+            (item) => item.restaurant === restuid
+          );
+          console.log(relevantTotal);
+          
+          if (relevantTotal) {
+            set({ totalPrice: relevantTotal.totalPrice });
+          }
           set({
             cart: res.data.cart,
           });
@@ -103,11 +113,16 @@ export const UserAuth = create(
           const totalprice = res.data.totalPrice;
           console.log(totalprice);
           set({ totalCartQuantity: totalprice.length });
-          totalprice.map((item, index) => {
-            if (item.restaurant === restuid) {
-              set({ totalPrice: item.totalPrice });
-            }
-          });
+
+          const relevantTotal = totalprice.find(
+            (item) => item.restaurant === restuid
+          );
+          console.log(relevantTotal);
+          
+          if (relevantTotal) {
+            set({ totalPrice: relevantTotal.totalPrice });
+          }
+
           toast.success(res.data.msg);
 
           get().getCart();
@@ -123,11 +138,14 @@ export const UserAuth = create(
           const totalprice = res.data.totalPrice;
           console.log(totalprice);
           set({ totalCartQuantity: totalprice.length });
-          totalprice.map((item, index) => {
-            if (item.restaurant === restuid) {
-              set({ totalPrice: item.totalPrice });
-            }
-          });
+
+          const relevantTotal = totalprice.find(
+            (item) => item.restaurant === restuid
+          );
+          if (relevantTotal) {
+            set({ totalPrice: relevantTotal.totalPrice });
+          }
+
           toast.success(res.data.msg);
           get().getCart();
         } catch (error) {
@@ -142,11 +160,12 @@ export const UserAuth = create(
           if (totalprice.length === 0) {
             set({ totalPrice: 0 });
           } else {
-            totalprice.map((item) => {
-              if (item.restaurant === restuid) {
-                set({ totalPrice: item.totalPrice });
-              }
-            });
+            const relevantTotal = totalprice.find(
+              (item) => item.restaurant === restuid
+            );
+            if (relevantTotal) {
+              set({ totalPrice: relevantTotal.totalPrice });
+            }
           }
           get().getCart();
           toast.success(res.data.msg);
@@ -161,7 +180,7 @@ export const UserAuth = create(
         user: state.user,
         cart: state.cart,
         totalPrice: state.totalPrice,
-        totalCartQuantity: state.totalCartQuantity
+        totalCartQuantity: state.totalCartQuantity,
       }),
       storage: createJSONStorage(() => sessionStorage),
     }

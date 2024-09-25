@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
 import { UserAuth } from "../../store/UserAuth";
-const Login = ({ setlogin }) => {
+const Login = ({ setLogin }) => {
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(new Array(4).fill(""));
@@ -59,7 +59,7 @@ const Login = ({ setlogin }) => {
 
   const handleClose = () => {
     setOtpSent(false);
-    setlogin(false);
+    setLogin(false);
     setEmail("");
     setOtp(new Array(4).fill(""));
   };

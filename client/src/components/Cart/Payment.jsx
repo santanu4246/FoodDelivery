@@ -5,10 +5,22 @@ import { UserAuth } from "../../store/UserAuth";
 function Payment() {
   const { id } = useParams();
   const [foodList, setFoodList] = useState([]);
-  const { cart, incrementItem, decrementItem, removeItem, totalPrice } =
-    UserAuth();
-  localStorage.setItem("paymentrestrurantID", id);
+  const {
+    cart,
+    incrementItem,
+    decrementItem,
+    removeItem,
+    totalPrice,
+    getCart,
+  } = UserAuth();
 
+  useEffect(() => {
+    sessionStorage.setItem("paymentrestrurantID", id);
+    const get = async ()=>{
+    await getCart();
+  }
+    get();
+  }, [id]);
   useEffect(() => {
     if (cart) {
       const foundFoods = cart.items.find((item) => item.restaurant._id === id);
@@ -18,9 +30,12 @@ function Payment() {
     }
   }, [cart, id]);
 
+ 
   return (
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">Food Items</h1>
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
+        Food Items
+      </h1>
       <div className="w-full max-w-3xl flex flex-col items-center gap-6">
         {foodList && foodList.length > 0 ? (
           foodList.map((item, index) => (
@@ -29,9 +44,15 @@ function Payment() {
               key={index}
             >
               <div className="flex flex-col">
-                <h2 className="text-xl font-semibold text-gray-800">{item._id?.name}</h2>
-                <p className="text-lg text-gray-600">Price: ₹{item._id?.price?.toFixed(2)}</p>
-                <p className="text-md text-gray-600">Quantity: {item.quantity}</p>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {item._id?.name}
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Price: ₹{item._id?.price?.toFixed(2)}
+                </p>
+                <p className="text-md text-gray-600">
+                  Quantity: {item.quantity}
+                </p>
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => decrementItem(item._id?._id)}

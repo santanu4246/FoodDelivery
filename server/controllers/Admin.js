@@ -10,7 +10,7 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-/* masteradmin and admin route */
+
 async function loginAdmin(req, res) {
   const { username, password } = req.body;
   try {
