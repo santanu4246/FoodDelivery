@@ -190,7 +190,13 @@ async function updateCartTotals(cartId) {
 
     console.log("______________________________________________");
 
+    let array = []
+
     for (const restu of restaurants) {
+      const obj = {
+        restaurant:restu,
+        totalPrice: 0
+      }
       let total = 0;
       const item = cart.items.find(
         (item) => item.restaurant.toString() === restu.toString()
@@ -202,8 +208,10 @@ async function updateCartTotals(cartId) {
         );
         total += quantity * foodData.price;
       }
-      console.log(total);
+      obj.totalPrice = total;
+      array.push(obj);
     }
+    console.log(array);
   } catch (error) {
     console.log("Error in updateCartTotals: ", error);
     throw new Error(error.message || "Error updating cart totals");
