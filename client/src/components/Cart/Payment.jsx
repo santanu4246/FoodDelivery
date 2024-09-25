@@ -5,8 +5,10 @@ import { UserAuth } from "../../store/UserAuth";
 function Payment() {
   const { id } = useParams();
   const [foodList, setFoodList] = useState([]);
-  const { cart, incrementItem, decrementItem, removeItem,totalPrice } = UserAuth();
+  const { cart, incrementItem, decrementItem, removeItem, totalPrice } =
+    UserAuth();
   localStorage.setItem("paymentrestrurantID", id);
+
   useEffect(() => {
     if (cart) {
       const foundFoods = cart.items.find((item) => item.restaurant._id === id);
@@ -16,36 +18,30 @@ function Payment() {
     }
   }, [cart, id]);
 
-  
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Food Items</h1>
-      <div className="flex flex-col items-center gap-[10px]">
+    <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">Food Items</h1>
+      <div className="w-full max-w-3xl flex flex-col items-center gap-6">
         {foodList && foodList.length > 0 ? (
           foodList.map((item, index) => (
             <div
-              className="w-[70%] items-center justify-between bg-[#abdbee] flex rounded-lg shadow-lg p-4"
+              className="w-full bg-white rounded-lg p-6 flex justify-between items-center shadow-lg hover:shadow-xl transition-shadow duration-300"
               key={index}
             >
-              <div>
-                <h2 className="text-lg font-semibold">{item._id?.name}</h2>
-                <p className="text-gray-700">
-                  Price: ₹{item._id?.price?.toFixed(2)}
-                </p>
-                <p className="text-gray-700">
-                  Quantity: {item.quantity}
-                </p>
-                <div className="flex gap-2">
+              <div className="flex flex-col">
+                <h2 className="text-xl font-semibold text-gray-800">{item._id?.name}</h2>
+                <p className="text-lg text-gray-600">Price: ₹{item._id?.price?.toFixed(2)}</p>
+                <p className="text-md text-gray-600">Quantity: {item.quantity}</p>
+                <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => decrementItem(item._id?._id)}
-                    className="bg-red-500 text-white py-1 px-2 rounded"
+                    className="bg-red-500 text-white py-1 px-4 rounded-full hover:bg-red-600 transition duration-200"
                   >
                     -
                   </button>
                   <button
                     onClick={() => incrementItem(item._id?._id)}
-                    className="bg-green-500 text-white py-1 px-2 rounded"
+                    className="bg-green-500 text-white py-1 px-4 rounded-full hover:bg-green-600 transition duration-200"
                   >
                     +
                   </button>
@@ -53,27 +49,24 @@ function Payment() {
               </div>
               <button
                 onClick={() => removeItem(item._id?._id)}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                className="ml-4 bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-700 transition duration-200"
               >
                 Remove
               </button>
             </div>
           ))
         ) : (
-          <p>No items in the cart.</p>
+          <p className="text-gray-700 text-lg">No items in the cart.</p>
         )}
       </div>
 
-      <div className="w-full flex justify-between gap-[20px]">
-        <div></div>
-        <div>
-          {/* Total Price Display */}
-          <div className="mt-4 text-xl font-semibold">
+      <div className="flex justify-between w-full max-w-3xl mt-8">
+        <div className="flex-1"></div>
+        <div className="text-right">
+          <div className="text-2xl font-bold text-gray-900">
             Total: ₹{totalPrice.toFixed(2)}
           </div>
-
-          {/* Payment Button */}
-          <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200">
+          <button className="mt-4 bg-red-500 text-white py-3 px-6 rounded-full hover:bg-red-600 transition duration-200 text-lg">
             Proceed to Payment
           </button>
         </div>

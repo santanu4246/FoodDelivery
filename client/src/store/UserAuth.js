@@ -54,8 +54,8 @@ export const UserAuth = create(
       logout: async () => {
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
-          set({ user: null, cart: null,totalPrice: 0});
-          
+          set({ user: null, cart: null, totalPrice: 0 });
+
           return res.data;
         } catch (error) {
           console.log(error);
@@ -100,7 +100,7 @@ export const UserAuth = create(
           });
           const totalprice = res.data.totalPrice;
           console.log(totalprice);
-          
+
           totalprice.map((item, index) => {
             if (item.restaurant === restuid) {
               set({ totalPrice: item.totalPrice });
@@ -120,7 +120,7 @@ export const UserAuth = create(
           });
           const totalprice = res.data.totalPrice;
           console.log(totalprice);
-          
+
           totalprice.map((item, index) => {
             if (item.restaurant === restuid) {
               set({ totalPrice: item.totalPrice });
@@ -135,15 +135,17 @@ export const UserAuth = create(
       removeItem: async (foodId) => {
         try {
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
-          get().getCart();
           const totalprice = res.data.totalPrice;
-          console.log(totalprice);
-          
-          totalprice.map((item, index) => {
-            if (item.restaurant === restuid) {
-              set({ totalPrice: item.totalPrice });
-            }
-          });
+          if (totalprice.length === 0) {
+            set({ totalPrice: 0 });
+          } else {
+            totalprice.map((item) => {
+              if (item.restaurant === restuid) {
+                set({ totalPrice: item.totalPrice });
+              }
+            });
+          }
+          get().getCart();
           toast.success(res.data.msg);
         } catch (error) {
           console.log(error);
@@ -155,7 +157,7 @@ export const UserAuth = create(
       partialize: (state) => ({
         user: state.user,
         cart: state.cart,
-        totalPrice: state.totalPrice
+        totalPrice: state.totalPrice,
       }),
       storage: createJSONStorage(() => sessionStorage),
     }
