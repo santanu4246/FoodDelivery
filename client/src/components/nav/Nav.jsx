@@ -15,7 +15,7 @@ const Nav = () => {
   const { user, logout, totalCartQuantity } = UserAuth();
 
   return (
-    <div className="bg-gray-50 shadow-md">
+    <div className="bg-gray-50 shadow-md px-[12%]">
       <nav className="flex justify-between items-center py-5 px-8 md:px-12 lg:px-16">
         {/* Branding Section */}
         <h1 className="text-xl font-bold text-gray-900 tracking-wide transition duration-200 hover:text-red-600 cursor-pointer">
@@ -45,7 +45,6 @@ const Nav = () => {
             <span className="ml-2 font-medium">Location</span>
           </div>
 
-          {/* Login/Logout Button */}
           {user ? (
             <button
               onClick={async () => await logout()}
@@ -65,7 +64,6 @@ const Nav = () => {
           )}
         </div>
 
-        {/* User Info Display */}
         {user && (
           <div className="flex items-center gap-2 ml-4">
             <FaUser className="text-xl text-gray-700" />
@@ -73,15 +71,14 @@ const Nav = () => {
           </div>
         )}
 
-        {/* Cart Icon */}
         <div className="relative flex items-center cursor-pointer">
-          <FaCartShopping className="text-2xl text-gray-700 hover:text-red-600 transition duration-200 ml-2" />
-          {/* Optional: Add cart item count here */}
-          <span>{totalCartQuantity}</span>
+          <FaCartShopping className="text-2xl text-gray-700   ml-5" />
+          <span className="absolute -top-5 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">
+            {totalCartQuantity}
+          </span>
         </div>
       </nav>
 
-      {/* Conditional Components */}
       {login && <Login setLogin={setLogin} />}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
     </div>
