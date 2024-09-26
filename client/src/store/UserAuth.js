@@ -13,7 +13,6 @@ export const UserAuth = create(
       user: null,
       cart: null,
       totalPrice: 0,
-      totalItems: 0,
       totalCartQuantity: 0,
       sendotp: async (email) => {
         try {
@@ -30,10 +29,16 @@ export const UserAuth = create(
             otpid,
             otp,
           });
+
           if (res.data.isExisting === true) {
+            const totalprice = res.data.totalPrice;
+            set({ totalCartQuantity: totalprice.length });
+            console.log(totalprice);
             set({ user: res.data.user });
             return res.data;
           }
+         
+          
           return res.data;
         } catch (error) {
           console.log(error);
@@ -54,7 +59,7 @@ export const UserAuth = create(
       logout: async () => {
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
-          set({ user: null, cart: null, totalPrice: 0, totalItems: 0 });
+          set({ user: null, cart: null, totalPrice: 0, totalCartQuantity: 0 });
 
           return res.data;
         } catch (error) {

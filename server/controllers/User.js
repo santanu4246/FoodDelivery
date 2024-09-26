@@ -57,12 +57,24 @@ async function VerifyOtp(req, res) {
         secure: true,
         sameSite: "None",
       });
-
+      const cart = await CartModel.findById(existingUser.cart);
+      if(cart){
+        const totalPrice = await updateCartTotals(cart._id);
+        console.log(cart, totalPrice);
+        
+        return res.status(200).json({
+          message: "Otp verified successfully",
+          user: existingUser,
+          isExisting: true,
+          totalPrice
+        });
+      }
       return res.status(200).json({
         message: "Otp verified successfully",
         user: existingUser,
         isExisting: true,
       });
+      
     }
     return res.status(200).json({
       message: "Otp verified successfully",
@@ -130,34 +142,24 @@ async function addToCart(req, res) {
     const userid = req.id;
     const user = await UserModel.findById(userid);
     console.log("user", user);
-
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
-
     if (!user.cart) {
       const newCart = new CartModel({
         user: user._id,
       });
-
       await newCart.save();
       user.cart = newCart._id;
-
       await user.save();
     }
-
     const cart = await CartModel.findById(user.cart);
-
     if (!cart) {
       return res.status(404).json({ msg: "Cart not found" });
     }
-
     const isRestaurantExist = cart.items.find(
       (item) => item.restaurant.toString() === food.restaurant.toString()
     );
-
-    let restuid = isRestaurantExist;
-
     if (isRestaurantExist) {
       cart.items.forEach((item) => {
         if (item.restaurant.toString() === food.restaurant.toString()) {
@@ -173,8 +175,8 @@ async function addToCart(req, res) {
       restuid = food.restaurant;
     }
     await cart.save();
-    const totalPrice =await updateCartTotals(cart._id);
-    return res.status(200).json({ msg: "Food added to cart" ,totalPrice});
+    const totalPrice = await updateCartTotals(cart._id);
+    return res.status(200).json({ msg: "Food added to cart", totalPrice });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -183,12 +185,11 @@ async function addToCart(req, res) {
 
 async function updateCartTotals(cartId) {
   try {
-    // Find the cart and populate the nested food field
+  
     let cart = await CartModel.findById(cartId).select("items");
 
     let restaurants = cart.items.map((item) => item.restaurant);
 
-    console.log("______________________________________________");
 
     let array = [];
 
@@ -249,7 +250,9 @@ async function getCart(req, res) {
       return res.status(404).json({ msg: "Cart not found" });
     }
     const totalPrice = await updateCartTotals(cart._id);
-    return res.status(200).json({ msg: "Cart fetched successfully", cart ,totalPrice});
+    return res
+      .status(200)
+      .json({ msg: "Cart fetched successfully", cart, totalPrice });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
@@ -342,7 +345,9 @@ async function removeItem(req, res) {
     cart.items = cart.items.filter((item) => item.foods.length > 0);
     await cart.save();
     const totalPrice = await updateCartTotals(cart._id);
-    return res.status(200).json({ msg: "Item removed from cart" ,totalPrice:totalPrice});
+    return res
+      .status(200)
+      .json({ msg: "Item removed from cart", totalPrice: totalPrice });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
