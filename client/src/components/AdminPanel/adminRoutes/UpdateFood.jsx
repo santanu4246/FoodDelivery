@@ -10,7 +10,8 @@ const UpdateFood = ({ foodItem, menuItem, onClose,fetchMenuItems }) => {
   const [prevStarterType, setPrevStarterType] = useState(menuItem?.title || "");
   const [starterType, setStarterType] = useState(menuItem?.title);
   const [foodid, setfoodid] = useState("");
-
+  console.log(starterType, prevStarterType);
+  
 
   const updatedfood = {
     foodName,

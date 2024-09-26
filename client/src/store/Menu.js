@@ -2,7 +2,6 @@ import axios from "axios";
 import { create } from "zustand";
 import { toast } from "react-toastify";
 
-
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const useMenu = create((set, get) => ({
@@ -42,9 +41,12 @@ export const useMenu = create((set, get) => ({
     }
   },
 
-  updateFood: async (formData,foodid) => {
+  updateFood: async (formData, foodid) => {
+    const restuid = localStorage.getItem("restrurantID");
+    console.log(restuid);
+
     try {
-      const res = await axios.put(`${BASE_URL}/menu/${foodid}`, formData);
+      const res = await axios.put(`${BASE_URL}/menu/${foodid}`, { ...formData,restuid});
       toast.success(res.data.msg);
     } catch (error) {
       console.error("Error updating food:", error);

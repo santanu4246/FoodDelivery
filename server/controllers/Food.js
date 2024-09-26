@@ -1,4 +1,3 @@
-import e from "express";
 import FoodModel from "../models/FoodSchema.js";
 import MenuModel from "../models/MenuModel.js";
 import RestrurantModel from "../models/RestrudentModel.js";
@@ -36,7 +35,8 @@ async function addFood(req, res) {
 }
 async function updateFood(req, res) {
   const { foodid } = req.params;
-  const { foodName, foodPrice, starterType, isveg, prevStarterType } = req.body;
+  const { foodName, foodPrice, starterType, isveg, prevStarterType, restuid } =
+    req.body;
 
   try {
     const foodItem = await FoodModel.findById(foodid);
@@ -49,30 +49,25 @@ async function updateFood(req, res) {
     if (isveg !== undefined) foodItem.veg = isveg;
 
     await foodItem.save();
-
+    console.log(restuid);
+    console.log(prevStarterType, starterType);
+    
     if (prevStarterType !== starterType) {
-      const prevMenu = await MenuModel.find({ title: prevStarterType });
-
-      if (!prevMenu || prevMenu.length === 0) {
-        return res.status(404).json({ msg: "Previous menu not found" });
+      const resturant = await RestrurantModel.findById(restuid)
+        .populate("menu")
+        .select("menu");
+      console.log(resturant.menu);
+      for (const menu of resturant.menu) {
+        if (menu.title === prevStarterType) {
+          menu.food.pull(foodid);
+          await menu.save();
+        }
+        if (menu.title === starterType) {
+          menu.food.push(foodid);
+          await menu.save();
+        }
       }
-      const prevMenuItem = prevMenu[0];
-      console.log(prevMenuItem);
-
-      prevMenuItem.food.pull(foodid);
-      await prevMenuItem.save();
-
-      const newMenu = await MenuModel.find({ title: starterType });
-
-      if (!newMenu || newMenu.length === 0) {
-        return res.status(404).json({ msg: "New menu not found" });
-      }
-      const newMenuItem = newMenu[0];
-
-      newMenuItem.food.push(foodid);
-      await newMenuItem.save();
     }
-
     res.status(200).json({ msg: "Food updated successfully", food: foodItem });
   } catch (error) {
     res.status(500).json({
