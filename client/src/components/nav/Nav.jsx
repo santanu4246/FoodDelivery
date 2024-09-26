@@ -5,8 +5,10 @@ import Login from "../Login/Login";
 import { UserAuth } from "../../store/UserAuth";
 import { FaUser } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
+  const navigate = useNavigate();
   const [locationVisible, setLocationVisible] = useState(false);
   const [login, setLogin] = useState(false);
   const handleClick = () => {
@@ -18,7 +20,7 @@ const Nav = () => {
     <div className="bg-gray-50 shadow-md px-[11%]">
       <nav className="flex justify-between items-center py-5 px-8 md:px-12 lg:px-16">
         {/* Branding Section */}
-        <h1 className="text-2xl font-bold text-gray-900 tracking-wide transition duration-200 hover:text-red-600 cursor-pointer">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-wide transition duration-200 hover:text-red-600 cursor-pointer" onClick={()=> navigate("/")}>
           FoodForYou
         </h1>
 
@@ -71,7 +73,7 @@ const Nav = () => {
           </div>
         )}
 
-        <div className="relative flex items-center cursor-pointer">
+        <div className="relative flex items-center cursor-pointer" onClick={() => navigate("/cart")}>
           <FaCartShopping className="text-2xl text-gray-700   ml-5" />
           <span className="absolute -top-5 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">
             {totalCartQuantity}
