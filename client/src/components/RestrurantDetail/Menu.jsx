@@ -52,7 +52,7 @@ const Menu = () => {
                   >
                     <span className="font-medium">{item.name}</span>
                     <span className="text-green-600 font-bold">
-                      ${item.price}
+                      ₹{item.price}
                     </span>
                     <button
                       onClick={async () => {
@@ -89,7 +89,7 @@ const Menu = () => {
                       {item.name}
                     </span>
                     <span className="text-cyan-600 font-bold">
-                      ${item.price}
+                      ₹{item.price}
                     </span>
                     <button
                       onClick={async () => {

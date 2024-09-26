@@ -28,9 +28,11 @@ const Home = () => {
   useEffect(() => {
     setResturents(restureantlist);
   }, [restureantlist]);
+  console.log(Resturents);
+
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
-      const scrollAmount = 300; // Amount to scroll
+      const scrollAmount = 300;
       sliderRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -40,21 +42,18 @@ const Home = () => {
   return (
     <div className="HomeContainer">
       <div className="py-10 bg-gray-100 w-[100%] px-[14%]">
-      <div className="relative">
-          
+        <div className="relative">
           <button
             onClick={() => scrollSlider("left")}
             className="absolute left-[-65px] top-[40%] bg-white text-white p-3 rounded-full z-10"
           >
-
-            <IoIosArrowBack className="text-[20px] text-black"/>
-         
+            <IoIosArrowBack className="text-[20px] text-black" />
           </button>
 
           {/* Slider */}
           <div
             className="flex gap-[2.2rem] py-10 overflow-x-auto scrollNone select-none slider"
-            ref={sliderRef} 
+            ref={sliderRef}
           >
             {Slider.map((item, index) => (
               <div key={index}>
@@ -73,19 +72,21 @@ const Home = () => {
             onClick={() => scrollSlider("right")}
             className="absolute right-[-50px] top-[40%] bg-white text-white p-3 rounded-full z-10"
           >
-            <IoIosArrowForward className="text-[20px] text-black"/>
+            <IoIosArrowForward className="text-[20px] text-black" />
           </button>
         </div>
       </div>
 
       <div className="mb-5 px-[15%] py-10">
-        <h2>Locality Restaurants</h2>
+        <h2 className="text-black text-[25px] font-[500]">
+          Locality Restaurants
+        </h2>
         <div className="grid grid-cols-3 gap-[5rem]">
           {Resturents.length === 0
             ? Array.from({ length: 3 })
                 .fill("")
-                .map((_,index) => {
-                  return <Skeleton key={index}/>;
+                .map((_, index) => {
+                  return <Skeleton key={index} />;
                 })
             : Resturents.map((item, index) => {
                 return (
@@ -105,8 +106,20 @@ const Home = () => {
                     </div>
                     <div className="w-full px-[1.3rem] flex justify-between absolute bottom-[20px]">
                       <div className="">
-                        <h4>{item.name}</h4>
-                        <span>North indian,khabab...</span>
+                        <h4 className="font-[600] text-[16px]">{item.name}</h4>
+                        <span>
+                          {item.cuisine
+                            .slice(0, 3)
+                            .map((cuisineItem, index) => (
+                              <span key={index} className="text-[15px]">
+                                {cuisineItem}
+                                {index < 2 && index < item.cuisine.length - 1
+                                  ? ", "
+                                  : ""}
+                              </span>
+                            ))}
+                          {item.cuisine.length > 3 && <span>...</span>}
+                        </span>
                       </div>
                       <div className="flex flex-col  items-end">
                         <span>{item.rating}</span>

@@ -74,32 +74,35 @@ const Login = ({ setLogin }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
       <div className="bg-white p-[1.5rem] rounded-lg shadow-md w-96 relative">
         {isNameBox && (
-          <div className="bg-red-500 fixed top-0 right-0 w-64 p-4 shadow-lg rounded-lg">
-            <label
-              htmlFor="namexxx"
-              className="block text-white font-bold mb-2"
-            >
-              Enter your name
-            </label>
-            <input
-              id="namexxx"
-              type="text"
-              className="w-full px-3 py-2 mb-4 text-gray-700 bg-white rounded border border-gray-300 focus:outline-none focus:border-red-700"
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
-            />
-            <button
-              onClick={async () => {
-                await createUser(email, name);
-                setIsNameBox(false);
-                handleClose();
-              }}
-              className="w-full bg-white text-red-500 font-semibold py-2 rounded hover:bg-red-700 hover:text-white transition duration-300 ease-in-out"
-            >
-              Submit
-            </button>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+              <label
+                htmlFor="name"
+                className="block text-gray-800 font-bold mb-2 text-lg"
+              >
+                Enter Your Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                className="w-full px-4 py-2 mb-4 text-gray-800 bg-gray-100 rounded border border-gray-300 focus:outline-none focus:border-red-500"
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your Name"
+              />
+              <button
+                onClick={async () => {
+                  await createUser(email, name);
+                  setIsNameBox(false);
+                  handleClose();
+                }}
+                className="w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition duration-300"
+              >
+                Submit
+              </button>
+            </div>
           </div>
         )}
+
         <button
           onClick={handleClose}
           className="absolute top-[15px] right-[15px] text-gray-500 hover:text-gray-800"

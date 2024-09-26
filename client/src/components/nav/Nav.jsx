@@ -15,14 +15,14 @@ const Nav = () => {
   const { user, logout, totalCartQuantity } = UserAuth();
 
   return (
-    <div className="bg-gray-50 shadow-md px-[12%]">
+    <div className="bg-gray-50 shadow-md px-[11%]">
       <nav className="flex justify-between items-center py-5 px-8 md:px-12 lg:px-16">
         {/* Branding Section */}
-        <h1 className="text-xl font-bold text-gray-900 tracking-wide transition duration-200 hover:text-red-600 cursor-pointer">
-          OrrinSanMato
+        <h1 className="text-2xl font-bold text-gray-900 tracking-wide transition duration-200 hover:text-red-600 cursor-pointer">
+          FoodForYou
         </h1>
 
-        {/* Search Bar */}
+       
         <div className="flex-grow mx-4">
           <input
             id="inputField"
