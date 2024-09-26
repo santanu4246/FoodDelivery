@@ -6,7 +6,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 axios.defaults.withCredentials = true;
-const restuid = sessionStorage.getItem("paymentrestrurantID");
+
 export const UserAuth = create(
   persist(
     (set, get) => ({
@@ -71,12 +71,13 @@ export const UserAuth = create(
           const res = await axios.post(`${BASE_URL}/add-to-cart`, { food });
           console.log(res);
           const totalprice = res.data.totalPrice;
+          const restuid = sessionStorage.getItem("paymentrestrurantID");
           set({ totalCartQuantity: totalprice.length });
           const relevantTotal = totalprice.find(
             (item) => item.restaurant === restuid
           );
           console.log(relevantTotal);
-          
+
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
           }
@@ -90,17 +91,18 @@ export const UserAuth = create(
         try {
           const res = await axios.get(`${BASE_URL}/get-cart`);
           const totalprice = res.data.totalPrice;
+          const restuid = sessionStorage.getItem("paymentrestrurantID");
+          set({
+            cart: res.data.cart,
+          });
           const relevantTotal = totalprice.find(
             (item) => item.restaurant === restuid
           );
           console.log(relevantTotal);
-          
+
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
           }
-          set({
-            cart: res.data.cart,
-          });
         } catch (error) {
           console.log(error);
         }
@@ -111,14 +113,15 @@ export const UserAuth = create(
             foodId,
           });
           const totalprice = res.data.totalPrice;
-          console.log(totalprice);
+
+          const restuid = sessionStorage.getItem("paymentrestrurantID");
           set({ totalCartQuantity: totalprice.length });
 
           const relevantTotal = totalprice.find(
             (item) => item.restaurant === restuid
           );
           console.log(relevantTotal);
-          
+
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
           }
@@ -136,7 +139,7 @@ export const UserAuth = create(
             foodId,
           });
           const totalprice = res.data.totalPrice;
-          console.log(totalprice);
+          const restuid = sessionStorage.getItem("paymentrestrurantID");
           set({ totalCartQuantity: totalprice.length });
 
           const relevantTotal = totalprice.find(
@@ -157,6 +160,7 @@ export const UserAuth = create(
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
           const totalprice = res.data.totalPrice;
           set({ totalCartQuantity: totalprice.length });
+          const restuid = sessionStorage.getItem("paymentrestrurantID");
           if (totalprice.length === 0) {
             set({ totalPrice: 0 });
           } else {
