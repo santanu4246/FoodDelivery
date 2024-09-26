@@ -172,10 +172,12 @@ async function addToCart(req, res) {
         foods: [food],
       };
       cart.items.push(obj);
-      restuid = food.restaurant;
+   
     }
     await cart.save();
     const totalPrice = await updateCartTotals(cart._id);
+    console.log(totalPrice);
+    
     return res.status(200).json({ msg: "Food added to cart", totalPrice });
   } catch (error) {
     console.log(error);
