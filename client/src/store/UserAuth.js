@@ -64,7 +64,7 @@ export const UserAuth = create(
       logout: async () => {
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
-          set({ user: null, cart: null, totalPrice: 0, totalCartQuantity: 0 });
+          set({ user: null, cart: null, totalPrice: 0, totalCartQuantity: 0,isLoading: false });
 
           return res.data;
         } catch (error) {

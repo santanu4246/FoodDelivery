@@ -7,6 +7,7 @@ import { FaUser } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useRestrurant } from "../../store/Restrurants";
+import { toast } from "react-toastify";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -97,7 +98,10 @@ const Nav = () => {
 
           {user ? (
             <button
-              onClick={async () => await logout()}
+              onClick={async () => {await logout()
+                navigate("/")
+                toast.success("Logout Successful")
+              }}
               className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
               aria-label="Logout"
             >

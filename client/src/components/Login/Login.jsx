@@ -3,6 +3,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
 import { UserAuth } from "../../store/UserAuth";
 import BeatLoader from "react-spinners/BeatLoader";
+import { toast } from "react-toastify";
 const Login = ({ setLogin }) => {
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -48,13 +49,15 @@ const Login = ({ setLogin }) => {
     const enteredOtp = otp.join("");
     if (enteredOtp.length === 4) {
       const res = await verifyOtp(email, otpId, enteredOtp);
+
       if (res.isExisting === false) {
         setIsNameBox(true);
       } else {
         handleClose();
+        toast.success("Login Successful");
       }
     } else {
-      alert("Please enter the complete OTP.");
+      toast.warn("Enter Full otp");
     }
   };
 
@@ -133,7 +136,7 @@ const Login = ({ setLogin }) => {
               onClick={handleSendOtp}
               className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
             >
-              {isLoading ? <BeatLoader color="white"/> : "Send OTP"}
+              {isLoading ? <BeatLoader color="white" size={10}/> : "Send OTP"}
             </button>
           </>
         ) : (
