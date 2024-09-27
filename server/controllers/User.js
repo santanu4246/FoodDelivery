@@ -317,7 +317,6 @@ async function decrementItem(req, res) {
         }
         await cart.save();
         const totalPrice = await updateCartTotals(cart._id);
-
         return res
           .status(200)
           .json({ msg: "Item quantity decreased", totalPrice: totalPrice });

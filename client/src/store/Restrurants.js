@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-
+import debounce from 'lodash/debounce'; // Import debounce from lodash
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 axios.defaults.withCredentials = true;
@@ -8,6 +8,7 @@ axios.defaults.withCredentials = true;
 export const useRestrurant = create(set => ({
   allLocations:[],
   restureantlist:[],
+  searchResults: [],
   getAllLocations:async()=>{
     try{
         const response =await axios.get(`${BASE_URL}/getlocations`)
@@ -33,4 +34,16 @@ export const useRestrurant = create(set => ({
         return false
     }
   },
+  searchRestaurants: debounce(async (searchTerm) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/searchrestaurants`, {
+        params: { search: searchTerm },
+      });
+      console.log(response.data.results);
+      
+      set({ searchResults: response.data.results });
+    } catch (error) {
+      console.log(error);
+    }
+  }, 300),
 }));

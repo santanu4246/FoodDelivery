@@ -1,9 +1,8 @@
 import RestrudentModel from "../models/RestrudentModel.js";
 import {
   deleteImageFromCloudinary,
-  uploadOnCloudinary
+  uploadOnCloudinary,
 } from "../utils/Cloudinary.js";
-
 
 async function getAllRestrudents(req, res) {
   try {
@@ -11,19 +10,19 @@ async function getAllRestrudents(req, res) {
     return res.status(201).json({
       msg: "All restrurants fetched",
       success: true,
-      restrurant: response
+      restrurant: response,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "An error occurred while fetching all the restaurants"
+      message: "An error occurred while fetching all the restaurants",
     });
   }
 }
 async function getRestrudentById(req, res) {
   const { id } = req.params;
   try {
-    const response = await RestrudentModel.findById(id).populate("menu"); 
+    const response = await RestrudentModel.findById(id).populate("menu");
     if (!response) {
       return res
         .status(400)
@@ -32,12 +31,12 @@ async function getRestrudentById(req, res) {
     return res.status(200).json({
       msg: "Restrurant fetch successfull",
       success: true,
-      restrurant: response
+      restrurant: response,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "An error occurred while fetching all the restaurants"
+      message: "An error occurred while fetching all the restaurants",
     });
   }
 }
@@ -45,15 +44,15 @@ async function getRestrudentById(req, res) {
 async function getAllLocations(req, res) {
   try {
     const restaurants = await RestrudentModel.find({}).select("location");
-    const locationSet = [...new Set(restaurants.map(item => item.location))];
+    const locationSet = [...new Set(restaurants.map((item) => item.location))];
     return res.status(200).json({
-      locations: locationSet
+      locations: locationSet,
     });
   } catch (error) {
     return res.status(500).json({
       msg: "Error while finding all locations",
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -66,7 +65,7 @@ async function setLocation(req, res) {
     }
     res.cookie("location", JSON.stringify(location), {
       httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({ message: "Location set successfully" });
   } catch (error) {
@@ -82,18 +81,18 @@ async function getRestrurantByLocation(req, res) {
   //     .json({ msg: "Location cookie not found!", success: false });
   try {
     const restrurantList = await RestrudentModel.find({
-      location: location ? location.slice(1, -1) : "Bankura"
+      location: location ? location.slice(1, -1) : "Bankura",
     });
     return res.status(200).json({
       msg: "Restrurants feched by location",
       success: false,
-      restrurantList
+      restrurantList,
     });
   } catch (error) {
     return res.status(500).json({
       msg: "Error while finding restrurant by location",
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -105,7 +104,7 @@ async function updateRestrurant(req, res) {
   if (!file && !name && !location && !geolocation && !cuisine && !perThali) {
     return res.status(400).json({
       msg: "Not all things are provided!",
-      success: false
+      success: false,
     });
   }
   try {
@@ -113,7 +112,7 @@ async function updateRestrurant(req, res) {
     if (!restrurantRes) {
       return res.status(400).json({
         msg: "Restrurant not found!",
-        success: false
+        success: false,
       });
     }
     if (file) {
@@ -137,16 +136,60 @@ async function updateRestrurant(req, res) {
     return res.status(200).json({
       msg: "Restrurant updated successfully",
       success: true,
-      restrurant: restrurantRes
+      restrurant: restrurantRes,
     });
   } catch (error) {
     return res.status(500).json({
       msg: "Error while updating restrurant!",
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 }
+async function searchRestaurants(req, res) {
+  const searchTerm = req.query.search?.trim().toLowerCase() || ""; // Extract, trim, and convert the search term to lowercase
+
+  if (!searchTerm) {
+    return res.status(400).json({
+      success: false,
+      message: "Search term cannot be empty",
+      results: [],
+    });
+  }
+
+  try {
+    // Fetch all restaurants and filter manually (no $regex, using strict filtering)
+    const results = await RestrudentModel.find({});
+
+    // Filter restaurants by partial matching (case-insensitive) manually
+    const filteredResults = results.filter(restaurant =>
+      restaurant.name.toLowerCase().includes(searchTerm)
+    );
+    console.log(filteredResults);
+    
+    if (filteredResults.length === 0) {
+      return res.json({
+        success: false,
+        message: "No restaurants found",
+        results: [],
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurants fetched successfully",
+      results: filteredResults,
+    });
+  } catch (error) {
+    console.error("Error while searching restaurants: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
+
 
 export {
   getAllRestrudents,
@@ -154,5 +197,6 @@ export {
   getAllLocations,
   setLocation,
   getRestrurantByLocation,
-  updateRestrurant
+  updateRestrurant,
+  searchRestaurants,
 };

@@ -5,7 +5,8 @@ import {
   getRestrudentById,
   getRestrurantByLocation,
   setLocation,
-  updateRestrurant
+  updateRestrurant,
+  searchRestaurants,
 } from "../controllers/Restrudent.js";
 import AuthAdmin from "../middleware/AuthAdmin.js";
 import uploadStorage from "../middleware/Multer.js";
@@ -16,6 +17,7 @@ RestrudentRouter.get("/getrestrurantbyid/:id", getRestrudentById);
 RestrudentRouter.get("/getlocations", getAllLocations);
 RestrudentRouter.get("/getrestrurantbylocation", getRestrurantByLocation);
 RestrudentRouter.post("/setlocation", setLocation);
+RestrudentRouter.get("/searchrestaurants", searchRestaurants);
 RestrudentRouter.put(
   "/updaterestrurant/:id",
   AuthAdmin,
