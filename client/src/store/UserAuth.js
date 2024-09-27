@@ -14,15 +14,19 @@ export const UserAuth = create(
       cart: null,
       totalPrice: 0,
       totalCartQuantity: 0,
+      isLoading: false,
       sendotp: async (email) => {
+        set({ isLoading: true });
         try {
           const res = await axios.post(`${BASE_URL}/sendotp`, { email });
           return res.data.OtpId;
         } catch (error) {
           console.log(error);
         }
+        set({ isLoading: false });
       },
       verifyOtp: async (email, otpid, otp) => {
+        set({ isLoading: true });
         try {
           const res = await axios.post(`${BASE_URL}/verifyotp`, {
             email,
@@ -43,6 +47,7 @@ export const UserAuth = create(
         } catch (error) {
           console.log(error);
         }
+        set({ isLoading: false });
       },
       createUser: async (email, name) => {
         try {

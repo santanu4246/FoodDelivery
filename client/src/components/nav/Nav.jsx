@@ -16,7 +16,7 @@ const Nav = () => {
   const handleClick = () => {
     setLocationVisible((prev) => !prev);
   };
-  const { user, logout, totalCartQuantity } = UserAuth();
+  const { user, logout, totalCartQuantity,isLoading } = UserAuth();
   const { searchRestaurants, searchResults } = useRestrurant();
 
   const handleSearchChange = async (event) => {

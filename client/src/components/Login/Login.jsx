@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
 import { UserAuth } from "../../store/UserAuth";
+import BeatLoader from "react-spinners/BeatLoader";
 const Login = ({ setLogin }) => {
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -11,7 +12,7 @@ const Login = ({ setLogin }) => {
   const [isNameBox, setIsNameBox] = useState(false);
   const otpInputRefs = useRef([]);
 
-  const { sendotp, verifyOtp, createUser, logout } = UserAuth();
+  const { sendotp, verifyOtp, createUser, logout, isLoading } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {
@@ -67,7 +68,7 @@ const Login = ({ setLogin }) => {
   const handleUndo = () => {
     setOtpSent(false);
     setOtp(new Array(4).fill(""));
-    otpInputRefs.current[0]?.focus(); // Focus on the first input
+    otpInputRefs.current[0]?.focus();
   };
 
   return (
@@ -132,7 +133,7 @@ const Login = ({ setLogin }) => {
               onClick={handleSendOtp}
               className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
             >
-              Send OTP
+              {isLoading ? <BeatLoader color="white"/> : "Send OTP"}
             </button>
           </>
         ) : (
