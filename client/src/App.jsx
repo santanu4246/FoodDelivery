@@ -38,7 +38,19 @@ function App() {
         <Route path="/payment/:id" element={<Payment />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={3500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition:Slide
+      />
     </div>
   );
 }

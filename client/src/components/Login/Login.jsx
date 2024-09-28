@@ -57,7 +57,7 @@ const Login = ({ setLogin }) => {
         toast.success("Login Successful");
       }
     } else {
-      toast.warn("Enter Full otp");
+      toast.warn("wrong otp");
     }
   };
 
@@ -136,7 +136,7 @@ const Login = ({ setLogin }) => {
               onClick={handleSendOtp}
               className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
             >
-              {isLoading ? <BeatLoader color="white" size={10}/> : "Send OTP"}
+              {isLoading ? <BeatLoader color="white" size={10} /> : "Send OTP"}
             </button>
           </>
         ) : (
