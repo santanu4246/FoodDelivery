@@ -41,10 +41,9 @@ export const UserAuth = create(
             set({ user: res.data.user });
             return res.data;
           }
-         
-          
           return res.data;
         } catch (error) {
+          toast.warn("wrong otp");
           console.log(error);
         }
         set({ isLoading: false });
@@ -64,8 +63,13 @@ export const UserAuth = create(
       logout: async () => {
         try {
           const res = await axios.post(`${BASE_URL}/logout`);
-          set({ user: null, cart: null, totalPrice: 0, totalCartQuantity: 0,isLoading: false });
-
+          set({
+            user: null,
+            cart: null,
+            totalPrice: 0,
+            totalCartQuantity: 0,
+            isLoading: false,
+          });
           return res.data;
         } catch (error) {
           console.log(error);
