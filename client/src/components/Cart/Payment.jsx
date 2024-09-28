@@ -22,12 +22,16 @@ function Payment() {
     };
     get();
   }, [id]);
+
   useEffect(() => {
     if (cart) {
       const foundFoods = cart.items.find((item) => item.restaurant._id === id);
       if (foundFoods && foundFoods.foods) {
         setFoodList(foundFoods.foods);
       }
+    }
+    if(totalPrice === 0){
+      setFoodList([]);
     }
   }, [cart, id]);
 
