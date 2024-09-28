@@ -54,7 +54,6 @@ function Cart() {
   return (
     isLoading ? (<div className="flex items-center justify-center h-[50vh] w-full"><BeatLoader size={20} color="red"/></div>) : (
       <div className="flex flex-col items-center my-[2rem]">
-        {/* Check if the cart has items */}
         {cart?.items && cart.items.length > 0 ? (
           cart.items.map((item) => (
             <RestuCard

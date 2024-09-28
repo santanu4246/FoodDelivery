@@ -9,7 +9,7 @@ function MasterAdmin() {
   const path = location.pathname;
   const routesOfmasterAdmin = [
     { name: "Add Resturenat", path: "/addresturent" },
-    { name: "Edit Resturenat", path: "/updateresturent" }
+    { name: "Edit Resturenat", path: "/updateresturent" },
   ];
   return (
     <div className="flex h-screen bg-gray-100">
@@ -45,7 +45,6 @@ function MasterAdmin() {
         </div>
       </div>
 
-      {/* Right Side Content */}
       <div className="w-full h-screen p-8 overflow-auto">
         <Routes>
           <Route path="/addresturent" element={<Addresturent />} />

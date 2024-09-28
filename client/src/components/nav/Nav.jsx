@@ -8,12 +8,14 @@ import { FaCartShopping } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useRestrurant } from "../../store/Restrurants";
 import { toast } from "react-toastify";
+import Loginoption from "../Login/Loginoption";
 
 const Nav = () => {
   const navigate = useNavigate();
   const [locationVisible, setLocationVisible] = useState(false);
   const [login, setLogin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loginOptions, setloginOptions] = useState(false)
   const handleClick = () => {
     setLocationVisible((prev) => !prev);
   };
@@ -109,7 +111,7 @@ const Nav = () => {
             </button>
           ) : (
             <button
-              onClick={() => setLogin(true)}
+              onClick={() => setloginOptions(true)}
               className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
               aria-label="Login"
             >
@@ -135,7 +137,8 @@ const Nav = () => {
           </span>
         </div>
       </nav>
-
+      
+      {loginOptions && <Loginoption setLogin={setLogin} setloginOptions={setloginOptions}/> }
       {login && <Login setLogin={setLogin} />}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
     </div>
