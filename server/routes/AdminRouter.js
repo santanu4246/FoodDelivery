@@ -24,7 +24,7 @@ AdminRouter.put(
   updateAdmin
 );
 AdminRouter.delete("/masteradmin/delete/:adminid", AuthAdmin, deleteAdmin);
-AdminRouter.post("/admin/login", loginAdmin);
+AdminRouter.post("/admin/login",AuthAdmin, loginAdmin);
 AdminRouter.get("/getadmin", AuthAdmin, getAdmin);
 AdminRouter.get("/admin/logout", logoutAdmin);
 AdminRouter.get("/masteradmin/getalladmins", AuthAdmin, getAllAdmins);
