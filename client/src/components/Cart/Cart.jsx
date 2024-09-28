@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 import { UserAuth } from "../../store/UserAuth";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { BeatLoader } from "react-spinners";
 
 function RestuCard({ item, count }) {
+  const { isLoading  } = UserAuth();
   const navigate = useNavigate();
   return (
     <div className="bg-white items-center justify-between flex w-[70%] border border-gray-200 rounded-lg shadow-sm overflow-hidden m-2">
@@ -43,28 +45,31 @@ function RestuCard({ item, count }) {
 }
 
 function Cart() {
-  const { getCart, cart } = UserAuth();
+  const { getCart, cart,isLoading } = UserAuth();
 
   useEffect(() => {
     getCart();
   }, []);
 
   return (
-    <div className="flex flex-col items-center my-[2rem]">
-      {/* Check if the cart has items */}
-      {cart?.items && cart.items.length > 0 ? (
-        cart.items.map((item) => (
-          <RestuCard
-            item={item.restaurant}
-            count={item.foods.length}
-            key={item._id}
-          />
-        ))
-      ) : (
-        <div className="text-black h-[30vh] flex items-center justify-center">No items in cart</div>
-      )}
-    </div>
+    isLoading ? (<div className="flex items-center justify-center h-[50vh] w-full"><BeatLoader size={20} color="red"/></div>) : (
+      <div className="flex flex-col items-center my-[2rem]">
+        {/* Check if the cart has items */}
+        {cart?.items && cart.items.length > 0 ? (
+          cart.items.map((item) => (
+            <RestuCard
+              item={item.restaurant}
+              count={item.foods.length}
+              key={item._id}
+            />
+          ))
+        ) : (
+          <div className="text-black h-[30vh] flex items-center justify-center">No items in cart</div>
+        )}
+      </div>
+    )
   );
+  
 }
 
 

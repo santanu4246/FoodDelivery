@@ -102,6 +102,7 @@ export const UserAuth = create(
         }
       },
       getCart: async () => {
+        set({ isLoading: true });
         try {
           const res = await axios.get(`${BASE_URL}/get-cart`);
           const totalprice = res.data.totalPrice;
@@ -122,6 +123,8 @@ export const UserAuth = create(
 
         } catch (error) {
           console.log(error);
+        }finally{
+          set({ isLoading: false });
         }
       },
       incrementItem: async (foodId) => {
