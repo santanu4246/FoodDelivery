@@ -3,7 +3,7 @@ import mailSender from "../utils/Nodemailer.js";
 import otpModel from "../models/OtpModel.js";
 import jwt from "jsonwebtoken";
 import CartModel from "../models/CartModel.js";
-import mongoose from "mongoose";
+import mongoose, { get } from "mongoose";
 import FoodModel from "../models/FoodSchema.js";
 
 async function SendOtp(req, res) {
@@ -346,9 +346,11 @@ async function removeItem(req, res) {
     cart.items = cart.items.filter((item) => item.foods.length > 0);
     await cart.save();
     const totalPrice = await updateCartTotals(cart._id);
+    
     return res
       .status(200)
       .json({ msg: "Item removed from cart", totalPrice: totalPrice });
+      
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });

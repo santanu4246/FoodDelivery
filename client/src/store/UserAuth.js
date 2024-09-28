@@ -116,7 +116,10 @@ export const UserAuth = create(
 
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
+          }else{
+            set({ totalPrice: 0 });
           }
+
         } catch (error) {
           console.log(error);
         }
@@ -173,10 +176,11 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
           const totalprice = res.data.totalPrice;
+          console.log(totalprice);
           set({ totalCartQuantity: totalprice.length });
           const restuid = sessionStorage.getItem("paymentrestrurantID");
           if (totalprice.length === 0) {
-            set({ totalPrice: 0 });
+            set({ totalPrice: 0, cart: null });
           } else {
             const relevantTotal = totalprice.find(
               (item) => item.restaurant === restuid

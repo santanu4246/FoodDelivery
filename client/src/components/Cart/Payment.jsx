@@ -13,12 +13,13 @@ function Payment() {
     totalPrice,
     getCart,
   } = UserAuth();
+  console.log(foodList);
 
   useEffect(() => {
     sessionStorage.setItem("paymentrestrurantID", id);
-    const get = async ()=>{
-    await getCart();
-  }
+    const get = async () => {
+      await getCart();
+    };
     get();
   }, [id]);
   useEffect(() => {
@@ -30,7 +31,6 @@ function Payment() {
     }
   }, [cart, id]);
 
- 
   return (
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
       <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
@@ -69,7 +69,9 @@ function Payment() {
                 </div>
               </div>
               <button
-                onClick={() => removeItem(item._id?._id)}
+                onClick={() => {
+                  removeItem(item._id?._id);
+                }}
                 className="ml-4 bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-700 transition duration-200"
               >
                 Remove

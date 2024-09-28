@@ -13,7 +13,7 @@ const Login = ({ setLogin }) => {
   const [isNameBox, setIsNameBox] = useState(false);
   const otpInputRefs = useRef([]);
 
-  const { sendotp, verifyOtp, createUser, logout, isLoading } = UserAuth();
+  const { sendotp, verifyOtp, createUser,  isLoading } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {
@@ -57,7 +57,7 @@ const Login = ({ setLogin }) => {
         toast.success("Login Successful");
       }
     } else {
-      toast.warn("wrong otp");
+      toast.warn("Wrong otp");
     }
   };
 
