@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserAuth } from "../../store/UserAuth";
+import { toast } from "react-toastify";
 
 function Payment() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [foodList, setFoodList] = useState([]);
   const {
@@ -12,8 +14,8 @@ function Payment() {
     removeItem,
     totalPrice,
     getCart,
+    removeCart
   } = UserAuth();
-  console.log(foodList);
 
   useEffect(() => {
     sessionStorage.setItem("paymentrestrurantID", id);
@@ -30,10 +32,69 @@ function Payment() {
         setFoodList(foundFoods.foods);
       }
     }
-    if(totalPrice === 0){
+    if (totalPrice === 0) {
       setFoodList([]);
     }
   }, [cart, id]);
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  async function handlePayment(withGstPrice) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        key: "rzp_test_7cs83Ikm791P0j",
+        amount: parseInt(withGstPrice * 100),
+        currency: "INR",
+        name: "FoodForYou",
+        description: "Order your food",
+        image: "",
+        handler: (response) => {
+          resolve(true);
+        },
+        prefill: {
+          name: "",
+          email: "",
+          contact: "",
+        },
+        notes: {
+          address: "",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+        modal: {
+          ondismiss: () => {
+            resolve(false);
+          },
+        },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    });
+  }
+  const handleProceedToPayment = async () => {
+    const paymentSuccessful = await handlePayment(totalPrice);
+    if (paymentSuccessful) {
+      try {
+        await removeCart(id,foodList)
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
+      
+      toast.success("Payment successful!");
+    } else {
+      toast.warn("Payment cancelled or failed.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
@@ -93,7 +154,10 @@ function Payment() {
           <div className="text-2xl font-bold text-gray-900">
             Total: ₹{totalPrice.toFixed(2)}
           </div>
-          <button className="mt-4 bg-red-500 text-white py-3 px-6 rounded-full hover:bg-red-600 transition duration-200 text-lg">
+          <button
+            className="mt-4 bg-red-500 text-white py-3 px-6 rounded-full hover:bg-red-600 transition duration-200 text-lg"
+            onClick={handleProceedToPayment}
+          >
             Proceed to Payment
           </button>
         </div>

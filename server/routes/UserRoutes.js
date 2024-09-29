@@ -9,7 +9,8 @@ import {
   getCart,
   incrementItem,
   decrementItem,
-  removeItem
+  removeItem,
+  removeCartAfterPayment
 } from "../controllers/User.js";
 const userRouter = express.Router();
 userRouter.post("/sendotp", SendOtp);
@@ -21,4 +22,5 @@ userRouter.get(`/get-cart`, AuthToken, getCart);
 userRouter.post("/increment-item",AuthToken, incrementItem);
 userRouter.post("/decrement-item", AuthToken,decrementItem);
 userRouter.post("/remove-item", AuthToken,removeItem);
+userRouter.post("/remove-cart",AuthToken, removeCartAfterPayment);
 export default userRouter;

@@ -179,7 +179,7 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
           const totalprice = res.data.totalPrice;
-          console.log(totalprice);
+  
           set({ totalCartQuantity: totalprice.length });
           const restuid = sessionStorage.getItem("paymentrestrurantID");
           if (totalprice.length === 0) {
@@ -198,7 +198,22 @@ export const UserAuth = create(
           console.log(error);
         }
       },
+      removeCart:async (restuid,foodlist)=>{
+        try {
+          const res = await axios.post(`${BASE_URL}/remove-cart`,{restuid,foodlist})
+          console.log(res);
+          
+          const totalprice = res.data.totalPrice;
+          console.log("totalprice",totalprice);
+          
+          set({ totalCartQuantity: totalprice.length });
+        } catch (error) {
+          console.log(error);
+        }
+        
+      }
     }),
+   
     {
       name: "user",
       partialize: (state) => ({

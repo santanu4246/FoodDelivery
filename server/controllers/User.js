@@ -3,7 +3,7 @@ import mailSender from "../utils/Nodemailer.js";
 import otpModel from "../models/OtpModel.js";
 import jwt from "jsonwebtoken";
 import CartModel from "../models/CartModel.js";
-import mongoose, { get } from "mongoose";
+import mongoose from "mongoose";
 import FoodModel from "../models/FoodSchema.js";
 
 async function SendOtp(req, res) {
@@ -58,15 +58,15 @@ async function VerifyOtp(req, res) {
         sameSite: "None",
       });
       const cart = await CartModel.findById(existingUser.cart);
-      if(cart){
+      if (cart) {
         const totalPrice = await updateCartTotals(cart._id);
         console.log(cart, totalPrice);
-        
+
         return res.status(200).json({
           message: "Otp verified successfully",
           user: existingUser,
           isExisting: true,
-          totalPrice
+          totalPrice,
         });
       }
       return res.status(200).json({
@@ -74,7 +74,6 @@ async function VerifyOtp(req, res) {
         user: existingUser,
         isExisting: true,
       });
-      
     }
     return res.status(200).json({
       message: "Otp verified successfully",
@@ -172,12 +171,11 @@ async function addToCart(req, res) {
         foods: [food],
       };
       cart.items.push(obj);
-   
     }
     await cart.save();
     const totalPrice = await updateCartTotals(cart._id);
     console.log(totalPrice);
-    
+
     return res.status(200).json({ msg: "Food added to cart", totalPrice });
   } catch (error) {
     console.log(error);
@@ -187,11 +185,9 @@ async function addToCart(req, res) {
 
 async function updateCartTotals(cartId) {
   try {
-  
     let cart = await CartModel.findById(cartId).select("items");
 
     let restaurants = cart.items.map((item) => item.restaurant);
-
 
     let array = [];
 
@@ -306,7 +302,7 @@ async function decrementItem(req, res) {
     const item = cart.items.find((item) =>
       item.foods.some((food) => food._id.equals(foodId))
     );
-    // console.log("decrement items", item);
+
     if (item) {
       const foodItem = item.foods.find((food) => food._id.equals(foodId));
       if (foodItem) {
@@ -346,14 +342,68 @@ async function removeItem(req, res) {
     cart.items = cart.items.filter((item) => item.foods.length > 0);
     await cart.save();
     const totalPrice = await updateCartTotals(cart._id);
-    
+
     return res
       .status(200)
       .json({ msg: "Item removed from cart", totalPrice: totalPrice });
-      
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal Server Error" });
+  }
+}
+async function removeCartAfterPayment(req, res) {
+  const { restuid, foodlist } = req.body;
+  const userId = req.id;
+
+  console.log("Request body:", { restuid, foodlist });
+  console.log("User ID:", userId);
+
+  const foodIds = foodlist.map((food) => {
+    if (food._id._id && typeof food._id._id === "string") {
+      return food._id._id;
+    }
+    throw new Error("Invalid food ID structure");
+  });
+  console.log("Food IDs to remove:", foodIds);
+
+  try {
+    // First, let's fetch the current cart
+    const currentCart = await CartModel.findOne({ user: userId });
+    console.log("Current cart before update:", JSON.stringify(currentCart, null, 2));
+
+    if (!currentCart) {
+      return res.status(404).json({ success: false, message: "Cart not found" });
+    }
+
+    // Find the specific item in the cart
+    const itemIndex = currentCart.items.findIndex(item => 
+      item.restaurant.toString() === restuid
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ success: false, message: "Restaurant not found in cart" });
+    }
+
+    // Remove the specified foods from the item
+    currentCart.items[itemIndex].foods = currentCart.items[itemIndex].foods.filter(
+      food => !foodIds.includes(food._id.toString())
+    );
+
+    // Remove the item if it no longer has any foods
+    if (currentCart.items[itemIndex].foods.length === 0) {
+      currentCart.items.splice(itemIndex, 1);
+    }
+
+    // Save the updated cart
+    const updatedCart = await currentCart.save();
+
+    console.log("Updated cart after changes:", JSON.stringify(updatedCart, null, 2));
+    const cart = await CartModel.findOne({user:userId});
+    const totalPrice = await updateCartTotals(cart._id); 
+    return res.status(200).json({ success: true, updatedCart,totalPrice });
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    return res.status(500).json({ success: false, message: "Server Error" });
   }
 }
 
@@ -367,4 +417,5 @@ export {
   incrementItem,
   decrementItem,
   removeItem,
+  removeCartAfterPayment,
 };
