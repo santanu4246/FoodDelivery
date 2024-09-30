@@ -34,7 +34,9 @@ function AddFooditems() {
   }, []);
 
   return (
-    <div className="text-black max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
+    
+<div className="flex items-center justify-center h-screen w-full">
+    <div className="text-black max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg min-w-[40%]">
       <h2 className="text-2xl font-semibold mb-6 text-center">
         Add Food Items
       </h2>
@@ -67,7 +69,7 @@ function AddFooditems() {
         </div>
         <div>
           <label className="block text-sm font-medium text-black">
-            Starter Type:
+            Menu Type:
           </label>
           <select
             value={starterType}
@@ -76,7 +78,7 @@ function AddFooditems() {
             className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option value="" disabled>
-              Select starter
+              Select Menu
             </option>
             {menuDropDownList.map((item, index) => {
               return (
@@ -105,6 +107,7 @@ function AddFooditems() {
           Add Food Item
         </button>
       </form>
+    </div>
     </div>
   );
 }

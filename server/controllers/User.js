@@ -138,6 +138,8 @@ async function addToCart(req, res) {
   }
   try {
     const { food } = req.body;
+    console.log(food);
+    const foodId = food._id;
     const userid = req.id;
     const user = await UserModel.findById(userid);
     console.log("user", user);
@@ -155,6 +157,20 @@ async function addToCart(req, res) {
     const cart = await CartModel.findById(user.cart);
     if (!cart) {
       return res.status(404).json({ msg: "Cart not found" });
+    }
+    const item = cart.items.find((item) =>
+      item.foods.some((food) => food._id.equals(foodId))
+    );
+    if (item) {
+      const foodItem = item.foods.find((food) => food._id.equals(foodId));
+      if (foodItem) {
+        foodItem.quantity += 1;
+        await cart.save();
+        const totalPrice = await updateCartTotals(cart._id);
+        return res
+          .status(200)
+          .json({ msg: "Item quantity increased", totalPrice: totalPrice });
+      }
     }
     const isRestaurantExist = cart.items.find(
       (item) => item.restaurant.toString() === food.restaurant.toString()
@@ -174,7 +190,6 @@ async function addToCart(req, res) {
     }
     await cart.save();
     const totalPrice = await updateCartTotals(cart._id);
-    console.log(totalPrice);
 
     return res.status(200).json({ msg: "Food added to cart", totalPrice });
   } catch (error) {
@@ -276,7 +291,6 @@ async function incrementItem(req, res) {
         foodItem.quantity += 1;
         await cart.save();
         const totalPrice = await updateCartTotals(cart._id);
-
         return res
           .status(200)
           .json({ msg: "Item quantity increased", totalPrice: totalPrice });
@@ -369,25 +383,32 @@ async function removeCartAfterPayment(req, res) {
   try {
     // First, let's fetch the current cart
     const currentCart = await CartModel.findOne({ user: userId });
-    console.log("Current cart before update:", JSON.stringify(currentCart, null, 2));
+    console.log(
+      "Current cart before update:",
+      JSON.stringify(currentCart, null, 2)
+    );
 
     if (!currentCart) {
-      return res.status(404).json({ success: false, message: "Cart not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
     // Find the specific item in the cart
-    const itemIndex = currentCart.items.findIndex(item => 
-      item.restaurant.toString() === restuid
+    const itemIndex = currentCart.items.findIndex(
+      (item) => item.restaurant.toString() === restuid
     );
 
     if (itemIndex === -1) {
-      return res.status(404).json({ success: false, message: "Restaurant not found in cart" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Restaurant not found in cart" });
     }
 
     // Remove the specified foods from the item
-    currentCart.items[itemIndex].foods = currentCart.items[itemIndex].foods.filter(
-      food => !foodIds.includes(food._id.toString())
-    );
+    currentCart.items[itemIndex].foods = currentCart.items[
+      itemIndex
+    ].foods.filter((food) => !foodIds.includes(food._id.toString()));
 
     // Remove the item if it no longer has any foods
     if (currentCart.items[itemIndex].foods.length === 0) {
@@ -397,10 +418,13 @@ async function removeCartAfterPayment(req, res) {
     // Save the updated cart
     const updatedCart = await currentCart.save();
 
-    console.log("Updated cart after changes:", JSON.stringify(updatedCart, null, 2));
-    const cart = await CartModel.findOne({user:userId});
-    const totalPrice = await updateCartTotals(cart._id); 
-    return res.status(200).json({ success: true, updatedCart,totalPrice });
+    console.log(
+      "Updated cart after changes:",
+      JSON.stringify(updatedCart, null, 2)
+    );
+    const cart = await CartModel.findOne({ user: userId });
+    const totalPrice = await updateCartTotals(cart._id);
+    return res.status(200).json({ success: true, updatedCart, totalPrice });
   } catch (error) {
     console.error("Error updating cart:", error);
     return res.status(500).json({ success: false, message: "Server Error" });

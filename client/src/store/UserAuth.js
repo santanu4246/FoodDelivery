@@ -75,6 +75,7 @@ export const UserAuth = create(
           console.log(error);
         }
       },
+
       addToCart: async (food) => {
         const user = get().user;
         if (!user || !user._id) {
