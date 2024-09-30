@@ -3,9 +3,9 @@ import mailSender from "../utils/Nodemailer.js";
 import otpModel from "../models/OtpModel.js";
 import jwt from "jsonwebtoken";
 import CartModel from "../models/CartModel.js";
-import mongoose from "mongoose";
-import FoodModel from "../models/FoodSchema.js";
 
+import FoodModel from "../models/FoodSchema.js";
+import OrderModel from "../models/OrderModel.js";
 async function SendOtp(req, res) {
   const { email } = req.body;
 
@@ -14,7 +14,9 @@ async function SendOtp(req, res) {
     await mailSender(email, "FoodDelivery Login", `Your otp is ${otp}`);
     const newOtp = new otpModel({ email, otp });
     await newOtp.save();
-    return res.status(200).json({ msg: "Otp sent to your email", OtpId: newOtp._id });
+    return res
+      .status(200)
+      .json({ msg: "Otp sent to your email", OtpId: newOtp._id });
   } catch (error) {
     console.log(error);
   }
@@ -367,8 +369,8 @@ async function removeItem(req, res) {
 }
 async function removeCartAfterPayment(req, res) {
   const { restuid, foodlist } = req.body;
-  console.log("foodlist",foodlist);
-  
+  console.log("foodlist", foodlist);
+
   const userId = req.id;
   const foodIds = foodlist.map((food) => {
     if (food._id._id && typeof food._id._id === "string") {
@@ -381,7 +383,6 @@ async function removeCartAfterPayment(req, res) {
   try {
     // First, let's fetch the current cart
     const currentCart = await CartModel.findOne({ user: userId });
-   
 
     if (!currentCart) {
       return res
@@ -419,6 +420,15 @@ async function removeCartAfterPayment(req, res) {
     // );
     const cart = await CartModel.findOne({ user: userId });
     const totalPrice = await updateCartTotals(cart._id);
+    const orderItems = foodlist.map((food) => ({
+      name: food._id.name,
+      price: food._id.price,
+      quantity: food.quantity,
+      user: userId,
+      restaurant: food._id.restaurant,
+      menu: food._id.menu,
+    }));
+    await OrderModel.insertMany(orderItems);
     return res.status(200).json({ success: true, updatedCart, totalPrice });
   } catch (error) {
     console.error("Error updating cart:", error);
