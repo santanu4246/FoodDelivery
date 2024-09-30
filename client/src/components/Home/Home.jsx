@@ -3,8 +3,8 @@ import { useFoodCategory } from "../../store/FoodCategory";
 import { useRestrurant } from "../../store/Restrurants";
 import Skeleton from "./Skeleton";
 import { useNavigate } from "react-router-dom";
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+
 const Home = () => {
   const navigate = useNavigate();
   const sliderRef = useRef(null);
@@ -13,6 +13,7 @@ const Home = () => {
     useRestrurant();
   const [Slider, setSlider] = useState([]);
   const [Resturents, setResturents] = useState([]);
+
   useEffect(() => {
     setSlider(categoryList);
   }, [categoryList]);
@@ -28,7 +29,6 @@ const Home = () => {
   useEffect(() => {
     setResturents(restureantlist);
   }, [restureantlist]);
-  console.log(Resturents);
 
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
@@ -39,49 +39,49 @@ const Home = () => {
       });
     }
   };
+
   return (
     <div className="HomeContainer">
-      <div className="py-10 bg-gray-100 w-[100%] px-[14%]">
-        <div className="relative">
+      {/* Category Slider Section */}
+      <div className="py-10 bg-gray-100 w-full px-[14%]">
+        <div className="relative flex items-center">
           <button
             onClick={() => scrollSlider("left")}
-            className="absolute left-[-65px] top-[40%] bg-white text-white p-3 rounded-full z-10"
+            className="absolute left-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
           >
             <IoIosArrowBack className="text-[20px] text-black" />
           </button>
 
-          {/* Slider */}
           <div
-            className="flex gap-[2.2rem] py-10 overflow-x-auto scrollNone select-none slider"
+            className="flex gap-8 py-10 overflow-x-auto scrollNone select-none slider"
             ref={sliderRef}
           >
             {Slider.map((item, index) => (
-              <div key={index}>
+              <div key={index} className="text-center cursor-pointer">
                 <img
                   src={item.image}
-                  className="h-[150px] w-[150px] min-w-[150px] object-cover rounded-[100%]"
+                  className="h-[150px] w-[150px] min-w-[150px] object-cover rounded-full"
                 />
-                <p className="mt-[10px] text-center text-black font-[500]">
-                  {item.name}
-                </p>
+                <p className="mt-4 text-black font-semibold">{item.name}</p>
               </div>
             ))}
           </div>
 
           <button
             onClick={() => scrollSlider("right")}
-            className="absolute right-[-50px] top-[40%] bg-white text-white p-3 rounded-full z-10"
+            className="absolute right-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
           >
             <IoIosArrowForward className="text-[20px] text-black" />
           </button>
         </div>
       </div>
 
-      <div className="mb-5 px-[15%] py-10">
-        <h2 className="text-black text-[25px] font-[500]">
+      {/* Restaurants Section */}
+      <div className="mb-5 px-[10%] py-10">
+        <h2 className="text-black text-[28px] font-bold mb-8">
           Locality Restaurants
         </h2>
-        <div className="grid grid-cols-3 gap-[5rem]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[3rem]">
           {Resturents.length === 0
             ? Array.from({ length: 3 })
                 .fill("")
@@ -94,24 +94,26 @@ const Home = () => {
                     onClick={() => {
                       navigate(`/restrurant/${item._id}`);
                     }}
-                    className="relative h-[350px] w-[350px] bg-white rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 hover:shadow-2xl"
+                    className="relative h-[350px] w-[350px] bg-white rounded-lg flex flex-col items-center justify-start p-4 mt-5 shadow-md hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 cursor-pointer"
                     key={index}
                   >
-                    <div className="h-[70%] w-[90%] rounded-[10px] ">
+                    <div className="h-[70%] w-full rounded-lg overflow-hidden mb-4">
                       <img
                         src={item.image}
                         alt=""
-                        className=" object-cover rounded-[10px] w-full h-[250px]"
+                        className="object-cover w-full h-full transition duration-300 transform hover:scale-105"
                       />
                     </div>
-                    <div className="w-full px-[1.3rem] flex justify-between absolute bottom-[20px]">
+                    <div className="w-full px-4 flex justify-between items-start">
                       <div className="">
-                        <h4 className="font-[600] text-[16px]">{item.name}</h4>
-                        <span>
+                        <h4 className="font-semibold text-lg text-gray-800">
+                          {item.name}
+                        </h4>
+                        <span className="text-sm text-gray-500">
                           {item.cuisine
                             .slice(0, 3)
                             .map((cuisineItem, index) => (
-                              <span key={index} className="text-[15px]">
+                              <span key={index}>
                                 {cuisineItem}
                                 {index < 2 && index < item.cuisine.length - 1
                                   ? ", "
@@ -121,10 +123,12 @@ const Home = () => {
                           {item.cuisine.length > 3 && <span>...</span>}
                         </span>
                       </div>
-                      <div className="flex flex-col  items-end">
-                        <span>{item.rating}</span>
+                      <div className="flex flex-col items-end text-sm text-gray-600">
+                        {/* <span className="font-semibold text-gray-800">
+                          ⭐ {item.rating}
+                        </span> */}
                         <span>₹{item.perThali} for one</span>
-                        <span>39min</span>
+                        <span>39 min</span>
                       </div>
                     </div>
                   </div>
