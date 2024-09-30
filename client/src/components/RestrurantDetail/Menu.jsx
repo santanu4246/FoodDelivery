@@ -10,7 +10,8 @@ const Menu = () => {
 
   const { MenuWithFoodList, getMenuWithFoodList } = useMenu();
   const { addToCart } = UserAuth();
-
+  console.log("foodlist",MenuWithFoodList);
+  
   useEffect(() => {
     if (id) getMenuWithFoodList(id);
   }, [id, getMenuWithFoodList]);
@@ -31,7 +32,7 @@ const Menu = () => {
               }`}
               key={index}
             >
-              <p className="text-base font-medium">{item.title}</p>
+              <p className="text-base font-medium">{item.title} ({item.foods.length}) </p>
             </div>
           ))}
         </div>
