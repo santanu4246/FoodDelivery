@@ -108,7 +108,7 @@ const Menu = () => {
                       onClick={async () => {
                         try {
                           await addToCart(item);
-                          toast.success(`${item.name} added to cart!`);
+                          
                         } catch (error) {
                           toast.error("Failed to add item to cart");
                         }
