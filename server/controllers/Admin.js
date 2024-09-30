@@ -40,6 +40,7 @@ async function loginAdmin(req, res) {
         .status(401)
         .json({ msg: "Incorrect password", success: false });
     }
+    console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
     const token = jwt.sign(
       {
@@ -49,7 +50,8 @@ async function loginAdmin(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
-
+    console.log("generate token",token);
+    
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,

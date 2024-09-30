@@ -367,11 +367,9 @@ async function removeItem(req, res) {
 }
 async function removeCartAfterPayment(req, res) {
   const { restuid, foodlist } = req.body;
+  console.log("foodlist",foodlist);
+  
   const userId = req.id;
-
-  console.log("Request body:", { restuid, foodlist });
-  console.log("User ID:", userId);
-
   const foodIds = foodlist.map((food) => {
     if (food._id._id && typeof food._id._id === "string") {
       return food._id._id;
@@ -383,10 +381,7 @@ async function removeCartAfterPayment(req, res) {
   try {
     // First, let's fetch the current cart
     const currentCart = await CartModel.findOne({ user: userId });
-    console.log(
-      "Current cart before update:",
-      JSON.stringify(currentCart, null, 2)
-    );
+   
 
     if (!currentCart) {
       return res
@@ -418,10 +413,10 @@ async function removeCartAfterPayment(req, res) {
     // Save the updated cart
     const updatedCart = await currentCart.save();
 
-    console.log(
-      "Updated cart after changes:",
-      JSON.stringify(updatedCart, null, 2)
-    );
+    // console.log(
+    //   "Updated cart after changes:",
+    //   JSON.stringify(updatedCart, null, 2)
+    // );
     const cart = await CartModel.findOne({ user: userId });
     const totalPrice = await updateCartTotals(cart._id);
     return res.status(200).json({ success: true, updatedCart, totalPrice });

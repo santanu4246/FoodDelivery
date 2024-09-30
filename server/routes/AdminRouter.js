@@ -6,7 +6,7 @@ import {
   loginAdmin,
   logoutAdmin,
   registerAdmin,
-  updateAdmin
+  updateAdmin,
 } from "../controllers/Admin.js";
 import uploadStorage from "../middleware/Multer.js";
 import AuthAdmin from "../middleware/AuthAdmin.js";
@@ -24,7 +24,7 @@ AdminRouter.put(
   updateAdmin
 );
 AdminRouter.delete("/masteradmin/delete/:adminid", AuthAdmin, deleteAdmin);
-AdminRouter.post("/admin/login",AuthAdmin, loginAdmin);
+AdminRouter.post("/admin/login", loginAdmin);
 AdminRouter.get("/getadmin", AuthAdmin, getAdmin);
 AdminRouter.get("/admin/logout", logoutAdmin);
 AdminRouter.get("/masteradmin/getalladmins", AuthAdmin, getAllAdmins);

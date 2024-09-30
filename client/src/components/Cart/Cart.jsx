@@ -35,9 +35,9 @@ function RestuCard({ item, count }) {
           onClick={() => {
             navigate(`/payment/${item._id}`);
           }}
-          className="mr-[20px] rounded-[7px] text-[white] font-[500] py-[5px] px-[2rem] bg-red-500"
+          className="mr-[20px] rounded-[7px] text-[white] font-[500] py-[5px] px-[2rem] bg-green-500 hover:bg-green-600"
         >
-          Proceed payment
+          Proceed Payment
         </button>
       </div>
     </div>

@@ -82,8 +82,8 @@ function Payment() {
     });
   }
   const handleProceedToPayment = async () => {
-    const paymentSuccessful = await handlePayment(totalPrice);
-    if (paymentSuccessful) {
+    // const paymentSuccessful = await handlePayment(totalPrice);
+    // if (paymentSuccessful) {
       try {
         await removeCart(id,foodList)
         navigate("/");
@@ -92,9 +92,9 @@ function Payment() {
       }
       
       toast.success("Payment successful!");
-    } else {
-      toast.warn("Payment cancelled or failed.");
-    }
+    // } else {
+    //   toast.warn("Payment cancelled or failed.");
+    // }
   };
 
   return (
