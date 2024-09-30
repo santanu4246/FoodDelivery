@@ -96,7 +96,7 @@ export const UserAuth = create(
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
           }
-          toast.success(res.data.msg);
+          // toast.success(res.data.msg);
           return res.data;
         } catch (error) {
           console.log("error", error);

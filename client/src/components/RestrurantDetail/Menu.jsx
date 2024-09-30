@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import useCart from "../../store/Cart";
+import { useParams } from "react-router-dom";
 import { useMenu } from "../../store/Menu";
 import { UserAuth } from "../../store/UserAuth";
 import { toast } from "react-toastify";
@@ -11,98 +10,115 @@ const Menu = () => {
 
   const { MenuWithFoodList, getMenuWithFoodList } = useMenu();
   const { addToCart } = UserAuth();
+
   useEffect(() => {
     if (id) getMenuWithFoodList(id);
-  }, [id]);
+  }, [id, getMenuWithFoodList]);
 
   return (
-    <div className="mt-8 flex flex-col md:flex-row md:gap-10">
+    <div className="mt-8 flex flex-col md:flex-row gap-6 md:gap-10 px-4 md:px-8 lg:px-12">
       {/* Left: Menu Titles */}
-      <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-3xl font-semibold text-gray-800 mb-6">Menu</h3>
-        <div className="space-y-4">
-          {MenuWithFoodList.map((item, index) => {
-            return (
-              <div
-                onClick={() => setMenuIndex(index)}
-                className="cursor-pointer transition ease-in-out duration-200 bg-gray-200 hover:bg-gray-300 px-4 py-3 rounded-lg font-medium shadow-sm hover:shadow-md"
-                key={index}
-              >
-                <p className="text-lg text-gray-700">{item.title}</p>
-              </div>
-            );
-          })}
+      <div className="w-full md:w-1/3 bg-white p-4 rounded-md shadow-md">
+        <h3 className="text-2xl font-semibold text-gray-800 mb-6">Menu List</h3>
+        <div className="space-y-3">
+          {MenuWithFoodList.map((item, index) => (
+            <div
+              onClick={() => setMenuIndex(index)}
+              className={`cursor-pointer transition ease-in-out duration-200 px-4 py-3 rounded-md ${
+                MenuIndex === index
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-red-100"
+              }`}
+              key={index}
+            >
+              <p className="text-base font-medium">{item.title}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Right: Food Items for the Selected Title */}
-      <div className="w-full md:w-2/3 mt-8 md:mt-0 border border-[#00000023] p-6 rounded-lg shadow-md">
+      <div className="w-full md:w-2/3 bg-white p-6 rounded-md shadow-md border border-gray-200">
         {/* Veg Food Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-green-700 mb-4">
+          <h2 className="text-xl font-medium text-green-700 mb-4 border-b-2 border-green-400 pb-1">
             Veg Food Items
           </h2>
           {MenuWithFoodList.length > 0 &&
-            MenuWithFoodList[MenuIndex].foods.map((item, index) => {
-              if (item.veg === true) {
-                return (
-                  <div
-                    className="flex justify-between items-center mb-3 bg-green-50 p-3 rounded-lg"
-                    key={index}
-                  >
-                    <span className="font-medium">{item.name}</span>
-                    <span className="text-green-600 font-bold">
+            MenuWithFoodList[MenuIndex].foods
+              .filter((item) => item.veg === true)
+              .map((item, index) => (
+                <div
+                  className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 bg-green-50 p-4 rounded-md shadow-sm transition hover:shadow-md"
+                  key={index}
+                >
+                  <div className="mb-2 md:mb-0">
+                    <p className="text-lg font-medium text-gray-800">
+                      {item.name}
+                    </p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
+                  </div>
+                  <div className="flex justify-between md:justify-end items-center gap-4 md:gap-6">
+                    <span className="text-md font-semibold text-green-700">
                       ₹{item.price}
                     </span>
                     <button
                       onClick={async () => {
                         try {
                           await addToCart(item);
+                          toast.success(`${item.name} added to cart!`);
                         } catch (error) {
-                          toast.error(error);
+                          toast.error("Failed to add item to cart");
                         }
                       }}
-                      className="px-4 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                      className="px-4 py-1 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition duration-200"
                     >
-                      Add
+                      Add to Cart
                     </button>
                   </div>
-                );
-              }
-            })}
+                </div>
+              ))}
         </div>
 
         {/* Nonveg Food Section */}
         <div>
-          <h2 className="text-lg font-semibold text-cyan-700 mb-4">
-            Nonveg Food Items
+          <h2 className="text-xl font-medium text-red-700 mb-4 border-b-2 border-red-400 pb-1">
+            Non-Veg Food Items
           </h2>
           {MenuWithFoodList.length > 0 &&
-            MenuWithFoodList[MenuIndex].foods.map((item, index) => {
-              if (item.veg === false) {
-                return (
-                  <div
-                    className="flex justify-between items-center mb-3 bg-cyan-50 p-3 rounded-lg"
-                    key={index}
-                  >
-                    <span className="font-medium text-cyan-700">
+            MenuWithFoodList[MenuIndex].foods
+              .filter((item) => item.veg === false)
+              .map((item, index) => (
+                <div
+                  className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 bg-red-50 p-4 rounded-md shadow-sm transition hover:shadow-md"
+                  key={index}
+                >
+                  <div className="mb-2 md:mb-0">
+                    <p className="text-lg font-medium text-gray-800">
                       {item.name}
-                    </span>
-                    <span className="text-cyan-600 font-bold">
+                    </p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
+                  </div>
+                  <div className="flex justify-between md:justify-end items-center gap-4 md:gap-6">
+                    <span className="text-md font-semibold text-red-700">
                       ₹{item.price}
                     </span>
                     <button
                       onClick={async () => {
-                        await addToCart(item);
+                        try {
+                          await addToCart(item);
+                          toast.success(`${item.name} added to cart!`);
+                        } catch (error) {
+                          toast.error("Failed to add item to cart");
+                        }
                       }}
-                      className="px-4 py-1 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition"
+                      className="px-4 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition duration-200"
                     >
-                      Add
+                      Add to Cart
                     </button>
                   </div>
-                );
-              }
-            })}
+                </div>
+              ))}
         </div>
       </div>
     </div>
