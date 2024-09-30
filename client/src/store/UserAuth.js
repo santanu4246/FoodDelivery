@@ -19,14 +19,16 @@ export const UserAuth = create(
         set({ isLoading: true });
         try {
           const res = await axios.post(`${BASE_URL}/sendotp`, { email });
+          toast.success(res.data.msg);
+          set({ isLoading: false });
           return res.data.OtpId;
         } catch (error) {
           console.log(error);
         }
-        set({ isLoading: false });
+        
       },
       verifyOtp: async (email, otpid, otp) => {
-        set({ isLoading: true });
+
         try {
           const res = await axios.post(`${BASE_URL}/verifyotp`, {
             email,
@@ -46,7 +48,7 @@ export const UserAuth = create(
           toast.warn("wrong otp");
           console.log(error);
         }
-        set({ isLoading: false });
+        
       },
       createUser: async (email, name) => {
         try {
@@ -96,7 +98,7 @@ export const UserAuth = create(
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
           }
-          // toast.success(res.data.msg);
+          toast.success(res.data.msg);
           return res.data;
         } catch (error) {
           console.log("error", error);

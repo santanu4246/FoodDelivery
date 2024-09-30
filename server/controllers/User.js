@@ -14,7 +14,7 @@ async function SendOtp(req, res) {
     await mailSender(email, "FoodDelivery Login", `Your otp is ${otp}`);
     const newOtp = new otpModel({ email, otp });
     await newOtp.save();
-    return res.status(200).json({ msg: "Otp", OtpId: newOtp._id });
+    return res.status(200).json({ msg: "Otp sent to your email", OtpId: newOtp._id });
   } catch (error) {
     console.log(error);
   }
