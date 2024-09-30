@@ -9,6 +9,7 @@ export const useAdminAuthentication = create((set) => ({
   isAuthenticated: null,
   isLoading: false,
   restrurantDetail:null,
+  orderdetails:[],
   adminLogin: async (username, password) => {
     if (!username || !password) {
       set({ error: "Username and password are required" });
@@ -136,6 +137,16 @@ export const useAdminAuthentication = create((set) => ({
       throw error
     }finally{
       set({ isLoading: false });
+    }
+  },
+  OderDetails: async function() {
+    const id = localStorage.getItem("restrurantID")
+    try {
+      const res = await axios.get(`${BASE_URL}/getorders/${id}`)
+      console.log(res);
+      set({orderdetails:res.data.orderDetails})
+    } catch (error) {
+      throw error
     }
   }
 }));

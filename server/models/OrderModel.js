@@ -1,28 +1,25 @@
 import mongoose from "mongoose";
 
-const orderSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  price: { type: Number, requied: true },
-  quantity: { type: Number, requied: true },
-  user: [
-    {
+const orderSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    price: { type: Number, requied: true },
+    quantity: { type: Number, requied: true },
+    user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
-  ],
-  restaurant: [
-    {
+    restaurant: {
       type: mongoose.Types.ObjectId,
       ref: "Restrurant",
     },
-  ],
-  menu: [
-    {
+    menu: {
       type: mongoose.Types.ObjectId,
       ref: "Menu",
     },
-  ],
-});
+  },
+  { timestamps: true }
+);
 
 const OrderModel = mongoose.model("Order", orderSchema);
 export default OrderModel;

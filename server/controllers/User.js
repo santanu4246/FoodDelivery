@@ -428,7 +428,15 @@ async function removeCartAfterPayment(req, res) {
       restaurant: food._id.restaurant,
       menu: food._id.menu,
     }));
-    await OrderModel.insertMany(orderItems);
+    const orders = await OrderModel.insertMany(orderItems);
+    console.log("order",orders);
+    await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $push: { orders: { $each: orders.map((order) => order._id) } },
+      },
+      { new: true }
+    );
     return res.status(200).json({ success: true, updatedCart, totalPrice });
   } catch (error) {
     console.error("Error updating cart:", error);

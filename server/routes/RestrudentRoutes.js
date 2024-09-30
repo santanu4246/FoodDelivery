@@ -7,6 +7,7 @@ import {
   setLocation,
   updateRestrurant,
   searchRestaurants,
+  OrderDetails
 } from "../controllers/Restrudent.js";
 import AuthAdmin from "../middleware/AuthAdmin.js";
 import uploadStorage from "../middleware/Multer.js";
@@ -24,4 +25,5 @@ RestrudentRouter.put(
   uploadStorage.single("image"),
   updateRestrurant
 );
+RestrudentRouter.get("/getorders/:id",OrderDetails)
 export default RestrudentRouter;

@@ -1,3 +1,4 @@
+import OrderModel from "../models/OrderModel.js";
 import RestrudentModel from "../models/RestrudentModel.js";
 import {
   deleteImageFromCloudinary,
@@ -190,7 +191,16 @@ async function searchRestaurants(req, res) {
   }
 }
 
+async function OrderDetails(req,res) {
+  const { id } = req.params;
+try {
+    const orderDetails = await OrderModel.find({restaurant:id})
+    res.status(200).json({msg:"Order Details",orderDetails})
+} catch (error) {
+  res.json({msg:"error while fething orderDetails",error})
+}
 
+}
 export {
   getAllRestrudents,
   getRestrudentById,
@@ -199,4 +209,5 @@ export {
   getRestrurantByLocation,
   updateRestrurant,
   searchRestaurants,
+  OrderDetails
 };
