@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserAuth } from "../../store/UserAuth";
 import { toast } from "react-toastify";
-
+import { FiPlus } from "react-icons/fi";
+import { LuMinus } from "react-icons/lu";
 function Payment() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -121,15 +122,15 @@ function Payment() {
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => decrementItem(item._id?._id)}
-                    className="bg-red-500 text-white py-1 px-4 rounded-full hover:bg-red-600 transition duration-200"
+                    className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-600 transition duration-200"
                   >
-                    -
+                    <LuMinus className="text-[18px]"/>
                   </button>
                   <button
                     onClick={() => incrementItem(item._id?._id)}
-                    className="bg-green-500 text-white py-1 px-4 rounded-full hover:bg-green-600 transition duration-200"
+                    className="bg-green-500 text-white py-1 px-3 rounded-full hover:bg-green-600 transition duration-200"
                   >
-                    +
+                   <FiPlus  className="text-[18px]"/>
                   </button>
                 </div>
               </div>
@@ -137,7 +138,7 @@ function Payment() {
                 onClick={() => {
                   removeItem(item._id?._id);
                 }}
-                className="ml-4 bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-700 transition duration-200"
+                className="ml-4 bg-red-600 text-white py-2 px-4 rounded-full hover:bg-red-700 transition duration-200"
               >
                 Remove
               </button>
@@ -155,7 +156,7 @@ function Payment() {
             Total: ₹{totalPrice.toFixed(2)}
           </div>
           <button
-            className="mt-4 bg-red-500 text-white py-3 px-6 rounded-full hover:bg-red-600 transition duration-200 text-lg"
+            className="mt-4 bg-green-500 text-white py-3 px-6 rounded-full hover:bg-green-600 transition duration-200 text-lg"
             onClick={handleProceedToPayment}
           >
             Proceed to Payment
