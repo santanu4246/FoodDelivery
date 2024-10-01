@@ -385,17 +385,25 @@ async function removeCartAfterPayment(req, res) {
     const currentCart = await CartModel.findOne({ user: userId });
 
     if (!currentCart) {
-      return res.status(404).json({ success: false, message: "Cart not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
-    const itemIndex = currentCart.items.findIndex((item) => item.restaurant.toString() === restuid);
+    const itemIndex = currentCart.items.findIndex(
+      (item) => item.restaurant.toString() === restuid
+    );
 
     if (itemIndex === -1) {
-      return res.status(404).json({ success: false, message: "Restaurant not found in cart" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Restaurant not found in cart" });
     }
 
     // Remove specified foods from the item
-    currentCart.items[itemIndex].foods = currentCart.items[itemIndex].foods.filter((food) => !foodIds.includes(food._id.toString()));
+    currentCart.items[itemIndex].foods = currentCart.items[
+      itemIndex
+    ].foods.filter((food) => !foodIds.includes(food._id.toString()));
 
     if (currentCart.items[itemIndex].foods.length === 0) {
       currentCart.items.splice(itemIndex, 1);
@@ -440,25 +448,32 @@ async function removeCartAfterPayment(req, res) {
 
     // Create a detailed order summary for the email
     // Prepare the order summary as HTML table rows
-const orderSummary = orderItems.map(item => `
+    const orderSummary = orderItems
+      .map(
+        (item) => `
   <tr>
     <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.quantity}</td>
-    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price} INR</td>
+    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price}</td>
   </tr>
-`).join('');
+`
+      )
+      .join("");
 
-// Calculate total amount
-const totalAmount = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    // Calculate total amount
+    const totalAmount = orderItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
 
-// Send email confirmation with order details
-await mailSender(
-  user.email,
-  `Your Order Confirmation - ${restaurant?.name || 'FoodForYou'}`,
-  `
+    // Send email confirmation with order details
+    await mailSender(
+      user.email,
+      `Your Order Confirmation - ${restaurant?.name || "FoodForYou"}`,
+      `
   <html>
     <body>
-      <p>Dear ${user.name || 'Valued Customer'},</p>
+      <p>Dear ${user.name || "Valued Customer"},</p>
 
       <p>Thank you for your order with us! We are pleased to confirm that we have received your order, and we are preparing it with care.</p>
 
@@ -485,19 +500,16 @@ await mailSender(
       <p>Best Regards,<br>The FoodForYou Team</p>
 
       <hr style="border: 1px solid #ddd; margin: 20px 0;"/>
-      <p style="font-size: 12px; color: #777;">*For inquiries, please contact us at <a href="mailto:support@foodforyou.com">support@foodforyou.com</a> or call us at [Your Phone Number].*</p>
+      <p style="font-size: 12px; color: #777;">*For inquiries, please contact us at <a href="mailto:support@foodforyou.com">support@foodforyou.com</a> or call us at 9999999999.*</p>
     </body>
   </html>
-`);
-
-    
-
+`
+    );
   } catch (error) {
     console.error("Error updating cart:", error);
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 }
-
 
 export {
   SendOtp,
