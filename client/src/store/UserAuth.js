@@ -25,17 +25,14 @@ export const UserAuth = create(
         } catch (error) {
           console.log(error);
         }
-        
       },
       verifyOtp: async (email, otpid, otp) => {
-
         try {
           const res = await axios.post(`${BASE_URL}/verifyotp`, {
             email,
             otpid,
             otp,
           });
-
           if (res.data.isExisting === true) {
             const totalprice = res.data.totalPrice;
             set({ totalCartQuantity: totalprice.length });
@@ -48,7 +45,6 @@ export const UserAuth = create(
           toast.warn("wrong otp");
           console.log(error);
         }
-        
       },
       createUser: async (email, name) => {
         try {
@@ -204,8 +200,6 @@ export const UserAuth = create(
       removeCart:async (restuid,foodlist)=>{
         try {
           const res = await axios.post(`${BASE_URL}/remove-cart`,{restuid,foodlist})
-          console.log(res);
-          
           const totalprice = res.data.totalPrice;
           console.log("totalprice",totalprice);
           
@@ -213,7 +207,6 @@ export const UserAuth = create(
         } catch (error) {
           console.log(error);
         }
-        
       }
     }),
    

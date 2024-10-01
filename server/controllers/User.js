@@ -370,7 +370,6 @@ async function removeItem(req, res) {
 async function removeCartAfterPayment(req, res) {
   const { restuid, foodlist } = req.body;
   console.log("foodlist", foodlist);
-
   const userId = req.id;
   const foodIds = foodlist.map((food) => {
     if (food._id._id && typeof food._id._id === "string") {
@@ -420,6 +419,7 @@ async function removeCartAfterPayment(req, res) {
     // );
     const cart = await CartModel.findOne({ user: userId });
     const totalPrice = await updateCartTotals(cart._id);
+    res.status(200).json({ success: true, updatedCart, totalPrice });
     const orderItems = foodlist.map((food) => ({
       name: food._id.name,
       price: food._id.price,
@@ -429,7 +429,7 @@ async function removeCartAfterPayment(req, res) {
       menu: food._id.menu,
     }));
     const orders = await OrderModel.insertMany(orderItems);
-    console.log("order",orders);
+    console.log("order", orders);
     await UserModel.findByIdAndUpdate(
       userId,
       {
@@ -437,7 +437,50 @@ async function removeCartAfterPayment(req, res) {
       },
       { new: true }
     );
-    return res.status(200).json({ success: true, updatedCart, totalPrice });
+    const user = await UserModel.findById(userId);
+
+    let orderDetails = orderItems
+      .map((item) => {
+        return `- ${item.name}, Price: ${item.price}, Quantity: ${item.quantity}`;
+      })
+      .join("\n");
+
+      await mailSender(
+        user.email,
+        "Your Order Details",
+        `
+          <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+            <h2 style="color: #4CAF50;">Thank you for your order!</h2>
+            <p>We are excited to confirm your order. Here are the details:</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+              <thead>
+                <tr>
+                  <th style="border-bottom: 2px solid #ddd; padding: 8px; text-align: left;">Item</th>
+                  <th style="border-bottom: 2px solid #ddd; padding: 8px; text-align: right;">Price</th>
+                  <th style="border-bottom: 2px solid #ddd; padding: 8px; text-align: right;">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${orderItems.map(item => `
+                  <tr>
+                    <td style="border-bottom: 1px solid #eee; padding: 8px;">${item.name}</td>
+                    <td style="border-bottom: 1px solid #eee; padding: 8px; text-align: right;">₹${item.price}</td>
+                    <td style="border-bottom: 1px solid #eee; padding: 8px; text-align: right;">${item.quantity}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <p><strong>Total Amount:</strong> ₹${orderItems.reduce((total, item) => total + (item.price * item.quantity), 0)}</p>
+            <p>If you have any questions or concerns, feel free to contact us at santanu4246@gmail.com.</p>
+            <p>We appreciate your business and look forward to serving you again soon!</p>
+            <p>Best regards,</p>
+            <p>The FoodForYou Team</p>
+          </div>
+        `
+      );
+      
+
+    console.log("orderItems", orderItems);
   } catch (error) {
     console.error("Error updating cart:", error);
     return res.status(500).json({ success: false, message: "Server Error" });
