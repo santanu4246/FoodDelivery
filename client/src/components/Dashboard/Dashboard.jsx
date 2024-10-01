@@ -17,12 +17,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 function Dashboard() {
   const { OderDetails, orderdetails } = useAdminAuthentication();
 
-  // State variables for total items, revenue, orders
+
   const [totalItems, setTotalItems] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
 
-  // State variables for different breakdowns of revenue and items
+
   const [monthlyRevenue, setMonthlyRevenue] = useState(0);
   const [weeklyRevenue, setWeeklyRevenue] = useState(0);
   const [todayRevenue, setTodayRevenue] = useState(0);
@@ -30,7 +30,7 @@ function Dashboard() {
   const [weeklyItems, setWeeklyItems] = useState(0);
   const [todayItems, setTodayItems] = useState(0);
 
-  // State variable for selected revenue type
+
   const [selectedRevenue, setSelectedRevenue] = useState("today");
 
   const fetchOrderDetails = async () => {
@@ -41,7 +41,7 @@ function Dashboard() {
     }
   };
 
-  // Function to calculate totals and breakdowns
+
   const calculateTotalsAndBreakdowns = () => {
     if (orderdetails && orderdetails.length > 0) {
       const today = dayjs().startOf("day");
@@ -67,19 +67,19 @@ function Dashboard() {
         revenue += order.price * order.quantity;
         orders++;
 
-        // Monthly calculation
+        
         if (orderDate.isAfter(startOfMonth) || orderDate.isSame(startOfMonth, "day")) {
           monthlyRevenue += order.price * order.quantity;
           monthlyItems += order.quantity;
         }
 
-        // Weekly calculation
+
         if (orderDate.isAfter(startOfWeek) || orderDate.isSame(startOfWeek, "day")) {
           weeklyRevenue += order.price * order.quantity;
           weeklyItems += order.quantity;
         }
 
-        // Today calculation
+    
         if (orderDate.isSame(today, "day")) {
           todayRevenue += order.price * order.quantity;
           todayItems += order.quantity;
@@ -108,7 +108,7 @@ function Dashboard() {
     calculateTotalsAndBreakdowns();
   }, [orderdetails]);
 
-  // Chart Data
+
   const data = {
     labels: ["Today", "This Week", "This Month"],
     datasets: [
