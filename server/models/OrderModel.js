@@ -2,9 +2,13 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    price: { type: Number, requied: true },
-    quantity: { type: Number, requied: true },
+    items: [
+      {
+        name: { type: String, required: true },
+        price: { type: Number, requied: true },
+        quantity: { type: Number, requied: true },
+      },
+    ],
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",

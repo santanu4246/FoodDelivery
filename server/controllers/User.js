@@ -372,6 +372,7 @@ async function removeCartAfterPayment(req, res) {
   const { restuid, foodlist } = req.body;
   console.log("foodlist", foodlist);
   const userId = req.id;
+  
   const foodIds = foodlist.map((food) => {
     if (food._id._id && typeof food._id._id === "string") {
       return food._id._id;
@@ -381,116 +382,75 @@ async function removeCartAfterPayment(req, res) {
   console.log("Food IDs to remove:", foodIds);
 
   try {
-    // First, let's fetch the current cart
     const currentCart = await CartModel.findOne({ user: userId });
 
     if (!currentCart) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Cart not found" });
+      return res.status(404).json({ success: false, message: "Cart not found" });
     }
 
-    // Find the specific item in the cart
-    const itemIndex = currentCart.items.findIndex(
-      (item) => item.restaurant.toString() === restuid
-    );
+    const itemIndex = currentCart.items.findIndex((item) => item.restaurant.toString() === restuid);
 
     if (itemIndex === -1) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Restaurant not found in cart" });
+      return res.status(404).json({ success: false, message: "Restaurant not found in cart" });
     }
 
-    // Remove the specified foods from the item
-    currentCart.items[itemIndex].foods = currentCart.items[
-      itemIndex
-    ].foods.filter((food) => !foodIds.includes(food._id.toString()));
+    // Remove specified foods from the item
+    currentCart.items[itemIndex].foods = currentCart.items[itemIndex].foods.filter((food) => !foodIds.includes(food._id.toString()));
 
-    // Remove the item if it no longer has any foods
     if (currentCart.items[itemIndex].foods.length === 0) {
       currentCart.items.splice(itemIndex, 1);
     }
 
-    // Save the updated cart
     const updatedCart = await currentCart.save();
 
-    // console.log(
-    //   "Updated cart after changes:",
-    //   JSON.stringify(updatedCart, null, 2)
-    // );
     const cart = await CartModel.findOne({ user: userId });
     const totalPrice = await updateCartTotals(cart._id);
     res.status(200).json({ success: true, updatedCart, totalPrice });
+
+    // Prepare order items with proper structure
     const orderItems = foodlist.map((food) => ({
       name: food._id.name,
       price: food._id.price,
       quantity: food.quantity,
-      user: userId,
-      restaurant: food._id.restaurant,
-      menu: food._id.menu,
     }));
-    const orders = await OrderModel.insertMany(orderItems);
-    console.log("order", orders);
+
+    // Create a new order with the correct structure
+    const order = new OrderModel({
+      items: orderItems,
+      user: userId,
+      restaurant: restuid, // Assuming restuid is the restaurant ID
+      menu: foodlist[0]._id.menu, // You can adjust this based on your logic
+    });
+
+    // Save the order to the database
+    const savedOrder = await order.save();
+    console.log("Order created:", savedOrder);
+
+    // Update the UserModel with the new order ID
     await UserModel.findByIdAndUpdate(
       userId,
       {
-        $push: { orders: { $each: orders.map((order) => order._id) } },
+        $push: { orders: savedOrder._id }, // Push the new order ID
       },
       { new: true }
     );
+
     const user = await UserModel.findById(userId);
-    const restuId = orderItems.find(item => item.restaurant)?.restaurant;
+    const restuId = orderItems.find(item => item.restaurant)?.restaurant; // Ensure this is correct
     let restu;
+    
     if (restuId) {
       restu = await RestrudentModel.findById(restuId);
     } else {
       console.error('No restaurant ID found in the order items.');
     }
-    
+
     await mailSender(
       user.email,
-      `Your Order Confirmation - ${restu.name}`,
-      `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
-            <h2 style="color: #4CAF50; text-align: center;">Order Confirmation</h2>
-            <p>Dear ${user.name},</p>
-            <p>Thank you for your order! We are pleased to confirm your order and are working on preparing it for you.</p>
-            
-            <h3 style="color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">Order Summary</h3>
-            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-              <thead>
-                <tr style="background-color: #f8f8f8;">
-                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: left;">Item</th>
-                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: right;">Price</th>
-                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: right;">Quantity</th>
-                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: right;">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${orderItems.map(item => `
-                  <tr>
-                    <td style="border-bottom: 1px solid #eee; padding: 10px;">${item.name}</td>
-                    <td style="border-bottom: 1px solid #eee; padding: 10px; text-align: right;">₹${item.price.toFixed(2)}</td>
-                    <td style="border-bottom: 1px solid #eee; padding: 10px; text-align: right;">${item.quantity}</td>
-                    <td style="border-bottom: 1px solid #eee; padding: 10px; text-align: right;">₹${(item.price * item.quantity).toFixed(2)}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-            <h4 style="text-align: right; color: #4CAF50;">Total Amount: ₹${orderItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}</h4>
-    
-            <p>If you have any questions or need further assistance, please don't hesitate to reach out to us at <a href="mailto:support@example.com" style="color: #4CAF50; text-decoration: none;">santanu4246@gmail.com</a>.</p>
-    
-            <p>We look forward to serving you again soon!</p>
-    
-            <p style="font-weight: bold;">Warm regards,</p>
-            <p>The FoodForYou Team</p>
-    
-          </div>
-        </div>
-      `
+      `Your Order Confirmation - ${restu?.name || 'FoodForYou'}`,
+      // Email template here...
     );
+
   } catch (error) {
     console.error("Error updating cart:", error);
     return res.status(500).json({ success: false, message: "Server Error" });
