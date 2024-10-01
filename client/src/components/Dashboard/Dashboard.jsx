@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useAdminAuthentication } from "../../store/Authentication";
 import dayjs from "dayjs";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
   const { OderDetails, orderdetails } = useAdminAuthentication();
@@ -95,6 +107,33 @@ function Dashboard() {
   useEffect(() => {
     calculateTotalsAndBreakdowns();
   }, [orderdetails]);
+
+  // Chart Data
+  const data = {
+    labels: ["Today", "This Week", "This Month"],
+    datasets: [
+      {
+        label: "Revenue (INR)",
+        data: [todayRevenue, weeklyRevenue, monthlyRevenue],
+        backgroundColor: ["#3b82f6", "#f97316", "#22c55e"],
+        borderColor: ["#1e40af", "#c2410c", "#15803d"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Total Revenue Overview",
+      },
+    },
+  };
 
   return (
     <div className="h-screen w-full">
@@ -193,6 +232,11 @@ function Dashboard() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Revenue Chart Section */}
+      <div className="h-[400px] w-full px-10 py-10 flex justify-center bg-white rounded-lg">
+        <Bar data={data} options={options} />
       </div>
     </div>
   );
