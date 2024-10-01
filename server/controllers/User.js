@@ -372,7 +372,7 @@ async function removeCartAfterPayment(req, res) {
   const { restuid, foodlist } = req.body;
   console.log("foodlist", foodlist);
   const userId = req.id;
-  
+
   const foodIds = foodlist.map((food) => {
     if (food._id._id && typeof food._id._id === "string") {
       return food._id._id;
@@ -436,26 +436,68 @@ async function removeCartAfterPayment(req, res) {
     );
 
     const user = await UserModel.findById(userId);
-    const restuId = orderItems.find(item => item.restaurant)?.restaurant; // Ensure this is correct
-    let restu;
-    
-    if (restuId) {
-      restu = await RestrudentModel.findById(restuId);
-    } else {
-      console.error('No restaurant ID found in the order items.');
-    }
+    const restaurant = await RestrudentModel.findById(restuid);
 
-    await mailSender(
-      user.email,
-      `Your Order Confirmation - ${restu?.name || 'FoodForYou'}`,
-      // Email template here...
-    );
+    // Create a detailed order summary for the email
+    // Prepare the order summary as HTML table rows
+const orderSummary = orderItems.map(item => `
+  <tr>
+    <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+    <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.quantity}</td>
+    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price} INR</td>
+  </tr>
+`).join('');
+
+// Calculate total amount
+const totalAmount = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+// Send email confirmation with order details
+await mailSender(
+  user.email,
+  `Your Order Confirmation - ${restaurant?.name || 'FoodForYou'}`,
+  `
+  <html>
+    <body>
+      <p>Dear ${user.name || 'Valued Customer'},</p>
+
+      <p>Thank you for your order with us! We are pleased to confirm that we have received your order, and we are preparing it with care.</p>
+
+      <h3>Order Summary:</h3>
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+          <tr style="background-color: #f4f4f4;">
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Item Name</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Quantity</th>
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Price (INR)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${orderSummary}
+        </tbody>
+      </table>
+
+      <p><strong>Total Amount Due:</strong> ${totalAmount} INR</p>
+
+      <p>We appreciate your trust in us and are committed to providing you with the best service. If you have any questions or need further assistance, please do not hesitate to reach out.</p>
+
+      <p>Thank you for choosing FoodForYou!</p>
+
+      <p>Best Regards,<br>The FoodForYou Team</p>
+
+      <hr style="border: 1px solid #ddd; margin: 20px 0;"/>
+      <p style="font-size: 12px; color: #777;">*For inquiries, please contact us at <a href="mailto:support@foodforyou.com">support@foodforyou.com</a> or call us at [Your Phone Number].*</p>
+    </body>
+  </html>
+`);
+
+    
 
   } catch (error) {
     console.error("Error updating cart:", error);
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 }
+
 
 export {
   SendOtp,
