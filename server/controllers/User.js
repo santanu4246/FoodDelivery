@@ -6,6 +6,7 @@ import CartModel from "../models/CartModel.js";
 
 import FoodModel from "../models/FoodSchema.js";
 import OrderModel from "../models/OrderModel.js";
+import RestrudentModel from "../models/RestrudentModel.js";
 async function SendOtp(req, res) {
   const { email } = req.body;
 
@@ -438,49 +439,58 @@ async function removeCartAfterPayment(req, res) {
       { new: true }
     );
     const user = await UserModel.findById(userId);
-
-    let orderDetails = orderItems
-      .map((item) => {
-        return `- ${item.name}, Price: ${item.price}, Quantity: ${item.quantity}`;
-      })
-      .join("\n");
-
-      await mailSender(
-        user.email,
-        "Your Order Details",
-        `
-          <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-            <h2 style="color: #4CAF50;">Thank you for your order!</h2>
-            <p>We are excited to confirm your order. Here are the details:</p>
+    const restuId = orderItems.find(item => item.restaurant)?.restaurant;
+    let restu;
+    if (restuId) {
+      restu = await RestrudentModel.findById(restuId);
+    } else {
+      console.error('No restaurant ID found in the order items.');
+    }
+    
+    await mailSender(
+      user.email,
+      `Your Order Confirmation - ${restu.name}`,
+      `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+            <h2 style="color: #4CAF50; text-align: center;">Order Confirmation</h2>
+            <p>Dear ${user.name},</p>
+            <p>Thank you for your order! We are pleased to confirm your order and are working on preparing it for you.</p>
+            
+            <h3 style="color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">Order Summary</h3>
             <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
               <thead>
-                <tr>
-                  <th style="border-bottom: 2px solid #ddd; padding: 8px; text-align: left;">Item</th>
-                  <th style="border-bottom: 2px solid #ddd; padding: 8px; text-align: right;">Price</th>
-                  <th style="border-bottom: 2px solid #ddd; padding: 8px; text-align: right;">Quantity</th>
+                <tr style="background-color: #f8f8f8;">
+                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: left;">Item</th>
+                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: right;">Price</th>
+                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: right;">Quantity</th>
+                  <th style="border-bottom: 2px solid #ddd; padding: 10px; text-align: right;">Total</th>
                 </tr>
               </thead>
               <tbody>
                 ${orderItems.map(item => `
                   <tr>
-                    <td style="border-bottom: 1px solid #eee; padding: 8px;">${item.name}</td>
-                    <td style="border-bottom: 1px solid #eee; padding: 8px; text-align: right;">₹${item.price}</td>
-                    <td style="border-bottom: 1px solid #eee; padding: 8px; text-align: right;">${item.quantity}</td>
+                    <td style="border-bottom: 1px solid #eee; padding: 10px;">${item.name}</td>
+                    <td style="border-bottom: 1px solid #eee; padding: 10px; text-align: right;">₹${item.price.toFixed(2)}</td>
+                    <td style="border-bottom: 1px solid #eee; padding: 10px; text-align: right;">${item.quantity}</td>
+                    <td style="border-bottom: 1px solid #eee; padding: 10px; text-align: right;">₹${(item.price * item.quantity).toFixed(2)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-            <p><strong>Total Amount:</strong> ₹${orderItems.reduce((total, item) => total + (item.price * item.quantity), 0)}</p>
-            <p>If you have any questions or concerns, feel free to contact us at santanu4246@gmail.com.</p>
-            <p>We appreciate your business and look forward to serving you again soon!</p>
-            <p>Best regards,</p>
+            <h4 style="text-align: right; color: #4CAF50;">Total Amount: ₹${orderItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}</h4>
+    
+            <p>If you have any questions or need further assistance, please don't hesitate to reach out to us at <a href="mailto:support@example.com" style="color: #4CAF50; text-decoration: none;">santanu4246@gmail.com</a>.</p>
+    
+            <p>We look forward to serving you again soon!</p>
+    
+            <p style="font-weight: bold;">Warm regards,</p>
             <p>The FoodForYou Team</p>
+    
           </div>
-        `
-      );
-      
-
-    console.log("orderItems", orderItems);
+        </div>
+      `
+    );
   } catch (error) {
     console.error("Error updating cart:", error);
     return res.status(500).json({ success: false, message: "Server Error" });

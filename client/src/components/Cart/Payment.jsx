@@ -90,7 +90,6 @@ function Payment() {
       } catch (error) {
         console.log(error);
       }
-      
       toast.success("Payment successful!");
     } else {
       toast.warn("Payment cancelled or failed.");
