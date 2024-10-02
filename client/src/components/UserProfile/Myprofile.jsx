@@ -31,10 +31,10 @@ const Myprofile = () => {
     <div className="max-w-2xl mx-auto p-6">
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Changed gradient background to red */}
-        <div className="bg-gradient-to-r from-red-500 to-red-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-red-400 to-red-500 p-6 text-white">
           <div className="flex items-center">
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mr-6">
-              <User size={48} className="text-red-600" />
+              <User size={48} className="text-red-500" />
             </div>
             <div>
               <h1 className="text-3xl font-bold">{user.name}</h1>

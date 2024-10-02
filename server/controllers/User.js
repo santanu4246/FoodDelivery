@@ -400,7 +400,7 @@ async function removeCartAfterPayment(req, res) {
         .json({ success: false, message: "Restaurant not found in cart" });
     }
 
-    // Remove specified foods from the item
+    
     currentCart.items[itemIndex].foods = currentCart.items[
       itemIndex
     ].foods.filter((food) => !foodIds.includes(food._id.toString()));
@@ -415,26 +415,26 @@ async function removeCartAfterPayment(req, res) {
     const totalPrice = await updateCartTotals(cart._id);
     res.status(200).json({ success: true, updatedCart, totalPrice });
 
-    // Prepare order items with proper structure
+
     const orderItems = foodlist.map((food) => ({
       name: food._id.name,
       price: food._id.price,
       quantity: food.quantity,
     }));
 
-    // Create a new order with the correct structure
+ 
     const order = new OrderModel({
       items: orderItems,
       user: userId,
-      restaurant: restuid, // Assuming restuid is the restaurant ID
-      menu: foodlist[0]._id.menu, // You can adjust this based on your logic
+      restaurant: restuid, 
+      menu: foodlist[0]._id.menu, 
     });
 
-    // Save the order to the database
+ 
     const savedOrder = await order.save();
     console.log("Order created:", savedOrder);
 
-    // Update the UserModel with the new order ID
+    
     await UserModel.findByIdAndUpdate(
       userId,
       {
@@ -446,8 +446,7 @@ async function removeCartAfterPayment(req, res) {
     const user = await UserModel.findById(userId);
     const restaurant = await RestrudentModel.findById(restuid);
 
-    // Create a detailed order summary for the email
-    // Prepare the order summary as HTML table rows
+  
     const orderSummary = orderItems
       .map(
         (item) => `
@@ -460,13 +459,13 @@ async function removeCartAfterPayment(req, res) {
       )
       .join("");
 
-    // Calculate total amount
+    
     const totalAmount = orderItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    // Send email confirmation with order details
+
     await mailSender(
       user.email,
       `Your Order Confirmation - ${restaurant?.name || "FoodForYou"}`,
@@ -491,7 +490,7 @@ async function removeCartAfterPayment(req, res) {
         </tbody>
       </table>
 
-      <p><strong>Total Amount Due:</strong> ${totalAmount} INR</p>
+      <p><strong>Total Amount:</strong> ${totalAmount} INR</p>
 
       <p>We appreciate your trust in us and are committed to providing you with the best service. If you have any questions or need further assistance, please do not hesitate to reach out.</p>
 
