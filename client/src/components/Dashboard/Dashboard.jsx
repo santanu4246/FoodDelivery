@@ -70,13 +70,13 @@ function Dashboard() {
         let orderItemsCount = 0;
 
         order.items.forEach((item) => {
-          orderItemsCount += item.quantity; // Total quantity of items for this order
-          orderRevenue += item.price * item.quantity; // Total revenue for this order
+          orderItemsCount += item.quantity; 
+          orderRevenue += item.price * item.quantity; 
         });
 
-        totalItems += orderItemsCount; // Increment total items sold
-        totalRevenue += orderRevenue; // Increment total revenue
-        totalOrders++; // Increment total orders
+        totalItems += orderItemsCount; 
+        totalRevenue += orderRevenue; 
+        totalOrders++; 
 
         if (orderDate.isAfter(startOfMonth) || orderDate.isSame(startOfMonth, "day")) {
           monthlyRevenue += orderRevenue;

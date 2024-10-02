@@ -13,6 +13,8 @@ const Home = () => {
     useRestrurant();
   const [Slider, setSlider] = useState([]);
   const [Resturents, setResturents] = useState([]);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
 
   useEffect(() => {
     setSlider(categoryList);
@@ -30,6 +32,14 @@ const Home = () => {
     setResturents(restureantlist);
   }, [restureantlist]);
 
+  const updateArrowsVisibility = () => {
+    if (sliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft + clientWidth < scrollWidth);
+    }
+  };
+
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
       const scrollAmount = 300;
@@ -40,17 +50,32 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    if (sliderRef.current) {
+      updateArrowsVisibility();
+      sliderRef.current.addEventListener("scroll", updateArrowsVisibility);
+    }
+
+    return () => {
+      if (sliderRef.current) {
+        sliderRef.current.removeEventListener("scroll", updateArrowsVisibility);
+      }
+    };
+  }, [Slider]); // Re-run when Slider content changes
+
   return (
     <div className="HomeContainer">
       {/* Category Slider Section */}
       <div className="py-10 bg-gray-100 w-full px-[14%]">
         <div className="relative flex items-center">
-          <button
-            onClick={() => scrollSlider("left")}
-            className="absolute left-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
-          >
-            <IoIosArrowBack className="text-[20px] text-black" />
-          </button>
+          {showLeftArrow && (
+            <button
+              onClick={() => scrollSlider("left")}
+              className="absolute left-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
+            >
+              <IoIosArrowBack className="text-[20px] text-black" />
+            </button>
+          )}
 
           <div
             className="flex gap-8 py-10 overflow-x-auto scrollNone select-none slider"
@@ -67,12 +92,14 @@ const Home = () => {
             ))}
           </div>
 
-          <button
-            onClick={() => scrollSlider("right")}
-            className="absolute right-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
-          >
-            <IoIosArrowForward className="text-[20px] text-black" />
-          </button>
+          {showRightArrow && (
+            <button
+              onClick={() => scrollSlider("right")}
+              className="absolute right-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
+            >
+              <IoIosArrowForward className="text-[20px] text-black" />
+            </button>
+          )}
         </div>
       </div>
 
