@@ -400,7 +400,6 @@ async function removeCartAfterPayment(req, res) {
         .json({ success: false, message: "Restaurant not found in cart" });
     }
 
-    
     currentCart.items[itemIndex].foods = currentCart.items[
       itemIndex
     ].foods.filter((food) => !foodIds.includes(food._id.toString()));
@@ -415,26 +414,22 @@ async function removeCartAfterPayment(req, res) {
     const totalPrice = await updateCartTotals(cart._id);
     res.status(200).json({ success: true, updatedCart, totalPrice });
 
-
     const orderItems = foodlist.map((food) => ({
       name: food._id.name,
       price: food._id.price,
       quantity: food.quantity,
     }));
 
- 
     const order = new OrderModel({
       items: orderItems,
       user: userId,
-      restaurant: restuid, 
-      menu: foodlist[0]._id.menu, 
+      restaurant: restuid,
+      menu: foodlist[0]._id.menu,
     });
 
- 
     const savedOrder = await order.save();
     console.log("Order created:", savedOrder);
 
-    
     await UserModel.findByIdAndUpdate(
       userId,
       {
@@ -446,7 +441,6 @@ async function removeCartAfterPayment(req, res) {
     const user = await UserModel.findById(userId);
     const restaurant = await RestrudentModel.findById(restuid);
 
-  
     const orderSummary = orderItems
       .map(
         (item) => `
@@ -459,12 +453,10 @@ async function removeCartAfterPayment(req, res) {
       )
       .join("");
 
-    
     const totalAmount = orderItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-
 
     await mailSender(
       user.email,
@@ -549,6 +541,24 @@ async function myprofile(req, res) {
     res.json({ error: "Internal Server Error" });
   }
 }
+async function updateProfile(req, res) {
+  try {
+    const userId = req.id;
+    const { name, email, phone, address } = req.body;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (address) user.address = address;
+    await user.save();
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 export {
   SendOtp,
   addToCart,
@@ -562,4 +572,5 @@ export {
   removeCartAfterPayment,
   myorders,
   myprofile,
+  updateProfile,
 };

@@ -13,6 +13,7 @@ import {
   removeCartAfterPayment,
   myorders,
   myprofile,
+  updateProfile,
 } from "../controllers/User.js";
 const userRouter = express.Router();
 userRouter.post("/sendotp", SendOtp);
@@ -27,4 +28,5 @@ userRouter.post("/remove-item", AuthToken, removeItem);
 userRouter.post("/remove-cart", AuthToken, removeCartAfterPayment);
 userRouter.get("/userorder", AuthToken, myorders);
 userRouter.get("/useprofile", AuthToken, myprofile);
+userRouter.put("/updateprofile", AuthToken, updateProfile);
 export default userRouter;

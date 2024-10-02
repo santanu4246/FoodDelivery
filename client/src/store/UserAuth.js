@@ -229,6 +229,18 @@ export const UserAuth = create(
         } catch (error) {
           
         }
+      },
+
+
+      updateProfile: async (formdata)=>{
+        try {
+          console.log(formdata);
+          
+          const res = await axios.put(`${BASE_URL}/updateprofile`,formdata)
+          console.log(res);
+        } catch (error) {
+          throw error
+        }
       }
     }),
 
