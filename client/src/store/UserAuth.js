@@ -27,7 +27,7 @@ export const UserAuth = create(
         }
       },
       verifyOtp: async (email, otpid, otp) => {
-        set({isLoading:true})
+        set({ isLoading: true });
         try {
           const res = await axios.post(`${BASE_URL}/verifyotp`, {
             email,
@@ -41,7 +41,7 @@ export const UserAuth = create(
             set({ user: res.data.user });
             return res.data;
           }
-          set({isLoading:false})
+          set({ isLoading: false });
           return res.data;
         } catch (error) {
           toast.warn("wrong otp");
@@ -118,13 +118,12 @@ export const UserAuth = create(
 
           if (relevantTotal) {
             set({ totalPrice: relevantTotal.totalPrice });
-          }else{
+          } else {
             set({ totalPrice: 0 });
           }
-
         } catch (error) {
           console.log(error);
-        }finally{
+        } finally {
           set({ isLoading: false });
         }
       },
@@ -180,7 +179,7 @@ export const UserAuth = create(
         try {
           const res = await axios.post(`${BASE_URL}/remove-item`, { foodId });
           const totalprice = res.data.totalPrice;
-  
+
           set({ totalCartQuantity: totalprice.length });
           const restuid = sessionStorage.getItem("paymentrestrurantID");
           if (totalprice.length === 0) {
@@ -199,19 +198,32 @@ export const UserAuth = create(
           console.log(error);
         }
       },
-      removeCart:async (restuid,foodlist)=>{
+      removeCart: async (restuid, foodlist) => {
         try {
-          const res = await axios.post(`${BASE_URL}/remove-cart`,{restuid,foodlist})
+          const res = await axios.post(`${BASE_URL}/remove-cart`, {
+            restuid,
+            foodlist,
+          });
           const totalprice = res.data.totalPrice;
-          console.log("totalprice",totalprice);
-          
+          console.log("totalprice", totalprice);
+
           set({ totalCartQuantity: totalprice.length });
         } catch (error) {
           console.log(error);
         }
-      }
+      },
+      UserOrder: async () => {
+        try {
+          const res = await axios.get(`${BASE_URL}/userorder`, {
+            withCredentials: true,
+          });
+          return res;
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
-   
+
     {
       name: "user",
       partialize: (state) => ({

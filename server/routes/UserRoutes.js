@@ -24,5 +24,5 @@ userRouter.post("/increment-item", AuthToken, incrementItem);
 userRouter.post("/decrement-item", AuthToken, decrementItem);
 userRouter.post("/remove-item", AuthToken, removeItem);
 userRouter.post("/remove-cart", AuthToken, removeCartAfterPayment);
-userRouter.get("/myorders", AuthToken, myorders);
+userRouter.get("/userorder", AuthToken, myorders);
 export default userRouter;

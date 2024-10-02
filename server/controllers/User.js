@@ -511,13 +511,39 @@ async function removeCartAfterPayment(req, res) {
   }
 }
 
-async function myorders() {
-  const userId = req.id;
-  console.log(userId);
-  
-  const orderDetails = OrderModel.find({user:userId})
-  console.log("orderDetails",orderDetails);
+async function myorders(req, res) {
+  try {
+    const userId = req.id;
+ 
+
+   
+    const orderDetails = await OrderModel.find({ user: userId }).populate("restaurant");
+
+
+    const formattedOrders = orderDetails.map((order) => {
+      const totalPrice = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      return {
+        restaurantName: order.restaurant.name,
+        date:order.createdAt,
+        items: order.items.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        totalPrice,
+      };
+    });
+    res.status(200).json({ orders: formattedOrders });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 }
+
+
+
+
+
 export {
   SendOtp,
   addToCart,

@@ -4,9 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function AuthToken(req, res, next) {
-  const { token } = req.cookies;
-  console.log(token);
-  
+  const { token } = req.cookies; 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
