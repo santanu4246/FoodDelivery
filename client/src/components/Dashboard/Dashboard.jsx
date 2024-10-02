@@ -48,9 +48,9 @@ function Dashboard() {
       const startOfWeek = dayjs().startOf("week").startOf("day");
       const startOfMonth = dayjs().startOf("month").startOf("day");
 
-      let items = 0;
-      let revenue = 0;
-      let orders = 0;
+      let totalItems = 0;
+      let totalRevenue = 0;
+      let totalOrders = 0;
 
       let monthlyRevenue = 0;
       let weeklyRevenue = 0;
@@ -66,36 +66,40 @@ function Dashboard() {
 
       orderdetails.forEach((order) => {
         const orderDate = dayjs(order.createdAt).startOf("day");
-        const orderItems = order.items;
+        let orderRevenue = 0;
+        let orderItemsCount = 0;
 
-        orderItems.forEach((item) => {
-          items += item.quantity; // Total quantity of items
-          revenue += item.price * item.quantity; // Total revenue for this order
+        order.items.forEach((item) => {
+          orderItemsCount += item.quantity; // Total quantity of items for this order
+          orderRevenue += item.price * item.quantity; // Total revenue for this order
         });
-        orders++; // Count total orders
+
+        totalItems += orderItemsCount; // Increment total items sold
+        totalRevenue += orderRevenue; // Increment total revenue
+        totalOrders++; // Increment total orders
 
         if (orderDate.isAfter(startOfMonth) || orderDate.isSame(startOfMonth, "day")) {
-          monthlyRevenue += revenue;
-          monthlyItems += items;
+          monthlyRevenue += orderRevenue;
+          monthlyItems += orderItemsCount;
           monthlyOrders++;
         }
 
         if (orderDate.isAfter(startOfWeek) || orderDate.isSame(startOfWeek, "day")) {
-          weeklyRevenue += revenue;
-          weeklyItems += items;
+          weeklyRevenue += orderRevenue;
+          weeklyItems += orderItemsCount;
           weeklyOrders++;
         }
 
         if (orderDate.isSame(today, "day")) {
-          todayRevenue += revenue;
-          todayItems += items;
+          todayRevenue += orderRevenue;
+          todayItems += orderItemsCount;
           todayOrders++;
         }
       });
 
-      setTotalItems(items);
-      setTotalRevenue(revenue);
-      setTotalOrders(orders);
+      setTotalItems(totalItems);
+      setTotalRevenue(totalRevenue);
+      setTotalOrders(totalOrders);
 
       setMonthlyRevenue(monthlyRevenue);
       setWeeklyRevenue(weeklyRevenue);
@@ -114,6 +118,7 @@ function Dashboard() {
   useEffect(() => {
     fetchOrderDetails();
   }, [OderDetails]);
+
 
   useEffect(() => {
     calculateTotalsAndBreakdowns();
