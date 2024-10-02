@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <div className="h-[65vh] w-[100%] bg-[#F8F8F8] px-[15%] py-5">
       <div className="flex justify-between">
-        <h2>OrrinSanMato</h2>
+        <h2>FoodForYou</h2>
         <div className="flex gap-5">
           <span>India</span>
           <span>English</span>
@@ -17,7 +17,7 @@ const Footer = () => {
 
       <div className="flex justify-between py-10">
         <div className="">
-          <h2 className="uppercase ">About OrrinSanMato</h2>
+          <h2 className="uppercase ">About FoodForYou</h2>
           <div className="py-4 flex flex-col gap-1">
             <span>
               <li>Who We Are</li>
@@ -111,7 +111,7 @@ const Footer = () => {
         
       </div>
       <div className="line w-[100%] bg-black h-[1px] mb-[20px]"></div>
-      <span className="">By continuing past this page, you agree to our Terms of Service, Cookie Policy, Privacy Policy and Content Policies. All trademarks are properties of their respective owners. 2008-2024 © OrrinSanMato Ltd. All rights reserved.</span>
+      <span className="">By continuing past this page, you agree to our Terms of Service, Cookie Policy, Privacy Policy and Content Policies. All trademarks are properties of their respective owners. 2008-2024 © FoodForYou Ltd. All rights reserved.</span>
     </div>
   );
 };
