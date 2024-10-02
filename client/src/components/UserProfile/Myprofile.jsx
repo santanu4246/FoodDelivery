@@ -4,20 +4,25 @@ import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { BeatLoader } from "react-spinners";
 
 const Myprofile = () => {
-  const { useprofile, updateProfile } = UserAuth(); // Assuming updateProfile is a function in UserAuth
+  const { useprofile, updateProfile } = UserAuth();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: '' });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
 
   const fetchUserDetails = async () => {
     try {
       const res = await useprofile();
       setUser(res.user);
-      setFormData({ 
-        name: res.user.name, 
-        email: res.user.email, 
-        phone: res.user.phone || '', 
-        address: res.user.address || '' 
+      setFormData({
+        name: res.user.name,
+        email: res.user.email,
+        phone: res.user.phone || "",
+        address: res.user.address || "",
       });
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -38,17 +43,17 @@ const Myprofile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log(formData);
-      
-      await updateProfile(formData); 
+
+      await updateProfile(formData);
       setIsEditing(false);
-      fetchUserDetails(); 
+      fetchUserDetails();
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -77,9 +82,9 @@ const Myprofile = () => {
               </p>
             </div>
           </div>
-          <button 
-            onClick={handleEditProfile} 
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+          <button
+            onClick={handleEditProfile}
+            className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
           >
             Edit Profile
           </button>
@@ -112,11 +117,11 @@ const Myprofile = () => {
 
       {/* Edit Profile Form */}
       {isEditing && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20"
           onClick={handleClose} // Close form when clicking outside
         >
-          <div 
+          <div
             className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the form
           >
@@ -155,7 +160,9 @@ const Myprofile = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Address</label>
+                <label className="block text-sm font-medium mb-1">
+                  Address
+                </label>
                 <input
                   type="text"
                   name="address"
@@ -165,15 +172,15 @@ const Myprofile = () => {
                 />
               </div>
               <div className="flex justify-end">
-                <button 
-                  type="button" 
-                  onClick={handleClose} 
+                <button
+                  type="button"
+                  onClick={handleClose}
                   className="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
                 >
                   Save Changes

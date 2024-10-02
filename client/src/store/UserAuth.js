@@ -34,6 +34,7 @@ export const UserAuth = create(
             otpid,
             otp,
           });
+          console.log(res);
           if (res.data.isExisting === true) {
             const totalprice = res.data.totalPrice;
             set({ totalCartQuantity: totalprice.length });
@@ -44,6 +45,7 @@ export const UserAuth = create(
           set({ isLoading: false });
           return res.data;
         } catch (error) {
+          set({ isLoading: false });
           toast.warn("wrong otp");
           console.log(error);
         }
@@ -55,6 +57,7 @@ export const UserAuth = create(
             name,
           });
           set({ user: res.data.user });
+          toast.success("Login Succesful")
           return res.data;
         } catch (error) {
           console.log(error);
@@ -225,8 +228,11 @@ export const UserAuth = create(
       useprofile: async ()=>{
         try {
           const res = await axios.get(`${BASE_URL}/useprofile`)
+          console.log(res);
+          set({user:res.data.user})
           return res.data
         } catch (error) {
+          console.log(error);
           
         }
       },
@@ -235,7 +241,6 @@ export const UserAuth = create(
       updateProfile: async (formdata)=>{
         try {
           console.log(formdata);
-          
           const res = await axios.put(`${BASE_URL}/updateprofile`,formdata)
           console.log(res);
         } catch (error) {

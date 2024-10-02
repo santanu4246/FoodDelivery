@@ -23,7 +23,7 @@ const Nav = () => {
     setLocationVisible((prev) => !prev);
   };
 
-  const { user, logout, totalCartQuantity } = UserAuth();
+  const { user, logout, totalCartQuantity=0 } = UserAuth();
   const { searchRestaurants, searchResults } = useRestrurant();
 
   const handleSearchChange = async (event) => {

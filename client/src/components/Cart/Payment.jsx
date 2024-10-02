@@ -15,7 +15,7 @@ function Payment() {
     removeItem,
     totalPrice,
     getCart,
-    removeCart
+    removeCart,
   } = UserAuth();
 
   useEffect(() => {
@@ -85,7 +85,7 @@ function Payment() {
     const paymentSuccessful = await handlePayment(totalPrice);
     if (paymentSuccessful) {
       try {
-        await removeCart(id,foodList)
+        await removeCart(id, foodList);
         navigate("/");
       } catch (error) {
         console.log(error);
@@ -123,13 +123,13 @@ function Payment() {
                     onClick={() => decrementItem(item._id?._id)}
                     className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-600 transition duration-200"
                   >
-                    <LuMinus className="text-[18px]"/>
+                    <LuMinus className="text-[18px]" />
                   </button>
                   <button
                     onClick={() => incrementItem(item._id?._id)}
                     className="bg-green-500 text-white py-1 px-3 rounded-full hover:bg-green-600 transition duration-200"
                   >
-                   <FiPlus  className="text-[18px]"/>
+                    <FiPlus className="text-[18px]" />
                   </button>
                 </div>
               </div>

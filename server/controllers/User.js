@@ -32,17 +32,32 @@ function generateOtp(n) {
 
 async function VerifyOtp(req, res) {
   const { email, otpid, otp } = req.body;
+  console.log("Verifying OTP for:", { email, otpid, otp });
+
   try {
+    // Find the OTP data based on the provided otpid
     const otpData = await otpModel.findById(otpid);
     if (!otpData) {
-      return res.status(400).json({ msg: "OTP expired send again" });
+      console.log("OTP not found or expired");
+      return res
+        .status(400)
+        .json({ msg: "OTP expired. Please send a new one." });
     }
-    console.log(otpData.otp);
+
+    // Log the stored and received OTPs for debugging
+    console.log("Stored OTP:", otpData.otp); // Log the stored OTP for comparison
+    console.log("Received OTP:", otp); // Log the received OTP for comparison
+
+    // Check if the OTP matches
     if (otpData.otp !== otp) {
+      console.log("Invalid OTP");
       return res.status(400).json({ msg: "Invalid OTP" });
     }
+
+    // Proceed with user verification
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
+      // Generate JWT token for the user
       const token = jwt.sign(
         {
           id: existingUser._id,
@@ -50,41 +65,43 @@ async function VerifyOtp(req, res) {
           name: existingUser.name,
           role: existingUser.role,
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET, // Ensure JWT_SECRET is set in your environment variables
         { expiresIn: "30d" }
       );
 
+      // Set the token as an HTTP-only cookie
       res.cookie("token", token, {
         httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         secure: true,
         sameSite: "None",
       });
+
       const cart = await CartModel.findById(existingUser.cart);
+      const totalPrice = 0;
       if (cart) {
         const totalPrice = await updateCartTotals(cart._id);
-        console.log(cart, totalPrice);
-
         return res.status(200).json({
-          message: "Otp verified successfully",
+          message: "OTP verified successfully",
           user: existingUser,
           isExisting: true,
           totalPrice,
         });
       }
       return res.status(200).json({
-        message: "Otp verified successfully",
+        message: "OTP verified successfully",
         user: existingUser,
         isExisting: true,
+        totalPrice,
       });
     }
     return res.status(200).json({
-      message: "Otp verified successfully",
+      message: "OTP verified successfully, but user not found.",
       user: null,
       isExisting: false,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("Error verifying OTP:", error.message);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 }
@@ -554,11 +571,13 @@ async function updateProfile(req, res) {
     if (phone) user.phone = phone;
     if (address) user.address = address;
     await user.save();
-    res.status(200).json({ user });
+    return res.status(200).json({ user });
   } catch (error) {
+    console.error("Error updating profile:", error); 
     res.status(500).json({ message: "Internal server error" });
   }
 }
+
 export {
   SendOtp,
   addToCart,
