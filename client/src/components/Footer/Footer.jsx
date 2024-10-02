@@ -44,7 +44,7 @@ const Footer = () => {
         </div>
 
         <div className="">
-          <h2 className="uppercase ">OrrinSanVerse</h2>
+          <h2 className="uppercase ">FoodForYouVerse</h2>
           <div className="py-4 flex flex-col gap-1">
             <span>
               <li>Who We Are</li>
