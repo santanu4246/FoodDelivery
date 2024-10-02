@@ -27,6 +27,7 @@ export const UserAuth = create(
         }
       },
       verifyOtp: async (email, otpid, otp) => {
+        set({isLoading:true})
         try {
           const res = await axios.post(`${BASE_URL}/verifyotp`, {
             email,
@@ -40,6 +41,7 @@ export const UserAuth = create(
             set({ user: res.data.user });
             return res.data;
           }
+          set({isLoading:false})
           return res.data;
         } catch (error) {
           toast.warn("wrong otp");

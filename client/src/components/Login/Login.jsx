@@ -13,7 +13,7 @@ const Login = ({ setLogin }) => {
   const [isNameBox, setIsNameBox] = useState(false);
   const otpInputRefs = useRef([]);
 
-  const { sendotp, verifyOtp, createUser,  isLoading } = UserAuth();
+  const { sendotp, verifyOtp, createUser, isLoading } = UserAuth();
 
   const handleSendOtp = async () => {
     if (email) {
@@ -133,6 +133,7 @@ const Login = ({ setLogin }) => {
               />
             </div>
             <button
+              disabled={isLoading}
               onClick={handleSendOtp}
               className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
             >
@@ -164,7 +165,11 @@ const Login = ({ setLogin }) => {
               onClick={handleOtpSubmit}
               className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300"
             >
-              Verify OTP
+              {isLoading ? (
+                <BeatLoader color="white" size={10} />
+              ) : (
+                "Verify OTP"
+              )}
             </button>
             <button
               onClick={handleUndo}

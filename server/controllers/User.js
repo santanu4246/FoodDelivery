@@ -511,6 +511,13 @@ async function removeCartAfterPayment(req, res) {
   }
 }
 
+async function myorders() {
+  const userId = req.id;
+  console.log(userId);
+  
+  const orderDetails = OrderModel.find({user:userId})
+  console.log("orderDetails",orderDetails);
+}
 export {
   SendOtp,
   addToCart,
@@ -522,4 +529,5 @@ export {
   decrementItem,
   removeItem,
   removeCartAfterPayment,
+  myorders
 };

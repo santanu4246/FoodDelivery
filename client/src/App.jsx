@@ -8,6 +8,7 @@ import { Home, Nav, Footer, Admin, Cart } from "./utils/utils";
 
 import RestrurantData from "./components/RestrurantDetail/RestrurantData.jsx";
 import Payment from "./components/Cart/Payment.jsx";
+import Myorder from "./components/UserOrder/Myorder.jsx";
 function App() {
   const location = useLocation();
   const { fetchCategory } = useFoodCategory();
@@ -36,11 +37,12 @@ function App() {
         <Route path="/admin/*" element={<Admin />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment/:id" element={<Payment />} />
+        <Route path="/myorders" element={<Myorder />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
       <ToastContainer
         position="top-center"
-        autoClose={3500}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
