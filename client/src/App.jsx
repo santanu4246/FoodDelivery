@@ -9,6 +9,7 @@ import { Home, Nav, Footer, Admin, Cart } from "./utils/utils";
 import RestrurantData from "./components/RestrurantDetail/RestrurantData.jsx";
 import Payment from "./components/Cart/Payment.jsx";
 import Myorder from "./components/UserOrder/Myorder.jsx";
+import Myprofile from "./components/UserProfile/Myprofile.jsx";
 function App() {
   const location = useLocation();
   const { fetchCategory } = useFoodCategory();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment/:id" element={<Payment />} />
         <Route path="/myorders" element={<Myorder />} />
+        <Route path="/myprofile" element={<Myprofile />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
       <ToastContainer

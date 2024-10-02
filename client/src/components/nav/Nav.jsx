@@ -129,7 +129,7 @@ const Nav = () => {
               <FaUser className="text-xl text-gray-700" />
               <div className="text-gray-800 font-medium ml-2">{user.name}</div>
               <IoIosArrowDropdown
-                className={`ml-1 transition-transform duration-200 ${dropdownVisible ? "transform rotate-180" : ""
+                className={`text-[18px] ml-1 transition-transform duration-200 ${dropdownVisible ? "transform rotate-180" : ""
                   }`}
               />
             </div>
@@ -139,21 +139,22 @@ const Nav = () => {
                 <ul className="py-2">
                   <li
                     onClick={() => {
+                      navigate("/myprofile");
+                      setDropdownVisible(false);
+                    }}
+                    className="px-4 py-2 hover:bg-red-50 cursor-pointer transition duration-150 ease-in-out"
+                  >
+                     My Profile
+                  </li>
+                  <li
+                    onClick={() => {
+        
                       navigate("/myorders");
                       setDropdownVisible(false);
                     }}
                     className="px-4 py-2 hover:bg-red-50 cursor-pointer transition duration-150 ease-in-out"
                   >
                     My Orders
-                  </li>
-                  <li
-                    onClick={() => {
-                      navigate("/my-profile");
-                      setDropdownVisible(false);
-                    }}
-                    className="px-4 py-2 hover:bg-red-50 cursor-pointer transition duration-150 ease-in-out"
-                  >
-                    My Profile
                   </li>
                 </ul>
               </div>

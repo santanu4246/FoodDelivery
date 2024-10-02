@@ -222,6 +222,14 @@ export const UserAuth = create(
           console.log(error);
         }
       },
+      useprofile: async ()=>{
+        try {
+          const res = await axios.get(`${BASE_URL}/useprofile`)
+          return res.data
+        } catch (error) {
+          
+        }
+      }
     }),
 
     {

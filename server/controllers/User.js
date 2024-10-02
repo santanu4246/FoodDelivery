@@ -514,17 +514,19 @@ async function removeCartAfterPayment(req, res) {
 async function myorders(req, res) {
   try {
     const userId = req.id;
- 
 
-   
-    const orderDetails = await OrderModel.find({ user: userId }).populate("restaurant");
-
+    const orderDetails = await OrderModel.find({ user: userId }).populate(
+      "restaurant"
+    );
 
     const formattedOrders = orderDetails.map((order) => {
-      const totalPrice = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      const totalPrice = order.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
       return {
         restaurantName: order.restaurant.name,
-        date:order.createdAt,
+        date: order.createdAt,
         items: order.items.map((item) => ({
           name: item.name,
           quantity: item.quantity,
@@ -539,11 +541,15 @@ async function myorders(req, res) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-
-
-
-
-
+async function myprofile(req, res) {
+  try {
+    const userId = req.id;
+    const user = await UserModel.findById(userId);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.json({ error: "Internal Server Error" });
+  }
+}
 export {
   SendOtp,
   addToCart,
@@ -555,5 +561,6 @@ export {
   decrementItem,
   removeItem,
   removeCartAfterPayment,
-  myorders
+  myorders,
+  myprofile,
 };
