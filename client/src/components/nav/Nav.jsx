@@ -274,60 +274,63 @@ const Nav = () => {
 
           {user && (
             <>
-            <span className="font-[600]">{user.name}</span>
-            <div
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => {
-                navigate("/myprofile");
-                setMobileMenuVisible(false);
-              }}
-            >
-              <FaUser className="text-xl text-gray-700" />
-              <div className="text-gray-800 font-medium">My Profile</div>
-            </div>
-            <div
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => {
-                navigate("/myorders");
-                setMobileMenuVisible(false);
-              }}
-            >
-              <FaUser className="text-xl text-gray-700" />
-              <div className="text-gray-800 font-medium">My Orders</div>
-            </div>
+              <span className="font-[600]">{user.name}</span>
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => {
+                  navigate("/myprofile");
+                  setMobileMenuVisible(false);
+                }}
+              >
+                <FaUser className="text-xl text-gray-700" />
+                <div className="text-gray-800 font-medium">My Profile</div>
+              </div>
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => {
+                  navigate("/myorders");
+                  setMobileMenuVisible(false);
+                }}
+              >
+                <FaUser className="text-xl text-gray-700" />
+                <div className="text-gray-800 font-medium">My Orders</div>
+              </div>
             </>
           )}
 
           <div
-            className="flex items-center cursor-pointer"
+            className="flex items-center cursor-pointer relative"
             onClick={() => {
               navigate("/cart");
               setMobileMenuVisible(false);
             }}
           >
             <FaCartShopping className="text-2xl text-gray-700" />
-            <span className="bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ml-2">
+            <span className="absolute -top-4 -right-4 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ml-2">
               {totalCartQuantity}
             </span>
           </div>
         </div>
       )}
 
-{loginOptions && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
-      <Loginoption setLogin={setLogin} setloginOptions={setloginOptions} />
-    </div>
-  </div>
-)}
+      {loginOptions && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
+            <Loginoption
+              setLogin={setLogin}
+              setloginOptions={setloginOptions}
+            />
+          </div>
+        </div>
+      )}
 
-{login && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
-      <Login setLogin={setLogin} />
-    </div>
-  </div>
-)}
+      {login && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
+            <Login setLogin={setLogin} />
+          </div>
+        </div>
+      )}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
     </div>
   );

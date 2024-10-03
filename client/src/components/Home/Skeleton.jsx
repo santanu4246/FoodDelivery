@@ -2,7 +2,7 @@ import React from "react";
 
 function Skeleton() {
   return (
-    <div className="relative h-[350px] w-[350px] bg-gray-200 rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 overflow-hidden">
+    <div className="relative h-[350px] md:w-[300px] lg:w-[350px] bg-gray-200 rounded-[10px] flex flex-col items-center justify-start py-[10px] mt-5 overflow-hidden">
       <div className="h-[70%] w-[90%] bg-gray-300 rounded-[10px] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent animate-shimmer -rotate-45"></div>
       </div>
