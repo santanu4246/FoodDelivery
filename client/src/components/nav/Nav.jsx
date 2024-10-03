@@ -305,8 +305,8 @@ const Nav = () => {
               setMobileMenuVisible(false);
             }}
           >
-            <FaCartShopping className="text-2xl text-gray-700" />
-            <span className="absolute -top-4 -right-4 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ml-2">
+            <FaCartShopping className="text-2xl text-gray-700 mt-3" />
+            <span className="absolute -top-1 -right-4 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ml-2">
               {totalCartQuantity}
             </span>
           </div>
