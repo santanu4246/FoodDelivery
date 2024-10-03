@@ -70,13 +70,12 @@ function RestrurantData() {
 
         <hr className="mt-8 border-t-1 border-gray-300" />
 
-        {/* Menu Section */}
         <Menu />
       </div>
     </div>
   ) : (
     <div className="flex h-[50vh] items-center justify-center">
-      <ClipLoader />
+      <ClipLoader size={50} />
     </div>
   );
 }

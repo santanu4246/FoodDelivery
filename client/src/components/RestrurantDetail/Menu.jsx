@@ -65,6 +65,7 @@ const Menu = () => {
                       ₹{item.price}
                     </span>
                     <button
+                    disabled={isLoading}
                       onClick={async () => {
                         try {
                           await addToCart(item);
@@ -106,6 +107,7 @@ const Menu = () => {
                       ₹{item.price}
                     </span>
                     <button
+                    disabled={isLoading}
                       onClick={async () => {
                         try {
                           await addToCart(item);
