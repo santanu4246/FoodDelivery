@@ -3,19 +3,18 @@ import { useParams } from "react-router-dom";
 import { useAdminAuthentication } from "../../store/Authentication";
 import { FaDirections } from "react-icons/fa";
 import Menu from "./Menu";
+import { ClipLoader } from "react-spinners";
 
 function RestrurantData() {
   const { id } = useParams();
-  const { getRestrurantById } = useAdminAuthentication();
+  const { getRestrurantById, isLoading } = useAdminAuthentication();
   const [restrurantData, setRestrurantData] = useState([]);
-
 
   useEffect(() => {
     async function getRestrurant() {
       try {
         const res = await getRestrurantById(id);
         setRestrurantData(res);
-      
       } catch (error) {
         console.log(error);
       }
@@ -23,10 +22,7 @@ function RestrurantData() {
     if (id) getRestrurant();
   }, [id]);
 
- 
-
-  
-  return (
+  return !isLoading ? (
     <div className="min-h-screen w-full px-[8%] py-[5%] bg-gray-50 text-gray-900">
       <div className="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8">
         {/* Restaurant Image */}
@@ -77,6 +73,10 @@ function RestrurantData() {
         {/* Menu Section */}
         <Menu />
       </div>
+    </div>
+  ) : (
+    <div className="flex h-[50vh] items-center justify-center">
+      <ClipLoader />
     </div>
   );
 }
