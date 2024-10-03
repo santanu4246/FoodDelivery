@@ -32,7 +32,6 @@ export const useMenu = create((set, get) => ({
   getMenu: async (restuid) => {
     try {
       const response = await axios.get(`${BASE_URL}/restaurant/${restuid}`);
-
       set({ menuList: response.data.menu });
       toast.success("Menus fetched successfully!");
     } catch (error) {

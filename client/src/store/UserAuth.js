@@ -72,6 +72,7 @@ export const UserAuth = create(
             totalPrice: 0,
             totalCartQuantity: 0,
             isLoading: false,
+            isAdtocart:false
           });
           return res.data;
         } catch (error) {
@@ -85,7 +86,7 @@ export const UserAuth = create(
           toast.warn("Login to add food to cart");
           return;
         }
-        set({ isLoading: true });
+        set({ isAdtocart: true });
         try {
           const res = await axios.post(`${BASE_URL}/add-to-cart`, { food });
           console.log(res);
@@ -106,7 +107,7 @@ export const UserAuth = create(
         } catch (error) {
           console.log("error", error);
         }finally{
-          set({ isLoading: false });
+          set({ isAdtocart: false });
         }
       },
       getCart: async () => {

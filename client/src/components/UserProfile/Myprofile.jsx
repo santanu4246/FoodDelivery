@@ -138,7 +138,7 @@ const Myprofile = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <input
                   type="email"
@@ -148,7 +148,7 @@ const Myprofile = () => {
                   className="w-full border rounded p-2"
                   required
                 />
-              </div>
+              </div> */}
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Phone</label>
                 <input

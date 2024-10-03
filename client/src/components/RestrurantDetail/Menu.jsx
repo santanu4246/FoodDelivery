@@ -10,7 +10,7 @@ const Menu = () => {
   const [MenuIndex, setMenuIndex] = useState(0);
 
   const { MenuWithFoodList, getMenuWithFoodList } = useMenu();
-  const { addToCart, isLoading } = UserAuth();
+  const { addToCart, isAdtocart } = UserAuth();
   console.log("foodlist", MenuWithFoodList);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const Menu = () => {
                   <div className="flex justify-between sm:justify-end items-center gap-4 sm:gap-6 mt-2 sm:mt-0">
                     <span className="text-md font-semibold text-green-700">₹{item.price}</span>
                     <button
-                      disabled={isLoading}
+                      disabled={isAdtocart}
                       onClick={async () => {
                         try {
                           await addToCart(item);
@@ -71,7 +71,7 @@ const Menu = () => {
                       }}
                       className="px-4 py-1 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition duration-200"
                     >
-                      {isLoading ? <BeatLoader size={10} color="white" /> : "Add to Cart"}
+                      {isAdtocart ? <BeatLoader size={10} color="white" /> : "Add to Cart"}
                     </button>
                   </div>
                 </div>
@@ -98,7 +98,7 @@ const Menu = () => {
                   <div className="flex justify-between sm:justify-end items-center gap-4 sm:gap-6 mt-2 sm:mt-0">
                     <span className="text-md font-semibold text-red-700">₹{item.price}</span>
                     <button
-                      disabled={isLoading}
+                      disabled={isAdtocart}
                       onClick={async () => {
                         try {
                           await addToCart(item);
@@ -108,7 +108,7 @@ const Menu = () => {
                       }}
                       className="px-4 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition duration-200"
                     >
-                      {isLoading ? <BeatLoader size={8} color="white" /> : "Add to Cart"}
+                      {isAdtocart ? <BeatLoader size={8} color="white" /> : "Add to Cart"}
                     </button>
                   </div>
                 </div>
