@@ -8,7 +8,7 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 const Home = () => {
   const navigate = useNavigate();
   const sliderRef = useRef(null);
-  const { categoryList } = useFoodCategory();
+  const { categoryList,isLoading } = useFoodCategory();
   const { getAllLocations, getRestrurantByLocation, restureantlist } =
     useRestrurant();
   const [Slider, setSlider] = useState([]);
@@ -61,47 +61,61 @@ const Home = () => {
         sliderRef.current.removeEventListener("scroll", updateArrowsVisibility);
       }
     };
-  }, [Slider]); // Re-run when Slider content changes
+  }, [Slider]);
 
   return (
     <div className="HomeContainer">
-      {/* Category Slider Section */}
-      <div className="py-10 bg-gray-100 w-full px-[14%]">
-        <div className="relative flex items-center">
-          {showLeftArrow && (
-            <button
-              onClick={() => scrollSlider("left")}
-              className="absolute left-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
-            >
-              <IoIosArrowBack className="text-[20px] text-black" />
-            </button>
-          )}
+     <div className="py-10 bg-gray-100 w-full px-[14%]">
+  <div className="relative flex items-center">
+    {showLeftArrow && (
+      <button
+        onClick={() => scrollSlider("left")}
+        className="absolute left-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
+      >
+        <IoIosArrowBack className="text-[20px] text-black" />
+      </button>
+    )}
 
+    <div
+      className="flex gap-8 py-10 overflow-x-auto scrollNone select-none slider"
+      ref={sliderRef}
+    >
+      {isLoading ? (
+       
+        Array.from({ length: 5 }).map((_, index) => (
           <div
-            className="flex gap-8 py-10 overflow-x-auto scrollNone select-none slider"
-            ref={sliderRef}
+            key={index}
+            className="text-center cursor-pointer animate-pulse"
           >
-            {Slider.map((item, index) => (
-              <div key={index} className="text-center cursor-pointer">
-                <img
-                  src={item.image}
-                  className="h-[150px] w-[150px] min-w-[150px] object-cover rounded-full"
-                />
-                <p className="mt-4 text-black font-semibold">{item.name}</p>
-              </div>
-            ))}
+            <div className="h-[150px] w-[150px] min-w-[150px] bg-gray-300 rounded-full"></div>
+            <div className="mt-4 w-[100px] h-4 bg-gray-300 mx-auto rounded"></div>
           </div>
+        ))
+      ) : (
+        // Actual Slider Items
+        Slider.map((item, index) => (
+          <div key={index} className="text-center cursor-pointer">
+            <img
+              src={item.image}
+              className="h-[150px] w-[150px] min-w-[150px] object-cover rounded-full"
+            />
+            <p className="mt-4 text-black font-semibold">{item.name}</p>
+          </div>
+        ))
+      )}
+    </div>
 
-          {showRightArrow && (
-            <button
-              onClick={() => scrollSlider("right")}
-              className="absolute right-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
-            >
-              <IoIosArrowForward className="text-[20px] text-black" />
-            </button>
-          )}
-        </div>
-      </div>
+    {showRightArrow && (
+      <button
+        onClick={() => scrollSlider("right")}
+        className="absolute right-[-50px] top-[40%] bg-white shadow-md p-3 rounded-full z-10 hover:bg-gray-200 transition duration-300"
+      >
+        <IoIosArrowForward className="text-[20px] text-black" />
+      </button>
+    )}
+  </div>
+</div>
+
 
       {/* Restaurants Section */}
       <div className="mb-5 px-[10%] py-10">
