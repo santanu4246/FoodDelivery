@@ -135,7 +135,7 @@ const Home = () => {
                     onClick={() => {
                       navigate(`/restrurant/${item._id}`);
                     }}
-                    className="relative h-[350px] w-[350px] bg-white rounded-lg flex flex-col items-center justify-start p-4 mt-5 shadow-md hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 cursor-pointer"
+                    className="relative h-[350px] md:w-[300px] lg:w-[350px] bg-white rounded-lg flex flex-col items-center justify-start p-4 mt-5 shadow-md hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 cursor-pointer"
                     key={index}
                   >
                     <div className="h-[70%] w-full rounded-lg overflow-hidden mb-4">

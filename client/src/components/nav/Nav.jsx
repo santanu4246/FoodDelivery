@@ -315,7 +315,7 @@ const Nav = () => {
 
 {loginOptions && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white w-[90%] max-w-md rounded-lg p-6 shadow-lg">
+    <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
       <Loginoption setLogin={setLogin} setloginOptions={setloginOptions} />
     </div>
   </div>
@@ -323,13 +323,11 @@ const Nav = () => {
 
 {login && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white w-[90%] max-w-md rounded-lg p-6 shadow-lg">
+    <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
       <Login setLogin={setLogin} />
     </div>
   </div>
 )}
-
-
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
     </div>
   );
