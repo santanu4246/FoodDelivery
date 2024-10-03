@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { UserAuth } from "../../store/UserAuth";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
+import { BeatLoader, ClipLoader } from "react-spinners";
 
 function RestuCard({ item, count }) {
   
@@ -52,7 +52,7 @@ function Cart() {
   }, []);
 
   return (
-    isLoading ? (<div className="flex items-center justify-center h-[50vh] w-full"><BeatLoader size={20} color="red"/></div>) : (
+    isLoading ? (<div className="flex items-center justify-center h-[50vh] w-full"><ClipLoader/></div>) : (
       <div className="flex flex-col items-center my-[2rem]">
         {cart?.items && cart.items.length > 0 ? (
           cart.items.map((item) => (
