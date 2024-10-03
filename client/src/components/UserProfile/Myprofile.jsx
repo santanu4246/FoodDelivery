@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserAuth } from "../../store/UserAuth";
 import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
-import { BeatLoader } from "react-spinners";
+import { BeatLoader, ClipLoader } from "react-spinners";
 
 const Myprofile = () => {
   const { useprofile, updateProfile } = UserAuth();
@@ -62,7 +62,7 @@ const Myprofile = () => {
   if (!user) {
     return (
       <div className="h-[50vh] w-full flex items-center justify-center">
-        <BeatLoader color="red" size={10} />
+        <ClipLoader />
       </div>
     );
   }

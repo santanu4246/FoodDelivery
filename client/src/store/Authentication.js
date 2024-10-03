@@ -141,12 +141,15 @@ export const useAdminAuthentication = create((set) => ({
   },
   OderDetails: async function() {
     const id = localStorage.getItem("restrurantID")
+    set({ isLoading: true });
     try {
       const res = await axios.get(`${BASE_URL}/getorders/${id}`)
       console.log(res);
       set({orderdetails:res.data.orderDetails})
     } catch (error) {
       throw error
+    }finally{
+      set({ isLoading: false });
     }
   }
 }));

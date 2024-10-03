@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom";
 import { useMenu } from "../../store/Menu";
 import { UserAuth } from "../../store/UserAuth";
 import { toast } from "react-toastify";
+import { BeatLoader } from "react-spinners";
 
 const Menu = () => {
   const { id } = useParams();
   const [MenuIndex, setMenuIndex] = useState(0);
 
   const { MenuWithFoodList, getMenuWithFoodList } = useMenu();
-  const { addToCart } = UserAuth();
+  const { addToCart,isLoading } = UserAuth();
   console.log("foodlist",MenuWithFoodList);
   
   useEffect(() => {
@@ -74,7 +75,7 @@ const Menu = () => {
                       }}
                       className="px-4 py-1 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition duration-200"
                     >
-                      Add to Cart
+                     {isLoading ? <BeatLoader size={10} color="white"/> : "Add to Cart"} 
                     </button>
                   </div>
                 </div>
@@ -115,7 +116,7 @@ const Menu = () => {
                       }}
                       className="px-4 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition duration-200"
                     >
-                      Add to Cart
+                      {isLoading ? <BeatLoader size={8} color="white"/> : "Add to Cart"} 
                     </button>
                   </div>
                 </div>

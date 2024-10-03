@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { UserAuth } from '../../store/UserAuth';
-import { ShoppingBag, Clock } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { UserAuth } from "../../store/UserAuth";
+import { ShoppingBag, Clock } from "lucide-react";
+import { ClipLoader } from "react-spinners";
 
 const MyOrder = () => {
-  const { UserOrder } = UserAuth();
+  const { UserOrder, isLoading } = UserAuth();
   const [orders, setOrders] = useState([]);
 
   const getOrder = async () => {
     try {
       const res = await UserOrder();
       // Sort orders by date, most recent first
-      const sortedOrders = res.data.orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedOrders = res.data.orders.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
       setOrders(sortedOrders);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
     }
   };
 
@@ -22,20 +25,22 @@ const MyOrder = () => {
   }, []);
 
   const formatDateTime = (dateString) => {
-    const options = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric', 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
     };
-    return new Date(dateString).toLocaleString('en-IN', options);
+    return new Date(dateString).toLocaleString("en-IN", options);
   };
 
-  return (
+  return !isLoading ? (
     <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Order History</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        Order History
+      </h1>
       {orders.length > 0 ? (
         <div className="space-y-6">
           {orders.map((order, index) => (
@@ -45,7 +50,9 @@ const MyOrder = () => {
             >
               <div className="bg-gray-100 p-4 border-b border-gray-200">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-gray-800">{order.restaurantName}</h2>
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    {order.restaurantName}
+                  </h2>
                   <div className="flex items-center text-gray-600 text-sm">
                     <Clock size={14} className="mr-1" />
                     <span>{formatDateTime(order.date)}</span>
@@ -63,9 +70,14 @@ const MyOrder = () => {
                   </thead>
                   <tbody>
                     {order.items.map((item, idx) => (
-                      <tr key={idx} className="border-b border-gray-100 last:border-b-0">
+                      <tr
+                        key={idx}
+                        className="border-b border-gray-100 last:border-b-0"
+                      >
                         <td className="py-2 text-gray-800">{item.name}</td>
-                        <td className="py-2 text-right text-gray-600">{item.quantity}</td>
+                        <td className="py-2 text-right text-gray-600">
+                          {item.quantity}
+                        </td>
                         <td className="py-2 text-right text-gray-800">
                           ₹{(item.price * item.quantity).toFixed(2)}
                         </td>
@@ -94,6 +106,10 @@ const MyOrder = () => {
           </p>
         </div>
       )}
+    </div>
+  ) : (
+    <div className="h-[50vh] w-full flex items-center justify-center">
+      <ClipLoader />
     </div>
   );
 };
