@@ -14,6 +14,7 @@ import {
   myorders,
   myprofile,
   updateProfile,
+  validtoken
 } from "../controllers/User.js";
 const userRouter = express.Router();
 userRouter.post("/sendotp", SendOtp);
@@ -29,4 +30,5 @@ userRouter.post("/remove-cart", AuthToken, removeCartAfterPayment);
 userRouter.get("/userorder", AuthToken, myorders);
 userRouter.get("/useprofile", AuthToken, myprofile);
 userRouter.put("/updateprofile", AuthToken, updateProfile);
+userRouter.post('/validate-token',validtoken)
 export default userRouter;

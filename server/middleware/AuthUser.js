@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function AuthToken(req, res, next) {
-  const { token } = req.cookies; 
+  const  token  = req.cookies.token; 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -14,6 +14,8 @@ async function AuthToken(req, res, next) {
     req.email = decoded.email;
     req.role = decoded.role;
     req.name = decoded.name;
+    req.cart=decoded.cart
+    console.log(decoded);
     next();
   } catch (error) {
     console.log(error);

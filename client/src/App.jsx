@@ -5,16 +5,22 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useFoodCategory } from "./store/FoodCategory.js";
 import { Home, Nav, Footer, Admin, Cart } from "./utils/utils";
-
+import { UserAuth } from "./store/UserAuth.js";
 import RestrurantData from "./components/RestrurantDetail/RestrurantData.jsx";
 import Payment from "./components/Cart/Payment.jsx";
 import Myorder from "./components/UserOrder/Myorder.jsx";
 import Myprofile from "./components/UserProfile/Myprofile.jsx";
 function App() {
+  const {initializeAuth} = UserAuth()
   const location = useLocation();
   const { fetchCategory } = useFoodCategory();
   const [isVisiblaeNavFooter, setisVisiblaeNavFooter] = useState(null);
-
+  const auth = async ()=>{
+    await initializeAuth()
+  }
+useEffect(()=>{
+  auth()
+},[])
   useEffect(() => {
     try {
       fetchCategory();

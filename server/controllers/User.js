@@ -58,6 +58,8 @@ async function VerifyOtp(req, res) {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       // Generate JWT token for the user
+      console.log("existingUser", existingUser);
+
       const token = jwt.sign(
         {
           id: existingUser._id,
@@ -573,8 +575,37 @@ async function updateProfile(req, res) {
     await user.save();
     return res.status(200).json({ user });
   } catch (error) {
-    console.error("Error updating profile:", error); 
+    console.error("Error updating profile:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function validtoken(req, res) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "Token not provided" });
+  }
+
+  try {
+    const user = await new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(decoded);
+      });
+    });
+    const userWithCart = await UserModel.findById(user.id).populate("cart");
+    let totalPrice = 0;
+    if (userWithCart && userWithCart.cart && userWithCart.cart._id) {
+      totalPrice = await updateCartTotals(userWithCart.cart._id);
+    }
+
+    return res.status(200).json({ user, totalPrice });
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    return res.status(403).json({ message: "Token is invalid" });
   }
 }
 
@@ -592,4 +623,5 @@ export {
   myorders,
   myprofile,
   updateProfile,
+  validtoken,
 };

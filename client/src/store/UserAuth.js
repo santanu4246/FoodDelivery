@@ -57,7 +57,7 @@ export const UserAuth = create(
             name,
           });
           set({ user: res.data.user });
-          toast.success("Login Succesful")
+          toast.success("Login Succesful");
           return res.data;
         } catch (error) {
           console.log(error);
@@ -72,7 +72,7 @@ export const UserAuth = create(
             totalPrice: 0,
             totalCartQuantity: 0,
             isLoading: false,
-            isAdtocart:false
+            isAdtocart: false,
           });
           return res.data;
         } catch (error) {
@@ -102,11 +102,11 @@ export const UserAuth = create(
             set({ totalPrice: relevantTotal.totalPrice });
           }
           toast.success(res.data.msg);
-          
+
           return res.data;
         } catch (error) {
           console.log("error", error);
-        }finally{
+        } finally {
           set({ isAdtocart: false });
         }
       },
@@ -229,32 +229,74 @@ export const UserAuth = create(
           return res;
         } catch (error) {
           console.log(error);
-        }finally{
+        } finally {
           set({ isLoading: false });
         }
       },
-      useprofile: async ()=>{
+      useprofile: async () => {
         try {
-          const res = await axios.get(`${BASE_URL}/useprofile`)
+          const res = await axios.get(`${BASE_URL}/useprofile`);
           console.log(res);
-          set({user:res.data.user})
-          return res.data
+          set({ user: res.data.user });
+          return res.data;
         } catch (error) {
           console.log(error);
-          
         }
       },
 
-
-      updateProfile: async (formdata)=>{
+      updateProfile: async (formdata) => {
         try {
           console.log(formdata);
-          const res = await axios.put(`${BASE_URL}/updateprofile`,formdata)
+          const res = await axios.put(`${BASE_URL}/updateprofile`, formdata);
           console.log(res);
         } catch (error) {
-          throw error
+          throw error;
         }
-      }
+      },
+      validateToken: async () => {
+        try {
+          const res = await axios.post(
+            `${BASE_URL}/validate-token`,
+            {},
+            {
+              withCredentials: true, // Ensure credentials are sent with the request
+            }
+          );
+
+          if (res.status === 200) {
+            const userData = res.data.user; // Get user data from the response
+            set({ user: userData, totalCartQuantity:res.data.totalPrice.length ,isAuthValid: true }); // Update state
+            return true; // Token is valid
+          }
+          return false; // Token is invalid
+        } catch (error) {
+          console.error(
+            "Token validation failed:",
+            error.response?.data?.message || error.message
+          );
+          set({ user: null, isAuthValid: false }); // Reset user state on error
+          return false; // Token is invalid
+        }
+      },
+
+      initializeAuth: async () => {
+        
+        const tokenIsValid = await get().validateToken(); // Validate the token
+        if (!tokenIsValid) {
+          set({ user: null }); // Reset user state if the token is not valid
+        } else {
+          // Proceed with fetching user profile if token is valid
+          try {
+            const res = await axios.get(`${BASE_URL}/useprofile`);
+            if (res.data.user) {
+              set({ user: res.data.user });
+            }
+          } catch (error) {
+            console.error("Failed to fetch user profile:", error.message);
+          }
+        }
+        
+      },
     }),
 
     {
