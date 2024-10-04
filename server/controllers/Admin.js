@@ -40,9 +40,9 @@ async function loginAdmin(req, res) {
         .status(401)
         .json({ msg: "Incorrect password", success: false });
     }
-    console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
-    const token = jwt.sign(
+
+    const adtoken = jwt.sign(
       {
         id: existingAdmin._id,
         type: existingAdmin.type
@@ -50,9 +50,8 @@ async function loginAdmin(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
-    console.log("generate token",token);
     
-    res.cookie("token", token, {
+    res.cookie("adtoken", adtoken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: true,
@@ -201,7 +200,12 @@ async function getAdmin(req, res) {
 
 async function logoutAdmin(req, res) {
   try {
-    res.clearCookie("token");
+    res.clearCookie('adtoken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
     return res.status(200).json({ msg: "Logout successful", success: true });
   } catch (error) {
     console.error("Error while logging out user", error);

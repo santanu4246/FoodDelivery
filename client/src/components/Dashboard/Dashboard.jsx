@@ -20,7 +20,7 @@ function Dashboard() {
   const [totalItems, setTotalItems] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
-  
+
   const [monthlyRevenue, setMonthlyRevenue] = useState(0);
   const [weeklyRevenue, setWeeklyRevenue] = useState(0);
   const [todayRevenue, setTodayRevenue] = useState(0);
@@ -70,21 +70,27 @@ function Dashboard() {
         let orderItemsCount = 0;
 
         order.items.forEach((item) => {
-          orderItemsCount += item.quantity; 
-          orderRevenue += item.price * item.quantity; 
+          orderItemsCount += item.quantity;
+          orderRevenue += item.price * item.quantity;
         });
 
-        totalItems += orderItemsCount; 
-        totalRevenue += orderRevenue; 
-        totalOrders++; 
+        totalItems += orderItemsCount;
+        totalRevenue += orderRevenue;
+        totalOrders++;
 
-        if (orderDate.isAfter(startOfMonth) || orderDate.isSame(startOfMonth, "day")) {
+        if (
+          orderDate.isAfter(startOfMonth) ||
+          orderDate.isSame(startOfMonth, "day")
+        ) {
           monthlyRevenue += orderRevenue;
           monthlyItems += orderItemsCount;
           monthlyOrders++;
         }
 
-        if (orderDate.isAfter(startOfWeek) || orderDate.isSame(startOfWeek, "day")) {
+        if (
+          orderDate.isAfter(startOfWeek) ||
+          orderDate.isSame(startOfWeek, "day")
+        ) {
           weeklyRevenue += orderRevenue;
           weeklyItems += orderItemsCount;
           weeklyOrders++;
@@ -118,7 +124,6 @@ function Dashboard() {
   useEffect(() => {
     fetchOrderDetails();
   }, [OderDetails]);
-
 
   useEffect(() => {
     calculateTotalsAndBreakdowns();
@@ -161,22 +166,36 @@ function Dashboard() {
       <div className="grid grid-cols-2 gap-5 px-5 py-5 w-full">
         <div className="h-[400px] min-w-[50%] bg-white shadow-2xl rounded-lg">
           <div className="w-full flex flex-col items-center px-[3rem] py-[1rem]">
-            <h2 className="text-black text-[25px] font-[500] mb-4">Total Revenue</h2>
+            <h2 className="text-black text-[25px] font-[500] mb-4">
+              Total Revenue
+            </h2>
             <div className="w-full flex justify-center items-center gap-3">
               <button
-                className={`px-4 py-2 rounded-md ${selectedRevenue === "today" ? "bg-black text-white" : "bg-[#d9d9d9] text-gray-700"}`}
+                className={`px-4 py-2 rounded-md ${
+                  selectedRevenue === "today"
+                    ? "bg-black text-white"
+                    : "bg-[#d9d9d9] text-gray-700"
+                }`}
                 onClick={() => setSelectedRevenue("today")}
               >
                 Today
               </button>
               <button
-                className={`px-4 py-2 rounded-md ${selectedRevenue === "weekly" ? "bg-black text-white" : "bg-[#d9d9d9] text-gray-700"}`}
+                className={`px-4 py-2 rounded-md ${
+                  selectedRevenue === "weekly"
+                    ? "bg-black text-white"
+                    : "bg-[#d9d9d9] text-gray-700"
+                }`}
                 onClick={() => setSelectedRevenue("weekly")}
               >
                 Weekly
               </button>
               <button
-                className={`px-4 py-2 rounded-md ${selectedRevenue === "monthly" ? "bg-black text-white" : "bg-[#d9d9d9] text-gray-700"}`}
+                className={`px-4 py-2 rounded-md ${
+                  selectedRevenue === "monthly"
+                    ? "bg-black text-white"
+                    : "bg-[#d9d9d9] text-gray-700"
+                }`}
                 onClick={() => setSelectedRevenue("monthly")}
               >
                 Monthly
@@ -222,8 +241,29 @@ function Dashboard() {
                 className="h-[100px]"
               />
               <div className="flex flex-col">
-                <span className="text-black text-[35px] font-bold">{totalRevenue} INR</span>
-                <span className="text-black text-[18px]">Total Revenue (INR)</span>
+                <span className="text-black text-[35px] font-bold">
+                  {totalRevenue} INR
+                </span>
+                <span className="text-black text-[18px]">
+                  Total Revenue (INR)
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="h-[190px] min-w-[250px] bg-white flex justify-center items-center shadow-2xl rounded-lg">
+            <div className="flex items-center gap-5">
+              <img
+                src="https://res.cloudinary.com/orrin/image/upload/v1724677064/4_hqosdx.png"
+                alt=""
+                className="h-[100px]"
+              />
+              <div className="flex flex-col">
+                <span className="text-black text-[35px] font-bold">
+                  {totalOrders}
+                </span>
+                <span className="text-black text-[18px]">
+                  Lifetime Order Count
+                </span>
               </div>
             </div>
           </div>
@@ -235,7 +275,13 @@ function Dashboard() {
                 className="h-[100px]"
               />
               <div className="flex flex-col">
-                <span className="text-black text-[35px] font-bold">{totalItems}</span>
+                <span className="text-black text-[35px] font-bold">
+                  {selectedRevenue === "monthly"
+                    ? monthlyItems
+                    : selectedRevenue === "weekly"
+                    ? weeklyItems
+                    : todayItems}
+                </span>
                 <span className="text-black text-[18px]">Total Items Sold</span>
               </div>
             </div>
@@ -243,8 +289,8 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="px-5 py-5">
-        <Bar options={options} data={data} />
+      <div className="w-full mt-[2rem]">
+        <Bar data={data} options={options} />
       </div>
     </div>
   );
