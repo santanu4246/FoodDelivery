@@ -325,9 +325,7 @@ const Nav = () => {
       )}
 
       {/* Location and Login Dialogs */}
-      {locationVisible && (
-        <Location setlocationVisible={setLocationVisible} />
-      )}
+      {locationVisible && <Location setLocationVisible={setLocationVisible} />}
       {login && <Login setLogin={setLogin} />}
       {loginOptions && <Loginoption setloginOptions={setloginOptions} setLogin={setLogin} />}
     </div>
