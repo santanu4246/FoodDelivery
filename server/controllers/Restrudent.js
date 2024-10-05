@@ -66,6 +66,8 @@ async function setLocation(req, res) {
     }
     res.cookie("location", JSON.stringify(location), {
       httpOnly: true,
+      secure: true,
+      sameSite: "None",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({ message: "Location set successfully" });
