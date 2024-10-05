@@ -24,6 +24,7 @@ const Nav = () => {
 
   const handleClick = () => {
     setLocationVisible((prev) => !prev);
+    setMobileMenuVisible(false); // Hide mobile menu when showing location
   };
 
   const { user, logout, totalCartQuantity = 0 } = UserAuth();
@@ -207,6 +208,7 @@ const Nav = () => {
       {/* Mobile Menu */}
       {mobileMenuVisible && (
         <div className="lg:hidden flex flex-col items-center space-y-4 p-4 border-t border-gray-200">
+          {/* Search Input */}
           <input
             id="mobileInputField"
             type="text"
@@ -225,7 +227,7 @@ const Nav = () => {
                     setSearchTerm(restaurant.name);
                     navigate(`/restrurant/${restaurant._id}`);
                     setSearchTerm("");
-                    setMobileMenuVisible(false);
+                    setMobileMenuVisible(false); // Hide mobile menu after selecting a restaurant
                   }}
                 >
                   <img
@@ -246,32 +248,15 @@ const Nav = () => {
             </ul>
           )}
 
-          {user ? (
-            <button
-              onClick={async () => {
-                await logout();
-                navigate("/");
-                toast.success("Logout Successful");
-                setMobileMenuVisible(false);
-              }}
-              className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
-              aria-label="Logout"
-            >
-              Logout
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setloginOptions(true);
-                setMobileMenuVisible(false);
-              }}
-              className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
-              aria-label="Login"
-            >
-              Log in
-            </button>
-          )}
-
+          {/* Location Button */}
+          <div
+            onClick={handleClick}
+            className="flex items-center cursor-pointer text-gray-700 hover:text-red-600 transition duration-200"
+            aria-label="Toggle location"
+          >
+            <CiLocationOn className="text-2xl" />
+            <span className="ml-2 font-medium">Location</span>
+          </div>
           {user && (
             <>
               <span className="font-[600]">{user.name}</span>
@@ -298,40 +283,35 @@ const Nav = () => {
             </>
           )}
 
-          <div
-            className="flex items-center cursor-pointer relative"
-            onClick={() => {
-              navigate("/cart");
-              setMobileMenuVisible(false);
-            }}
-          >
-            <FaCartShopping className="text-2xl text-gray-700 mt-3" />
-            <span className="absolute -top-1 -right-4 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ml-2">
-              {totalCartQuantity}
-            </span>
-          </div>
+          {/* Login Button */}
+          {user ? (
+            <button
+              onClick={async () => {
+                await logout();
+                navigate("/");
+                toast.success("Logout Successful");
+              }}
+              className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
+              aria-label="Logout"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => setloginOptions(true)}
+              className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
+              aria-label="Login"
+            >
+              Log in
+            </button>
+          )}
         </div>
       )}
 
-      {loginOptions && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
-            <Loginoption
-              setLogin={setLogin}
-              setloginOptions={setloginOptions}
-            />
-          </div>
-        </div>
-      )}
-
-      {login && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-transparent w-[90%] max-w-md rounded-lg p-6 shadow-lg">
-            <Login setLogin={setLogin} />
-          </div>
-        </div>
-      )}
+      {/* Conditional Location and Login Components */}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
+      {login && <Login setLogin={setLogin} />}
+      {loginOptions && <Loginoption setloginOptions={setloginOptions} />}
     </div>
   );
 };
