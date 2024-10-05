@@ -311,7 +311,7 @@ const Nav = () => {
       {/* Conditional Location and Login Components */}
       {locationVisible && <Location setLocationVisible={setLocationVisible} />}
       {login && <Login setLogin={setLogin} />}
-      {loginOptions && <Loginoption setloginOptions={setloginOptions} />}
+      {loginOptions && <Loginoption setloginOptions={setloginOptions} setLogin={setLogin} />}
     </div>
   );
 };
