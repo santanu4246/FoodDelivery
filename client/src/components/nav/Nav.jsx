@@ -257,6 +257,8 @@ const Nav = () => {
             <CiLocationOn className="text-2xl" />
             <span className="ml-2 font-medium">Location</span>
           </div>
+
+          {/* User Profile */}
           {user && (
             <>
               <span className="font-[600]">{user.name}</span>
@@ -283,6 +285,20 @@ const Nav = () => {
             </>
           )}
 
+          {/* Cart Icon */}
+          <div
+            className="relative flex items-center cursor-pointer"
+            onClick={() => {
+              navigate("/cart");
+              setMobileMenuVisible(false);
+            }}
+          >
+            <FaCartShopping className="text-2xl text-gray-700" />
+            <span className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">
+              {totalCartQuantity}
+            </span>
+          </div>
+
           {/* Login Button */}
           {user ? (
             <button
@@ -308,10 +324,12 @@ const Nav = () => {
         </div>
       )}
 
-      {/* Conditional Location and Login Components */}
-      {locationVisible && <Location setLocationVisible={setLocationVisible} />}
-      {login && <Login setLogin={setLogin} />}
-      {loginOptions && <Loginoption setloginOptions={setloginOptions} setLogin={setLogin} />}
+      {/* Location and Login Dialogs */}
+      {locationVisible && (
+        <Location setlocationVisible={setLocationVisible} visible={locationVisible} />
+      )}
+      {login && <Login setlogin={setLogin} />}
+      {loginOptions && <Loginoption setloginOptions={setloginOptions} setlogin={setLogin} />}
     </div>
   );
 };
