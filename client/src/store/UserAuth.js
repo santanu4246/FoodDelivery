@@ -259,23 +259,23 @@ export const UserAuth = create(
             `${BASE_URL}/validate-token`,
             {},
             {
-              withCredentials: true, // Ensure credentials are sent with the request
+              withCredentials: true, 
             }
           );
 
           if (res.status === 200) {
-            const userData = res.data.user; // Get user data from the response
-            set({ user: userData, totalCartQuantity:res.data.totalPrice.length ,isAuthValid: true }); // Update state
-            return true; // Token is valid
+            const userData = res.data.user; 
+            set({ user: userData, totalCartQuantity:res.data.totalPrice.length ,isAuthValid: true });
+            return true; 
           }
-          return false; // Token is invalid
+          return false; 
         } catch (error) {
           console.error(
             "Token validation failed:",
             error.response?.data?.message || error.message
           );
-          set({ user: null, isAuthValid: false }); // Reset user state on error
-          return false; // Token is invalid
+          set({ user: null, isAuthValid: false }); 
+          return false; 
         }
       },
 
