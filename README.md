@@ -1,4 +1,4 @@
-FoodForYou is a full-stack food delivery website built with React.js, Tailwind CSS, Express, Node.js, MongoDB, and Zustand. It offers a robust platform for managing restaurant operations and enabling seamless food ordering for users.
+FoodForYou is a full-stack food delivery website.
 
 ## Live Demo
 
