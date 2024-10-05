@@ -329,7 +329,7 @@ const Nav = () => {
         <Location setlocationVisible={setLocationVisible} visible={locationVisible} />
       )}
       {login && <Login setlogin={setLogin} />}
-      {loginOptions && <Loginoption setloginOptions={setloginOptions} setlogin={setLogin} />}
+      {loginOptions && <Loginoption setloginOptions={setloginOptions} setLogin={setLogin} />}
     </div>
   );
 };
