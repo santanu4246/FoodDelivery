@@ -4,6 +4,7 @@ import { RxCross1 } from "react-icons/rx";
 import { UserAuth } from "../../store/UserAuth";
 import BeatLoader from "react-spinners/BeatLoader";
 import { toast } from "react-toastify";
+
 const Login = ({ setLogin }) => {
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -53,15 +54,18 @@ const Login = ({ setLogin }) => {
       if (res.isExisting === false) {
         setIsNameBox(true);
       } else {
-        handleClose();
+        // Instead of calling handleClose, set the states properly
+        setOtpSent(false);
+        setLogin(false);
         toast.success("Login Successful");
       }
     } else {
-      toast.warn("Wrong otp");
+      toast.warn("Wrong OTP");
     }
   };
 
   const handleClose = () => {
+    // Only reset states when user closes the modal without logging in
     setOtpSent(false);
     setLogin(false);
     setEmail("");
