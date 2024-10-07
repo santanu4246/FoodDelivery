@@ -21,7 +21,6 @@ export const useAdminAuthentication = create((set) => ({
         username,
         password
       });
-
       
       if (response.status === 200) {
         
