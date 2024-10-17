@@ -3,118 +3,298 @@ import { useParams } from "react-router-dom";
 import { useMenu } from "../../store/Menu";
 import { UserAuth } from "../../store/UserAuth";
 import { toast } from "react-toastify";
-import { BeatLoader } from "react-spinners";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Leaf,
+  Search,
+  Coffee,
+  ShoppingCart,
+  Loader2,
+  SlidersHorizontal,
+  ChevronUp,
+  Flame,
+  Clock,
+} from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Menu = () => {
   const { id } = useParams();
-  const [MenuIndex, setMenuIndex] = useState(0);
-
+  const [activeMenu, setActiveMenu] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("recommended");
+  const [activeTab, setActiveTab] = useState("all");
   const { MenuWithFoodList, getMenuWithFoodList } = useMenu();
   const { addToCart, isAdtocart } = UserAuth();
-  console.log("foodlist", MenuWithFoodList);
 
   useEffect(() => {
     if (id) getMenuWithFoodList(id);
   }, [id, getMenuWithFoodList]);
 
-  return (
-    <div className="mt-8 flex flex-col md:flex-row gap-6 md:gap-8 px-4 md:px-6 lg:px-12">
-      {/* Left: Menu Titles */}
-      <div className="w-full md:w-1/3 bg-white p-4 rounded-md shadow-md">
-        <h3 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6">Menu List</h3>
-        <div className="space-y-3">
-          {MenuWithFoodList.map((item, index) => (
-            <div
-              onClick={() => setMenuIndex(index)}
-              className={`cursor-pointer transition ease-in-out duration-200 px-4 py-3 rounded-md ${
-                MenuIndex === index
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-red-100"
+  const handleAddToCart = async (item) => {
+    try {
+      await addToCart(item);
+      toast.success("Added to your order", {
+        position: "bottom-right",
+        className: "bg-green-50 text-green-800",
+      });
+    } catch (error) {
+      toast.error("Unable to add item");
+    }
+  };
+
+  const filterAndSortItems = (items) => {
+    let filteredItems = items.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (activeTab === "veg") {
+      filteredItems = filteredItems.filter((item) => item.veg);
+    } else if (activeTab === "nonveg") {
+      filteredItems = filteredItems.filter((item) => !item.veg);
+    }
+
+    switch (sortBy) {
+      case "price-low":
+        return filteredItems.sort((a, b) => a.price - b.price);
+      case "price-high":
+        return filteredItems.sort((a, b) => b.price - a.price);
+      case "popular":
+        return filteredItems.sort(
+          (a, b) => (b.popularity || 0) - (a.popularity || 0)
+        );
+      default:
+        return filteredItems;
+    }
+  };
+
+  const MenuCategory = ({ item, index }) => (
+    <div
+      onClick={() => setActiveMenu(index)}
+      className={`group cursor-pointer rounded-lg border transition-all duration-200 ease-in-out ${
+        activeMenu === index
+          ? "border-primary bg-primary/5 shadow-sm"
+          : "border-transparent hover:border-gray-200 hover:bg-gray-50"
+      }`}
+    >
+      <div className="p-4">
+        <div className="flex items-center gap-3">
+          <Coffee
+            className={`h-5 w-5 ${
+              activeMenu === index ? "text-primary" : "text-gray-500"
+            }`}
+          />
+          <div className="flex-1">
+            <p
+              className={`font-medium ${
+                activeMenu === index ? "text-primary" : "text-gray-700"
               }`}
-              key={index}
             >
-              <p className="text-base font-medium">{item.title} ({item.foods.length}) </p>
+              {item.title}
+            </p>
+            <p className="text-sm text-gray-500">
+              {item.foods.length} items available
+            </p>
+          </div>
+          {activeMenu === index && (
+            <ChevronUp className="h-4 w-4 text-primary" />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const FoodCard = ({ item, isVeg }) => (
+    <Card
+      className={`group relative mb-4 overflow-hidden transition-all duration-200 hover:shadow-md ${
+        isVeg ? "hover:border-green-200" : "hover:border-red-200"
+      }`}
+    >
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4">
+          <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
+            <img
+              src={item.image || "/api/placeholder/96/96"}
+              alt={item.name}
+              className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-110"
+            />
+            {item.bestseller && (
+              <Badge variant="secondary" className="absolute left-1 top-1">
+                <Flame className="mr-1 h-3 w-3 text-orange-500" />
+                Popular
+              </Badge>
+            )}
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {item.name}
+                  </h3>
+                  <Badge
+                    variant={isVeg ? "success" : "destructive"}
+                    className="h-5 w-5"
+                  >
+                    <Leaf className="h-3 w-3" />
+                  </Badge>
+                </div>
+                <p className="mt-1 text-sm text-gray-500">{item.description}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-semibold text-gray-900">
+                  ₹{item.price}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {item.preparation_time || "15-20"} mins
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Right: Food Items for the Selected Title */}
-      <div className="w-full md:w-2/3 bg-white p-4 md:p-6 rounded-md shadow-md border border-gray-200">
-        {/* Veg Food Section */}
-        <div className="mb-8">
-          <h2 className="text-lg md:text-xl font-medium text-green-700 mb-4 border-b-2 border-green-400 pb-1">
-            Veg Food Items
-          </h2>
-          {MenuWithFoodList.length > 0 &&
-            MenuWithFoodList[MenuIndex].foods
-              .filter((item) => item.veg === true)
-              .map((item, index) => (
-                <div
-                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 bg-green-50 p-4 rounded-md shadow-sm transition hover:shadow-md"
-                  key={index}
-                >
-                  <div className="mb-2 sm:mb-0">
-                    <p className="text-lg font-medium text-gray-800">{item.name}</p>
-                    <p className="text-sm text-gray-500">{item.description}</p>
-                  </div>
-                  <div className="flex justify-between sm:justify-end items-center gap-4 sm:gap-6 mt-2 sm:mt-0">
-                    <span className="text-md font-semibold text-green-700">₹{item.price}</span>
-                    <button
-                      disabled={isAdtocart}
-                      onClick={async () => {
-                        try {
-                          await addToCart(item);
-                        } catch (error) {
-                          toast.error("Failed to add item to cart");
-                        }
-                      }}
-                      className="px-4 py-1 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition duration-200"
-                    >
-                      {isAdtocart ? <BeatLoader size={10} color="white" /> : "Add to Cart"}
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {item.spicy && (
+                  <Badge variant="outline" className="text-orange-500">
+                    <Flame className="mr-1 h-3 w-3" />
+                    Spicy
+                  </Badge>
+                )}
+                {item.preparation_time && (
+                  <Badge variant="outline" className="text-gray-500">
+                    <Clock className="mr-1 h-3 w-3" />
+                    {item.preparation_time}
+                  </Badge>
+                )}
+              </div>
+              <Button
+                disabled={isAdtocart}
+                onClick={() => handleAddToCart(item)}
+                variant={isVeg ? "success" : "destructive"}
+                className="h-9 px-4"
+              >
+                {isAdtocart ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Add to Order
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
+      </CardContent>
+    </Card>
+  );
 
-        {/* Nonveg Food Section */}
-        <div>
-          <h2 className="text-lg md:text-xl font-medium text-red-700 mb-4 border-b-2 border-red-400 pb-1">
-            Non-Veg Food Items
-          </h2>
-          {MenuWithFoodList.length > 0 &&
-            MenuWithFoodList[MenuIndex].foods
-              .filter((item) => item.veg === false)
-              .map((item, index) => (
-                <div
-                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 bg-red-50 p-4 rounded-md shadow-sm transition hover:shadow-md"
-                  key={index}
-                >
-                  <div className="mb-2 sm:mb-0">
-                    <p className="text-lg font-medium text-gray-800">{item.name}</p>
-                    <p className="text-sm text-gray-500">{item.description}</p>
-                  </div>
-                  <div className="flex justify-between sm:justify-end items-center gap-4 sm:gap-6 mt-2 sm:mt-0">
-                    <span className="text-md font-semibold text-red-700">₹{item.price}</span>
-                    <button
-                      disabled={isAdtocart}
-                      onClick={async () => {
-                        try {
-                          await addToCart(item);
-                        } catch (error) {
-                          toast.error("Failed to add item to cart");
-                        }
-                      }}
-                      className="px-4 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition duration-200"
-                    >
-                      {isAdtocart ? <BeatLoader size={8} color="white" /> : "Add to Cart"}
-                    </button>
-                  </div>
-                </div>
+  return (
+    <div className="grid gap-6 lg:grid-cols-4">
+      {/* Menu Categories */}
+      <Card className="lg:col-span-1">
+        <CardHeader>
+          <CardTitle>Menu Categories</CardTitle>
+          <CardDescription>Browse our delicious options</CardDescription>
+        </CardHeader>
+        <CardContent className="p-4">
+          <ScrollArea className="h-[70vh]">
+            <div className="space-y-2">
+              {MenuWithFoodList.map((item, index) => (
+                <MenuCategory key={index} item={item} index={index} />
               ))}
-        </div>
-      </div>
+            </div>
+          </ScrollArea>
+        </CardContent>
+      </Card>
+
+      {/* Food Items */}
+      <Card className="lg:col-span-3">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{MenuWithFoodList[activeMenu]?.title}</CardTitle>
+              <CardDescription>
+                {MenuWithFoodList[activeMenu]?.foods.length} items available
+              </CardDescription>
+            </div>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList>
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="veg" className="text-green-700">
+                  Veg
+                </TabsTrigger>
+                <TabsTrigger value="nonveg" className="text-red-700">
+                  Non-Veg
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          <div className="mt-4 flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              <Input
+                placeholder="Search menu items..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <SlidersHorizontal className="mr-2 h-4 w-4" />
+                  Sort
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setSortBy("recommended")}>
+                  Recommended
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("price-low")}>
+                  Price: Low to High
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("price-high")}>
+                  Price: High to Low
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("popular")}>
+                  Most Popular
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </CardHeader>
+
+        <CardContent className="p-4">
+          {MenuWithFoodList.length > 0 && (
+            <ScrollArea className="h-[65vh]">
+              <div className="space-y-4">
+                {filterAndSortItems(MenuWithFoodList[activeMenu].foods).map(
+                  (item, index) => (
+                    <FoodCard key={index} item={item} isVeg={item.veg} />
+                  )
+                )}
+              </div>
+            </ScrollArea>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

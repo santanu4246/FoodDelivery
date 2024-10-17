@@ -1,83 +1,140 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAdminAuthentication } from "../../store/Authentication";
-import { FaDirections } from "react-icons/fa";
+import { MapPin, Navigation, Clock, Phone, Star, Share2 } from "lucide-react";
 import Menu from "./Menu";
-import { ClipLoader } from "react-spinners";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-function RestrurantData() {
+function RestaurantData() {
   const { id } = useParams();
   const { getRestrurantById, isLoading } = useAdminAuthentication();
-  const [restrurantData, setRestrurantData] = useState([]);
+  const [restaurantData, setRestaurantData] = useState({});
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function getRestrurant() {
+    async function getRestaurant() {
       try {
         const res = await getRestrurantById(id);
-        setRestrurantData(res);
+        setRestaurantData(res);
       } catch (error) {
-        console.log(error);
+        setError("Failed to load restaurant data");
+        console.error(error);
       }
     }
-    if (id) getRestrurant();
+    if (id) getRestaurant();
   }, [id]);
 
-  return !isLoading ? (
-    <div className="min-h-screen w-full px-[8%] py-[5%] bg-gray-50 text-gray-900">
-      <div className="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        {/* Restaurant Image */}
-        <div className="flex justify-center">
-          <div className="h-[300px] w-full max-w-xl overflow-hidden rounded-xl shadow-md">
-            <img
-              src={restrurantData.image}
-              alt="Restaurant"
-              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-            />
-          </div>
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-32 w-32 animate-pulse rounded-full bg-gray-200" />
+          <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
         </div>
-
-        {/* Restaurant Info */}
-        <div className="mt-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-800">
-            {restrurantData.name}
-          </h2>
-          <div className="mt-2 text-lg text-gray-600">
-            {restrurantData.cuisine &&
-              restrurantData.cuisine.map((item, index) => (
-                <span key={index}>
-                  {item}
-                  {index < restrurantData.cuisine.length - 1 ? ", " : ""}
-                </span>
-              ))}
-          </div>
-          <div className="mt-2 text-lg text-gray-500">
-            {restrurantData.location}
-          </div>
-
-          <div className="mt-4">
-            <a
-              href={restrurantData.geolocation}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="inline-flex items-center gap-2 text-gray-800 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors">
-                <FaDirections className="text-xl" />
-                <span>Get Directions</span>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <hr className="mt-8 border-t-1 border-gray-300" />
-
-        <Menu />
       </div>
-    </div>
-  ) : (
-    <div className="flex h-[50vh] items-center justify-center">
-      <ClipLoader size={50} />
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="relative h-[400px] w-full">
+        <div className="absolute inset-0">
+          <img
+            src={restaurantData.image}
+            alt={restaurantData.name}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+          <div className="mx-auto max-w-6xl">
+            <h1 className="mb-2 text-5xl font-bold">{restaurantData.name}</h1>
+            <div className="flex flex-wrap items-center gap-4">
+              {restaurantData.cuisine?.map((item, index) => (
+                <Badge key={index} variant="secondary" className="bg-white/20">
+                  {item}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <div className="grid gap-8 md:grid-cols-3">
+          {/* Info Cards */}
+          <div className="md:col-span-1">
+            <div className="space-y-4">
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="mb-4 text-lg font-semibold">Quick Info</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-gray-500" />
+                      <span>{restaurantData.location}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="h-5 w-5 text-gray-500" />
+                      <span>Open: 9:00 AM - 10:00 PM</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 text-gray-500" />
+                      <span>{restaurantData.phone || "Contact number not available"}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Star className="h-5 w-5 text-yellow-400" />
+                      <span className="font-medium">
+                        {restaurantData.rating || "4.5"} / 5
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex gap-2">
+                <Button 
+                  className="flex-1"
+                  onClick={() => window.open(restaurantData.geolocation, '_blank')}
+                >
+                  <Navigation className="mr-2 h-4 w-4" />
+                  Directions
+                </Button>
+                <Button variant="outline" className="flex-1">
+                  <Share2 className="mr-2 h-4 w-4" />
+                  Share
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Menu Section */}
+          <div className="md:col-span-2">
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="mb-6 text-2xl font-bold">Menu</h2>
+                <Menu />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default RestrurantData;
+export default RestaurantData;
