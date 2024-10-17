@@ -1,299 +1,273 @@
 import React, { useEffect, useState } from "react";
 import { useAdminAuthentication } from "../../store/Authentication";
 import dayjs from "dayjs";
-import { Bar } from "react-chartjs-2";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Activity, Package, ShoppingCart, TrendingUp, AlertCircle } from "lucide-react";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend,
-} from "chart.js";
+  ResponsiveContainer,
+  Legend
+} from "recharts";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+// Reusable components
+const StatCard = ({ icon: Icon, title, value, subtitle, isLoading }) => (
+  <Card className="relative overflow-hidden">
+    <CardContent className="p-6">
+      {isLoading ? (
+        <div className="space-y-3">
+          <Skeleton className="h-12 w-12" />
+          <Skeleton className="h-4 w-[100px]" />
+          <Skeleton className="h-8 w-[120px]" />
+        </div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-primary/10 rounded-lg">
+            <Icon className="h-6 w-6 text-primary" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <h2 className="text-2xl font-bold tracking-tight">{value}</h2>
+            {subtitle && (
+              <p className="text-xs text-muted-foreground">{subtitle}</p>
+            )}
+          </div>
+        </div>
+      )}
+    </CardContent>
+  </Card>
+);
 
-function Dashboard() {
+const ErrorAlert = ({ message }) => (
+  <Alert variant="destructive">
+    <AlertCircle className="h-4 w-4" />
+    <AlertDescription>{message}</AlertDescription>
+  </Alert>
+);
+
+const RevenueChart = ({ data }) => (
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip
+        contentStyle={{
+          backgroundColor: "hsl(var(--background))",
+          border: "1px solid hsl(var(--border))",
+          borderRadius: "6px",
+        }}
+        formatter={(value) => [`₹ ${value.toLocaleString()}`, "Revenue"]}
+      />
+      <Legend />
+      <Bar
+        dataKey="value"
+        fill="hsl(var(--primary))"
+        radius={[4, 4, 0, 0]}
+        name="Revenue"
+      />
+    </BarChart>
+  </ResponsiveContainer>
+);
+
+const Dashboard = () => {
   const { OderDetails, orderdetails } = useAdminAuthentication();
-
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [totalOrders, setTotalOrders] = useState(0);
-
-  const [monthlyRevenue, setMonthlyRevenue] = useState(0);
-  const [weeklyRevenue, setWeeklyRevenue] = useState(0);
-  const [todayRevenue, setTodayRevenue] = useState(0);
-  const [monthlyItems, setMonthlyItems] = useState(0);
-  const [weeklyItems, setWeeklyItems] = useState(0);
-  const [todayItems, setTodayItems] = useState(0);
-
-  const [monthlyOrders, setMonthlyOrders] = useState(0);
-  const [weeklyOrders, setWeeklyOrders] = useState(0);
-  const [todayOrders, setTodayOrders] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedRevenue, setSelectedRevenue] = useState("today");
+
+  // State for metrics
+  const [metrics, setMetrics] = useState({
+    total: { items: 0, revenue: 0, orders: 0 },
+    monthly: { items: 0, revenue: 0, orders: 0 },
+    weekly: { items: 0, revenue: 0, orders: 0 },
+    today: { items: 0, revenue: 0, orders: 0 }
+  });
 
   const fetchOrderDetails = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
       await OderDetails();
     } catch (error) {
-      console.log(error);
+      setError("Failed to fetch order details. Please try again later.");
+      console.error("Error fetching order details:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const calculateTotalsAndBreakdowns = () => {
-    if (orderdetails && orderdetails.length > 0) {
-      const today = dayjs().startOf("day");
-      const startOfWeek = dayjs().startOf("week").startOf("day");
-      const startOfMonth = dayjs().startOf("month").startOf("day");
+  const calculateMetrics = () => {
+    if (!orderdetails?.length) return;
 
-      let totalItems = 0;
-      let totalRevenue = 0;
-      let totalOrders = 0;
+    const today = dayjs().startOf("day");
+    const startOfWeek = dayjs().startOf("week");
+    const startOfMonth = dayjs().startOf("month");
 
-      let monthlyRevenue = 0;
-      let weeklyRevenue = 0;
-      let todayRevenue = 0;
+    const newMetrics = {
+      total: { items: 0, revenue: 0, orders: 0 },
+      monthly: { items: 0, revenue: 0, orders: 0 },
+      weekly: { items: 0, revenue: 0, orders: 0 },
+      today: { items: 0, revenue: 0, orders: 0 }
+    };
 
-      let monthlyItems = 0;
-      let weeklyItems = 0;
-      let todayItems = 0;
+    orderdetails.forEach((order) => {
+      const orderDate = dayjs(order.createdAt);
+      let orderRevenue = 0;
+      let orderItemsCount = 0;
 
-      let monthlyOrders = 0;
-      let weeklyOrders = 0;
-      let todayOrders = 0;
-
-      orderdetails.forEach((order) => {
-        const orderDate = dayjs(order.createdAt).startOf("day");
-        let orderRevenue = 0;
-        let orderItemsCount = 0;
-
-        order.items.forEach((item) => {
-          orderItemsCount += item.quantity;
-          orderRevenue += item.price * item.quantity;
-        });
-
-        totalItems += orderItemsCount;
-        totalRevenue += orderRevenue;
-        totalOrders++;
-
-        if (
-          orderDate.isAfter(startOfMonth) ||
-          orderDate.isSame(startOfMonth, "day")
-        ) {
-          monthlyRevenue += orderRevenue;
-          monthlyItems += orderItemsCount;
-          monthlyOrders++;
-        }
-
-        if (
-          orderDate.isAfter(startOfWeek) ||
-          orderDate.isSame(startOfWeek, "day")
-        ) {
-          weeklyRevenue += orderRevenue;
-          weeklyItems += orderItemsCount;
-          weeklyOrders++;
-        }
-
-        if (orderDate.isSame(today, "day")) {
-          todayRevenue += orderRevenue;
-          todayItems += orderItemsCount;
-          todayOrders++;
-        }
+      order.items.forEach((item) => {
+        orderItemsCount += item.quantity;
+        orderRevenue += item.price * item.quantity;
       });
 
-      setTotalItems(totalItems);
-      setTotalRevenue(totalRevenue);
-      setTotalOrders(totalOrders);
+      // Update total metrics
+      newMetrics.total.items += orderItemsCount;
+      newMetrics.total.revenue += orderRevenue;
+      newMetrics.total.orders += 1;
 
-      setMonthlyRevenue(monthlyRevenue);
-      setWeeklyRevenue(weeklyRevenue);
-      setTodayRevenue(todayRevenue);
+      // Update period-specific metrics
+      if (orderDate.isSame(today, "day")) {
+        newMetrics.today.items += orderItemsCount;
+        newMetrics.today.revenue += orderRevenue;
+        newMetrics.today.orders += 1;
+      }
 
-      setMonthlyItems(monthlyItems);
-      setWeeklyItems(weeklyItems);
-      setTodayItems(todayItems);
+      if (orderDate.isAfter(startOfWeek) || orderDate.isSame(startOfWeek, "day")) {
+        newMetrics.weekly.items += orderItemsCount;
+        newMetrics.weekly.revenue += orderRevenue;
+        newMetrics.weekly.orders += 1;
+      }
 
-      setMonthlyOrders(monthlyOrders);
-      setWeeklyOrders(weeklyOrders);
-      setTodayOrders(todayOrders);
-    }
+      if (orderDate.isAfter(startOfMonth) || orderDate.isSame(startOfMonth, "day")) {
+        newMetrics.monthly.items += orderItemsCount;
+        newMetrics.monthly.revenue += orderRevenue;
+        newMetrics.monthly.orders += 1;
+      }
+    });
+
+    setMetrics(newMetrics);
   };
 
   useEffect(() => {
     fetchOrderDetails();
-  }, [OderDetails]);
+  }, []);
 
   useEffect(() => {
-    calculateTotalsAndBreakdowns();
+    calculateMetrics();
   }, [orderdetails]);
 
-  const data = {
-    labels: ["Today", "This Week", "This Month"],
-    datasets: [
-      {
-        label: "Revenue (INR)",
-        data: [todayRevenue, weeklyRevenue, monthlyRevenue],
-        backgroundColor: ["#3b82f6", "#f97316", "#22c55e"],
-        borderColor: ["#1e40af", "#c2410c", "#15803d"],
-        borderWidth: 1,
-      },
-    ],
-  };
+  const chartData = [
+    { name: "Today", value: metrics.today.revenue },
+    { name: "This Week", value: metrics.weekly.revenue },
+    { name: "This Month", value: metrics.monthly.revenue }
+  ];
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Total Revenue Overview",
-      },
-    },
+  const getCurrentMetrics = () => {
+    switch (selectedRevenue) {
+      case "monthly":
+        return metrics.monthly;
+      case "weekly":
+        return metrics.weekly;
+      default:
+        return metrics.today;
+    }
   };
 
   return (
-    <div className="h-screen w-full">
-      <h2 className="uppercase text-center pt-10 pb-5 text-black text-[40px] font-extrabold">
-        Dashboard
-      </h2>
+    <div className="min-h-screen bg-background p-8 space-y-8">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          {dayjs().format("MMMM D, YYYY")}
+        </p>
+      </div>
 
-      <hr className="bg-[#111111] h-[1.5px] border-0" />
+      {error && <ErrorAlert message={error} />}
 
-      <div className="grid grid-cols-2 gap-5 px-5 py-5 w-full">
-        <div className="h-[400px] min-w-[50%] bg-white shadow-2xl rounded-lg">
-          <div className="w-full flex flex-col items-center px-[3rem] py-[1rem]">
-            <h2 className="text-black text-[25px] font-[500] mb-4">
-              Total Revenue
-            </h2>
-            <div className="w-full flex justify-center items-center gap-3">
-              <button
-                className={`px-4 py-2 rounded-md ${
-                  selectedRevenue === "today"
-                    ? "bg-black text-white"
-                    : "bg-[#d9d9d9] text-gray-700"
-                }`}
-                onClick={() => setSelectedRevenue("today")}
-              >
-                Today
-              </button>
-              <button
-                className={`px-4 py-2 rounded-md ${
-                  selectedRevenue === "weekly"
-                    ? "bg-black text-white"
-                    : "bg-[#d9d9d9] text-gray-700"
-                }`}
-                onClick={() => setSelectedRevenue("weekly")}
-              >
-                Weekly
-              </button>
-              <button
-                className={`px-4 py-2 rounded-md ${
-                  selectedRevenue === "monthly"
-                    ? "bg-black text-white"
-                    : "bg-[#d9d9d9] text-gray-700"
-                }`}
-                onClick={() => setSelectedRevenue("monthly")}
-              >
-                Monthly
-              </button>
-            </div>
+      {/* Revenue Overview Card */}
+      <Card className="p-6">
+        <CardHeader className="px-0 pt-0">
+          <div className="flex justify-between items-center">
+            <CardTitle>Revenue Overview</CardTitle>
+            <Tabs 
+              defaultValue="today" 
+              value={selectedRevenue} 
+              onValueChange={setSelectedRevenue}
+              className="w-auto"
+            >
+              <TabsList>
+                <TabsTrigger value="today">Today</TabsTrigger>
+                <TabsTrigger value="weekly">Weekly</TabsTrigger>
+                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
-          <div className="text-center mt-8">
-            <h3 className="text-[35px] font-bold text-black">
-              {selectedRevenue === "monthly"
-                ? `${monthlyRevenue} INR`
-                : selectedRevenue === "weekly"
-                ? `${weeklyRevenue} INR`
-                : `${todayRevenue} INR`}
+        </CardHeader>
+        <CardContent className="px-0 pb-0">
+          <div className="mt-4 flex justify-center">
+            <h3 className="text-4xl font-bold">
+              ₹ {getCurrentMetrics().revenue.toLocaleString()}
             </h3>
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="h-[400px] min-w-[50%] grid grid-cols-2 gap-5 justify-end items-center">
-          <div className="h-[190px] min-w-[250px] bg-white flex justify-center items-center shadow-2xl rounded-lg">
-            <div className="flex items-center gap-5">
-              <img
-                src="https://res.cloudinary.com/orrin/image/upload/v1724677107/1_hdoajx.png"
-                alt=""
-                className="h-[100px]"
-              />
-              <div className="flex flex-col">
-                <span className="text-black text-[35px] font-bold">
-                  {selectedRevenue === "monthly"
-                    ? monthlyOrders
-                    : selectedRevenue === "weekly"
-                    ? weeklyOrders
-                    : todayOrders}
-                </span>
-                <span className="text-black text-[18px]">Total Orders</span>
-              </div>
-            </div>
-          </div>
-          <div className="h-[190px] min-w-[250px] bg-white flex justify-center items-center shadow-2xl rounded-lg">
-            <div className="flex items-center gap-5">
-              <img
-                src="https://res.cloudinary.com/orrin/image/upload/v1724677108/2_s4r06q.png"
-                alt=""
-                className="h-[100px]"
-              />
-              <div className="flex flex-col">
-                <span className="text-black text-[35px] font-bold">
-                  {totalRevenue} INR
-                </span>
-                <span className="text-black text-[18px]">
-                  Total Revenue (INR)
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="h-[190px] min-w-[250px] bg-white flex justify-center items-center shadow-2xl rounded-lg">
-            <div className="flex items-center gap-5">
-              <img
-                src="https://res.cloudinary.com/orrin/image/upload/v1724677064/4_hqosdx.png"
-                alt=""
-                className="h-[100px]"
-              />
-              <div className="flex flex-col">
-                <span className="text-black text-[35px] font-bold">
-                  {totalOrders}
-                </span>
-                <span className="text-black text-[18px]">
-                  Lifetime Order Count
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="h-[190px] min-w-[250px] bg-white flex justify-center items-center shadow-2xl rounded-lg">
-            <div className="flex items-center gap-5">
-              <img
-                src="https://res.cloudinary.com/orrin/image/upload/v1724677108/3_v4qnh9.png"
-                alt=""
-                className="h-[100px]"
-              />
-              <div className="flex flex-col">
-                <span className="text-black text-[35px] font-bold">
-                  {selectedRevenue === "monthly"
-                    ? monthlyItems
-                    : selectedRevenue === "weekly"
-                    ? weeklyItems
-                    : todayItems}
-                </span>
-                <span className="text-black text-[18px]">Total Items Sold</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Stat Cards */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          icon={ShoppingCart}
+          title="Total Orders"
+          value={getCurrentMetrics().orders.toLocaleString()}
+          subtitle="Orders this period"
+          isLoading={isLoading}
+        />
+        <StatCard
+          icon={TrendingUp}
+          title="Total Revenue"
+          value={`₹ ${metrics.total.revenue.toLocaleString()}`}
+          subtitle="Lifetime revenue"
+          isLoading={isLoading}
+        />
+        <StatCard
+          icon={Activity}
+          title="Lifetime Orders"
+          value={metrics.total.orders.toLocaleString()}
+          subtitle="Total orders processed"
+          isLoading={isLoading}
+        />
+        <StatCard
+          icon={Package}
+          title="Items Sold"
+          value={getCurrentMetrics().items.toLocaleString()}
+          subtitle="Units this period"
+          isLoading={isLoading}
+        />
       </div>
 
-      <div className="w-full mt-[2rem]">
-        <Bar data={data} options={options} />
-      </div>
+      {/* Revenue Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Revenue Analytics</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <Skeleton className="h-[300px] w-full" />
+          ) : (
+            <RevenueChart data={chartData} />
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
-}
+};
 
 export default Dashboard;
