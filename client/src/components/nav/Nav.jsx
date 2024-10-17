@@ -28,7 +28,7 @@ const Nav = () => {
   };
 
   const { user, logout, totalCartQuantity = 0 } = UserAuth();
-  const { searchRestaurants, searchResults } = useRestrurant();
+  const { searchRestaurants, searchResults,location } = useRestrurant();
 
   const handleSearchChange = async (event) => {
     setSearchTerm(event.target.value);
@@ -121,7 +121,7 @@ const Nav = () => {
               aria-label="Toggle location"
             >
               <CiLocationOn className="text-2xl" />
-              <span className="ml-2 font-medium">Location</span>
+              <span className="ml-2 font-medium">{location.slice(1, -1)}</span>
             </div>
 
             {user ? (

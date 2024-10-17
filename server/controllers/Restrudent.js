@@ -90,6 +90,7 @@ async function getRestrurantByLocation(req, res) {
       msg: "Restrurants feched by location",
       success: false,
       restrurantList,
+      location
     });
   } catch (error) {
     return res.status(500).json({

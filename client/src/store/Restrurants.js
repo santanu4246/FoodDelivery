@@ -9,6 +9,7 @@ export const useRestrurant = create(set => ({
   allLocations:[],
   restureantlist:[],
   searchResults: [],
+  location:"",
   getAllLocations:async()=>{
     try{
         const response =await axios.get(`${BASE_URL}/getlocations`)
@@ -28,7 +29,7 @@ export const useRestrurant = create(set => ({
     set({restureantlist:[]})
     try {
         const response= await axios.get(`${BASE_URL}/getrestrurantbylocation`)
-        set({restureantlist:response.data.restrurantList})
+        set({restureantlist:response.data.restrurantList,location:response.data.location})
         return true
     } catch (error) {
         return false
