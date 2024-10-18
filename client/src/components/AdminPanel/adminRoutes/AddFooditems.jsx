@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useMenu } from "../../../store/Menu";
-
-function AddFooditems() {
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Utensils } from "lucide-react";
+import { IndianRupee } from 'lucide-react';
+function AddFoodItems() {
   const [foodName, setFoodName] = useState("");
   const [foodPrice, setFoodPrice] = useState("");
   const [starterType, setStarterType] = useState("");
@@ -10,12 +17,6 @@ function AddFooditems() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      foodName,
-      foodPrice,
-      starterType,
-      isVegetarian
-    });
     const restuid = localStorage.getItem("restrurantID");
     await addFoodToDatabase({
       foodName,
@@ -34,82 +35,82 @@ function AddFooditems() {
   }, []);
 
   return (
-    
-<div className="flex items-center justify-center h-screen w-full">
-    <div className="text-black max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg min-w-[40%]">
-      <h2 className="text-2xl font-semibold mb-6 text-center">
-        Add Food Items
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Food Name:
-          </label>
-          <input
-            type="text"
-            value={foodName}
-            onChange={(e) => setFoodName(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter food name"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Food Price:
-          </label>
-          <input
-            type="number"
-            value={foodPrice}
-            onChange={(e) => setFoodPrice(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter food price"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-black">
-            Menu Type:
-          </label>
-          <select
-            value={starterType}
-            onChange={(e) => setStarterType(e.target.value)}
-            required
-            className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="" disabled>
-              Select Menu
-            </option>
-            {menuDropDownList.map((item, index) => {
-              return (
-                <option value={item._id} key={index}>
-                  {item.title}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            checked={isVegetarian}
-            onChange={(e) => setIsVegetarian(e.target.checked)}
-            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-          />
-          <label className="ml-2 block text-sm font-medium text-gray-700">
-            Vegetarian
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          Add Food Item
-        </button>
-      </form>
-    </div>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-xl">
+        <CardHeader className="space-y-1">
+          <div className="flex items-center space-x-2">
+            <Utensils className="h-6 w-6 text-gray-600" />
+            <CardTitle className="text-2xl font-bold">Add Food Item</CardTitle>
+          </div>
+          <CardDescription>
+            Add a new dish to your restaurant's menu
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="foodName">Food Name</Label>
+              <Input
+                id="foodName"
+                placeholder="Enter the name of the dish"
+                value={foodName}
+                onChange={(e) => setFoodName(e.target.value)}
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="foodPrice">Price</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-gray-500">₹</span>
+                <Input
+                  id="foodPrice"
+                  type="number"
+                  placeholder="0.00"
+                  value={foodPrice}
+                  onChange={(e) => setFoodPrice(e.target.value)}
+                  required
+                  className="pl-8"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="menuType">Menu Category</Label>
+              <Select value={starterType} onValueChange={setStarterType} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {menuDropDownList.map((item) => (
+                    <SelectItem key={item._id} value={item._id}>
+                      {item.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="isVegetarian" className="font-medium">
+                Vegetarian Option
+              </Label>
+              <Switch
+                id="isVegetarian"
+                checked={isVegetarian}
+                onCheckedChange={setIsVegetarian}
+              />
+            </div>
+
+            <Button type="submit" className="w-full">
+              Add to Menu
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
-export default AddFooditems;
+export default AddFoodItems;

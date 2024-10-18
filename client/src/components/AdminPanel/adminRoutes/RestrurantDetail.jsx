@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminAuthentication } from "../../../store/Authentication";
-import { BeatLoader } from "react-spinners";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Camera, MapPin, Store, UtensilsCrossed, IndianRupee  } from "lucide-react";
+
 const RestaurantDetail = () => {
   const { admin, updateRestrurant, isLoading } = useAdminAuthentication();
   const [image, setImage] = useState(null);
@@ -14,143 +19,158 @@ const RestaurantDetail = () => {
   });
 
   useEffect(() => {
-    function getRestaurant() {
-      if (admin.restrurant) {
-        setRestaurant({
-          name: admin.restrurant.name || "",
-          cuisine: admin.restrurant.cuisine || [],
-          location: admin.restrurant.location || "",
-          geolocation: admin.restrurant.geolocation || "",
-          perThali: admin.restrurant.perThali || 300
-        });
-      }
+    if (admin?.restrurant) {
+      setRestaurant({
+        name: admin.restrurant.name || "",
+        cuisine: admin.restrurant.cuisine || [],
+        location: admin.restrurant.location || "",
+        geolocation: admin.restrurant.geolocation || "",
+        perThali: admin.restrurant.perThali || 300
+      });
     }
-    if (admin !== null) getRestaurant();
   }, [admin]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setRestaurant({
-      ...restaurant,
+    setRestaurant(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
   };
 
   const handleCuisineChange = (e) => {
     const { value } = e.target;
-    setRestaurant({
-      ...restaurant,
-      cuisine: value.split(",")
-    });
+    setRestaurant(prev => ({
+      ...prev,
+      cuisine: value.split(",").map(item => item.trim())
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    if (restaurant.name !== "") formData.append("name", restaurant.name);
-    if (restaurant.cuisine.length > 0)
-      formData.append("cuisine", restaurant.cuisine);
-    if (restaurant.location !== "")
-      formData.append("location", restaurant.location);
-    if (restaurant.perThali !== "")
-      formData.append("perThali", restaurant.perThali);
-    if (restaurant.geolocation !== "")
-      formData.append("geolocation", restaurant.geolocation);
-    if (image !== null) formData.append("image", image);
+    
+    Object.entries(restaurant).forEach(([key, value]) => {
+      if (value && (Array.isArray(value) ? value.length > 0 : true)) {
+        formData.append(key, value);
+      }
+    });
+    
+    if (image) {
+      formData.append("image", image);
+    }
+
     try {
       await updateRestrurant(admin.restrurant._id, formData);
-      
-      toast.success("Admin updated successfully");
+      toast.success("Restaurant details updated successfully");
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to update restaurant details");
+      console.error(error);
     }
   };
 
-  return (
-    <div className="container mx-auto px-4 py-8 text-black">
-      <form
-        onSubmit={handleSubmit}
-        className="mt-12 max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg"
-      >
-        <h3 className="text-2xl font-semibold mb-4">Update Restaurant</h3>
-        <label className="block mb-4">
-          <span className="text-gray-700">Name:</span>
-          <input
-            type="text"
-            name="name"
-            value={restaurant.name}
-            onChange={handleInputChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
-            required
-          />
-        </label>
-        <label className="block mb-4">
-          <span className="text-gray-700">Cuisine:</span>
-          <input
-            type="text"
-            name="cuisine"
-            value={restaurant.cuisine.join(",")}
-            onChange={handleCuisineChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
-          />
-        </label>
+  const FormField = ({ label, icon, children }) => (
+    <div className="mb-6">
+      <Label className="flex items-center gap-2 text-sm font-medium mb-2">
+        {icon}
+        {label}
+      </Label>
+      {children}
+    </div>
+  );
 
-        <label className="block mb-4">
-          <span className="text-gray-700">Location:</span>
-          <input
-            type="text"
-            name="location"
-            value={restaurant.location}
-            onChange={handleInputChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
-            required
-          />
-        </label>
-        <label className="block mb-4">
-          <span className="text-gray-700">Geolocation:</span>
-          <input
-            type="text"
-            name="geolocation"
-            value={restaurant.geolocation}
-            onChange={handleInputChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 text-black"
-          />
-        </label>
-        <label className="block mb-4">
-          <span className="text-gray-700">Image</span>
-          <input
-            type="file"
-            name="image"
-            value={restaurant.image}
-            onChange={(e) => {
-              setImage(e.target.files[0]);
-            }}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
-          />
-        </label>
-        <label className="block mb-4">
-          <span className="text-gray-700">Per Thali:</span>
-          <input
-            type="number"
-            name="perThali"
-            value={restaurant.perThali}
-            onChange={handleInputChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200"
-            min="0"
-          />
-        </label>
-        <button
-          style={{ pointerEvents: isLoading ? "none" : "auto" }}
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {isLoading ? (
-            <BeatLoader size={7} color="#ffffff" />
-          ) : (
-            <span>Update Restaurant</span>
-          )}
-        </button>
-      </form>
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center text-gray-900">
+            Restaurant Details
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <FormField label="Restaurant Name" icon={<Store className="w-4 h-4" />}>
+              <Input
+                name="name"
+                value={restaurant.name}
+                onChange={handleInputChange}
+                className="w-full"
+                placeholder="Enter restaurant name"
+                required
+              />
+            </FormField>
+
+            <FormField label="Cuisine Types" icon={<UtensilsCrossed className="w-4 h-4" />}>
+              <Input
+                name="cuisine"
+                value={restaurant.cuisine.join(", ")}
+                onChange={handleCuisineChange}
+                className="w-full"
+                placeholder="Enter cuisines (comma-separated)"
+              />
+            </FormField>
+
+            <FormField label="Location" icon={<MapPin className="w-4 h-4" />}>
+              <Input
+                name="location"
+                value={restaurant.location}
+                onChange={handleInputChange}
+                className="w-full"
+                placeholder="Enter location"
+                required
+              />
+            </FormField>
+
+            <FormField label="Geolocation Coordinates" icon={<MapPin className="w-4 h-4" />}>
+              <Input
+                name="geolocation"
+                value={restaurant.geolocation}
+                onChange={handleInputChange}
+                className="w-full"
+                placeholder="Enter coordinates (lat, lng)"
+              />
+            </FormField>
+
+            <FormField label="Restaurant Image" icon={<Camera className="w-4 h-4" />}>
+              <Input
+                type="file"
+                name="image"
+                onChange={(e) => setImage(e.target.files[0])}
+                className="w-full"
+                accept="image/*"
+              />
+            </FormField>
+
+            <FormField label="Price per Thali" icon={<IndianRupee  className="w-4 h-4" />}>
+              <Input
+                type="number"
+                name="perThali"
+                value={restaurant.perThali}
+                onChange={handleInputChange}
+                className="w-full"
+                min="0"
+                placeholder="Enter price per thali"
+              />
+            </FormField>
+
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" />
+                </div>
+              ) : (
+                "Update Restaurant"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
