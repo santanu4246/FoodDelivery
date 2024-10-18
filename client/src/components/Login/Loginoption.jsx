@@ -46,25 +46,7 @@ const Loginoption = ({ setLogin, setloginOptions }) => {
   }, []);
 
   const handleClose = () => {
-    const tl = gsap.timeline({
-      onComplete: () => setloginOptions(false)
-    });
-
-    tl.to(buttonsRef.current, {
-      y: -20,
-      opacity: 0,
-      duration: 0.2,
-      stagger: 0.05
-    })
-    .to(modalRef.current, {
-      scale: 0.5,
-      opacity: 0,
-      duration: 0.3
-    })
-    .to(overlayRef.current, {
-      opacity: 0,
-      duration: 0.2
-    });
+       setloginOptions(false)
   };
 
   return (
