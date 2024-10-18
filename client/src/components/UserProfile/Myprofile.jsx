@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { UserAuth } from "../../store/UserAuth";
-import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
-import { BeatLoader, ClipLoader } from "react-spinners";
+import { User, Mail, Phone, MapPin, Calendar, Pencil } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const Myprofile = () => {
+const MyProfile = () => {
   const { useprofile, updateProfile } = UserAuth();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,14 +45,6 @@ const Myprofile = () => {
     fetchUserDetails();
   }, []);
 
-  const handleEditProfile = () => {
-    setIsEditing(true);
-  };
-
-  const handleClose = () => {
-    setIsEditing(false);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -48,160 +52,154 @@ const Myprofile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      console.log(formData);
-
       await updateProfile(formData);
       setIsEditing(false);
-      fetchUserDetails();
+      await fetchUserDetails();
     } catch (error) {
       console.error("Error updating profile:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (!user) {
     return (
-      <div className="h-[50vh] w-full flex items-center justify-center">
-        <ClipLoader />
+      <div className="max-w-3xl mx-auto p-6 space-y-8">
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <Skeleton className="h-12 w-1/3" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-red-400 to-red-500 p-6 text-white">
-          <div className="flex items-center">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mr-6">
-              <User size={48} className="text-red-500" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">{user.name}</h1>
-              <p className="text-red-100">
+    <div className="max-w-3xl mx-auto p-6 space-y-8">
+      <Card className="border-0 shadow-lg">
+        <CardHeader className="bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-t-lg p-8">
+          <div className="flex items-center gap-6">
+            <Avatar className="h-24 w-24 border-4 border-white/10">
+              <AvatarFallback className="bg-slate-700 text-white text-2xl">
+                {user.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold tracking-tight">{user.name}</h1>
+              <p className="text-slate-300 text-sm">
                 Member since {new Date(user.createdAt).getFullYear()}
               </p>
+              <Button
+                onClick={() => setIsEditing(true)}
+                variant="secondary"
+                className="mt-4"
+                size="sm"
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit Profile
+              </Button>
             </div>
           </div>
-          <button
-            onClick={handleEditProfile}
-            className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-          >
-            Edit Profile
-          </button>
-        </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        </CardHeader>
+        <CardContent className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <ProfileItem
-              icon={<Mail className="text-gray-400" />}
-              label="Email"
+              icon={<Mail className="text-slate-600" />}
+              label="Email Address"
               value={user.email}
             />
             <ProfileItem
-              icon={<Phone className="text-gray-400" />}
-              label="Phone"
+              icon={<Phone className="text-slate-600" />}
+              label="Phone Number"
               value={user.phone || "Not provided"}
             />
             <ProfileItem
-              icon={<MapPin className="text-gray-400" />}
+              icon={<MapPin className="text-slate-600" />}
               label="Address"
               value={user.address || "Not provided"}
             />
             <ProfileItem
-              icon={<Calendar className="text-gray-400" />}
+              icon={<Calendar className="text-slate-600" />}
               label="Date Joined"
-              value={new Date(user.createdAt).toLocaleDateString()}
+              value={new Date(user.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
             />
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {/* Edit Profile Form */}
-      {isEditing && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20"
-          onClick={handleClose} // Close form when clicking outside
-        >
-          <div
-            className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the form
-          >
-            <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                />
-              </div>
-              {/* <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                />
-              </div> */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Phone</label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                />
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Enter your phone number"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="address">Address</Label>
+              <Input
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter your address"
+              />
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditing(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 const ProfileItem = ({ icon, label, value }) => (
-  <div className="flex items-center">
-    <div className="w-8 mr-4">{icon}</div>
-    <div>
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="font-medium text-gray-800">{value}</p>
+  <div className="flex items-start gap-4 p-4 rounded-lg bg-slate-50">
+    <div className="p-2 rounded-full bg-slate-100">{icon}</div>
+    <div className="space-y-1">
+      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className="text-slate-900">{value}</p>
     </div>
   </div>
 );
 
-export default Myprofile;
+export default MyProfile;

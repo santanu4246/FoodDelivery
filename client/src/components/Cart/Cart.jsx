@@ -3,7 +3,7 @@ import { UserAuth } from "../../store/UserAuth";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { BeatLoader, ClipLoader } from "react-spinners";
-
+import ProfessionalLoader from "@/Loder/ProfessionalLoader";
 function RestuCard({ item, count }) {
   const navigate = useNavigate();
   
@@ -45,7 +45,7 @@ function Cart() {
 
   return isLoading ? (
     <div className="flex items-center justify-center h-[50vh] w-full">
-      <ClipLoader />
+      <ProfessionalLoader />
     </div>
   ) : (
     <div className="flex flex-col items-center my-[2rem] px-4">

@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import ProfessionalLoader from "@/Loder/ProfessionalLoader";
 function RestaurantData() {
   const { id } = useParams();
   const { getRestrurantById, isLoading } = useAdminAuthentication();
@@ -29,12 +29,7 @@ function RestaurantData() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-32 w-32 animate-pulse rounded-full bg-gray-200" />
-          <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
-        </div>
-      </div>
+      <ProfessionalLoader/>
     );
   }
 
