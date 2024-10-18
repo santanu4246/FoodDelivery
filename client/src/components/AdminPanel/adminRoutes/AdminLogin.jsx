@@ -29,7 +29,7 @@ function AdminLogin() {
         <Card className="border-0 shadow-2xl">
           <CardHeader className="space-y-1 pb-6">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center">
                 <Lock className="w-8 h-8 text-white" />
               </div>
             </div>
@@ -62,7 +62,7 @@ function AdminLogin() {
                       required
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+                      className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
                       placeholder="Enter your username"
                     />
                   </div>
@@ -86,7 +86,7 @@ function AdminLogin() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+                      className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
                       placeholder="Enter your password"
                     />
                   </div>
@@ -96,7 +96,7 @@ function AdminLogin() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
