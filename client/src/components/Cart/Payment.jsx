@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserAuth } from "../../store/UserAuth";
 import { toast } from "react-toastify";
-import { FiPlus } from "react-icons/fi";
-import { LuMinus } from "react-icons/lu";
-import { BeatLoader, ClipLoader } from "react-spinners";
+import { FiPlus, FiMinus, FiTrash2, FiShoppingBag } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
 function Payment() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -19,6 +22,7 @@ function Payment() {
     removeCart,
     isLoading
   } = UserAuth();
+
   useEffect(() => {
     sessionStorage.setItem("paymentrestrurantID", id);
     const get = async () => {
@@ -37,9 +41,8 @@ function Payment() {
     if (totalPrice === 0) {
       setFoodList([]);
     }
-  }, [cart, id]);
-  console.log(foodList);
-  
+  }, [cart, id, totalPrice]);
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -52,7 +55,7 @@ function Payment() {
   }, []);
 
   async function handlePayment(withGstPrice) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const options = {
         key: "rzp_test_7cs83Ikm791P0j",
         amount: parseInt(withGstPrice * 100),
@@ -60,7 +63,7 @@ function Payment() {
         name: "FoodForYou",
         description: "Order your food",
         image: "",
-        handler: (response) => {
+        handler: () => {
           resolve(true);
         },
         prefill: {
@@ -72,7 +75,7 @@ function Payment() {
           address: "",
         },
         theme: {
-          color: "#3399cc",
+          color: "#0F172A", // Slate-900 for professional look
         },
         modal: {
           ondismiss: () => {
@@ -84,88 +87,159 @@ function Payment() {
       rzp.open();
     });
   }
+
   const handleProceedToPayment = async () => {
     const paymentSuccessful = await handlePayment(totalPrice);
     if (paymentSuccessful) {
       try {
         await removeCart(id, foodList);
         navigate("/");
+        toast.success("Payment successful!");
       } catch (error) {
         console.log(error);
+        toast.error("Something went wrong!");
       }
-      toast.success("Payment successful!");
     } else {
       toast.warn("Payment cancelled or failed.");
     }
   };
-  return !isLoading ? (<div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
-          Food Items
-        </h1>
-        <div className="w-full max-w-3xl flex flex-col items-center gap-6">
-          {foodList && foodList.length > 0 ? (
-            foodList.map((item, index) => (
-              <div
-                className="w-full bg-white rounded-lg p-6 flex justify-between items-center shadow-lg hover:shadow-xl transition-shadow duration-300"
-                key={index}
-              >
-                <div className="flex flex-col">
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    {item._id?.name}
-                  </h2>
-                  <p className="text-lg text-gray-600">
-                    Price: ₹{item._id?.price?.toFixed(2)}
-                  </p>
-                  <p className="text-md text-gray-600">
-                    Quantity: {item.quantity}
-                  </p>
-                  <div className="flex gap-3 mt-4">
-                    <button
-                      onClick={() => decrementItem(item._id?._id)}
-                      className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-600 transition duration-200"
-                    >
-                      <LuMinus className="text-[18px]" />
-                    </button>
-                    <button
-                      onClick={() => incrementItem(item._id?._id)}
-                      className="bg-green-500 text-white py-1 px-3 rounded-full hover:bg-green-600 transition duration-200"
-                    >
-                      <FiPlus className="text-[18px]" />
-                    </button>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    removeItem(item._id?._id);
-                  }}
-                  className="ml-4 bg-red-600 text-white py-2 px-4 rounded-full hover:bg-red-700 transition duration-200"
-                >
-                  Remove
-                </button>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-700 text-lg">No items in the cart.</p>
-          )}
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-white">
+        <div className="p-8">
+          <FiShoppingBag className="text-6xl text-slate-900 animate-bounce" />
         </div>
-  
-        <div className="flex justify-between w-full max-w-3xl mt-8">
-          <div className="flex-1"></div>
-          <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900">
-              Total: ₹{totalPrice.toFixed(2)}
-            </div>
-  
-            {foodList.length > 0 ?  (<button
-              className="mt-4 bg-green-500 text-white py-3 px-6 rounded-full hover:bg-green-600 transition duration-200 text-lg"
-              onClick={handleProceedToPayment}
+      </div>
+    );
+  }
+
+  if (!foodList || foodList.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-4xl font-semibold text-slate-900 mb-8"
+          >
+            Your Cart is Empty
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <FiShoppingBag className="mx-auto text-8xl text-slate-400 mb-6" />
+            <p className="text-xl text-slate-600 mb-8">
+              Looks like you haven't added any items to your cart yet.
+            </p>
+            <Button
+              onClick={() => navigate("/")}
+              className="bg-slate-900 hover:bg-slate-800 text-white text-lg px-8 py-3 rounded-lg transition-colors duration-200"
             >
-              Proceed to Payment
-            </button>): <></>}
-          </div>
+              Browse Menu
+            </Button>
+          </motion.div>
         </div>
-      </div>) : <div className="w-full h-[50vh] flex items-center justify-center"><ClipLoader/></div>
-    
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto">
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl sm:text-4xl font-semibold text-slate-900 mb-8 text-center"
+        >
+          Your Order Summary
+        </motion.h1>
+        
+        <Card className="overflow-hidden shadow-md border border-gray-100">
+          <CardHeader className="bg-white border-b border-gray-100">
+            <CardTitle className="text-xl text-slate-900">Order Details</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <AnimatePresence mode="wait">
+              {foodList.map((item, index) => (
+                <motion.div
+                  key={item._id?._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  {index > 0 && <Separator className="my-4" />}
+                  <div className="flex justify-between items-center py-4">
+                    <div className="flex-1">
+                      <h2 className="text-lg font-medium text-slate-900">
+                        {item._id?.name}
+                      </h2>
+                      <p className="text-lg font-semibold text-slate-700">
+                        ₹{item._id?.price?.toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg border border-gray-200">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => decrementItem(item._id?._id)}
+                          className="h-8 w-8 hover:bg-gray-100"
+                        >
+                          <FiMinus className="h-4 w-4" />
+                        </Button>
+                        <span className="text-lg font-medium w-8 text-center text-slate-900">
+                          {item.quantity}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => incrementItem(item._id?._id)}
+                          className="h-8 w-8 hover:bg-gray-100"
+                        >
+                          <FiPlus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(item._id?._id)}
+                        className="text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                      >
+                        <FiTrash2 className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </CardContent>
+        </Card>
+
+        <Card className="mt-6 shadow-md border border-gray-100">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-2xl font-semibold text-slate-900">
+                Total Amount: <span className="text-slate-700">₹{totalPrice.toFixed(2)}</span>
+              </div>
+              <Button
+                size="lg"
+                onClick={handleProceedToPayment}
+                className="w-full sm:w-auto bg-green-900 hover:bg-green-800 text-white text-lg px-8 py-3 rounded-lg transition-colors duration-200"
+              >
+                Proceed to Payment
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }
 
 export default Payment;
