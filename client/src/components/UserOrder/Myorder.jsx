@@ -40,7 +40,7 @@ const MyOrder = () => {
   if (isLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-gray-50">
-        <ClipLoader color="#6366F1" />
+        <ClipLoader color="black" />
       </div>
     );
   }
