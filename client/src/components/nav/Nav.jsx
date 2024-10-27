@@ -255,7 +255,7 @@ const Nav = () => {
             aria-label="Toggle location"
           >
             <CiLocationOn className="text-2xl" />
-            <span className="ml-2 font-medium">{location.slice(1, -1)}</span>
+            <span className="ml-2 font-medium">{location}</span>
           </div>
 
           {/* User Profile */}
