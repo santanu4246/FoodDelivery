@@ -9,9 +9,7 @@ const Category = () => {
   const [loading, setLoading] = useState(true);
   const { Category } = useParams();
   const navigate = useNavigate();
-
   const { GetRestaurentByCategory } = useRestrurant();
-
   const getRes = async () => {
     try {
       const data = await GetRestaurentByCategory(Category);
@@ -22,11 +20,9 @@ const Category = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getRes();
   }, [GetRestaurentByCategory, Category]);
-
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8 md:px-8 lg:px-12">
       {/* Header Section */}
