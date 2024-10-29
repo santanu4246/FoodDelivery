@@ -58,4 +58,5 @@ async function getAllFoodCategories(req, res) {
   }
 }
 
+
 export { AddFoodCategory, getAllFoodCategories };

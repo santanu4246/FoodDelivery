@@ -4,7 +4,9 @@ import {
   deleteImageFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/Cloudinary.js";
-
+import FoodSchema from "../models/FoodSchema.js";
+import FoodModel from "../models/FoodSchema.js";
+import MenuModel from "../models/MenuModel.js";
 async function getAllRestrudents(req, res) {
   try {
     const response = await RestrudentModel.find({});
@@ -90,7 +92,7 @@ async function getRestrurantByLocation(req, res) {
       msg: "Restrurants feched by location",
       success: false,
       restrurantList,
-      location
+      location,
     });
   } catch (error) {
     return res.status(500).json({
@@ -166,11 +168,11 @@ async function searchRestaurants(req, res) {
     const results = await RestrudentModel.find({});
 
     // Filter restaurants by partial matching (case-insensitive) manually
-    const filteredResults = results.filter(restaurant =>
+    const filteredResults = results.filter((restaurant) =>
       restaurant.name.toLowerCase().includes(searchTerm)
     );
     console.log(filteredResults);
-    
+
     if (filteredResults.length === 0) {
       return res.json({
         success: false,
@@ -194,15 +196,63 @@ async function searchRestaurants(req, res) {
   }
 }
 
-async function OrderDetails(req,res) {
+async function OrderDetails(req, res) {
   const { id } = req.params;
-try {
-    const orderDetails = await OrderModel.find({restaurant:id})
-    res.status(200).json({msg:"Order Details",orderDetails})
-} catch (error) {
-  res.json({msg:"error while fething orderDetails",error})
+  try {
+    const orderDetails = await OrderModel.find({ restaurant: id });
+    res.status(200).json({ msg: "Order Details", orderDetails });
+  } catch (error) {
+    res.json({ msg: "error while fething orderDetails", error });
+  }
 }
 
+async function getRestrurantByCatagory(req, res) {
+  const { category } = req.params;
+  // console.log(category);
+
+  try {
+    const restaurants = await RestrudentModel.find().populate("menu");
+
+    const filteredRestaurants = await Promise.all(
+      restaurants.map(async (restaurant) => {
+        // console.log("Restaurant:", restaurant);
+
+        const menuItems = await Promise.all(
+          restaurant.menu.map(async (menuItem) => {
+            const menu = await MenuModel.findById(menuItem._id).populate("food");
+            // console.log("menu.food",menu.food);
+            
+            return menu;
+          })
+        );
+
+        
+        const allFoodItems = menuItems.flatMap(menu => menu.food);
+        // console.log("allFoodItems",allFoodItems);
+        
+        const hasMatchingFood = allFoodItems.some((food) => {
+          console.log("Food Item:", food.name);
+          return food.name && food.name.includes(category);
+        });
+
+        return {
+          ...restaurant.toObject(),
+          hasMatchingFood
+        };
+      })
+    );
+
+    const restaurantsWithMatches = filteredRestaurants.filter(restaurant => restaurant.hasMatchingFood);
+    
+
+    res.status(200).json({ 
+      restaurantsWithMatches,
+      category
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 }
 export {
   getAllRestrudents,
@@ -212,5 +262,6 @@ export {
   getRestrurantByLocation,
   updateRestrurant,
   searchRestaurants,
-  OrderDetails
+  OrderDetails,
+  getRestrurantByCatagory,
 };

@@ -10,6 +10,7 @@ import RestrurantData from "./components/RestrurantDetail/RestrurantData.jsx";
 import Payment from "./components/Cart/Payment.jsx";
 import Myorder from "./components/UserOrder/Myorder.jsx";
 import Myprofile from "./components/UserProfile/Myprofile.jsx";
+import Category from "./Category/Category";
 function App() {
   const {initializeAuth} = UserAuth()
   const location = useLocation();
@@ -46,6 +47,7 @@ useEffect(()=>{
         <Route path="/payment/:id" element={<Payment />} />
         <Route path="/myorders" element={<Myorder />} />
         <Route path="/myprofile" element={<Myprofile />} />
+        <Route path="/mycategory/:Category" element={<Category />} />
       </Routes>
       {!isVisiblaeNavFooter && <Footer />}
       <ToastContainer
