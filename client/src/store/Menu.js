@@ -42,14 +42,63 @@ export const useMenu = create((set, get) => ({
 
   updateFood: async (formData, foodid) => {
     const restuid = localStorage.getItem("restrurantID");
-    console.log(restuid);
+    console.log("Updating food:", { formData, foodid, restuid });
 
     try {
-      const res = await axios.put(`${BASE_URL}/menu/${foodid}`, { ...formData,restuid});
+      const res = await axios.put(`${BASE_URL}/menu/${foodid}`, { ...formData, restuid });
       toast.success(res.data.msg);
+      return res.data;
     } catch (error) {
       console.error("Error updating food:", error);
-      toast.error("Failed to update food.");
+      
+      let errorMessage = "Failed to update food";
+      if (error.response) {
+        errorMessage = error.response.data?.msg || error.response.data?.error || errorMessage;
+        console.log("Server error:", error.response.data);
+      } else if (error.request) {
+        errorMessage = "Network error - please check your connection";
+        console.log("Network error:", error.request);
+      } else {
+        errorMessage = error.message || errorMessage;
+        console.log("General error:", error.message);
+      }
+      
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
+
+  editFood: async (foodid, editData) => {
+    const restuid = localStorage.getItem("restrurantID");
+    console.log("Editing food:", { foodid, editData, restuid });
+
+    try {
+      const res = await axios.put(`${BASE_URL}/menu/${foodid}`, {
+        foodName: editData.name,
+        foodPrice: editData.price,
+        description: editData.description,
+        isveg: editData.veg,
+        restuid
+      });
+      toast.success(res.data.msg);
+      return res.data;
+    } catch (error) {
+      console.error("Error editing food:", error);
+      
+      let errorMessage = "Failed to edit food";
+      if (error.response) {
+        errorMessage = error.response.data?.msg || error.response.data?.error || errorMessage;
+        console.log("Server error:", error.response.data);
+      } else if (error.request) {
+        errorMessage = "Network error - please check your connection";
+        console.log("Network error:", error.request);
+      } else {
+        errorMessage = error.message || errorMessage;
+        console.log("General error:", error.message);
+      }
+      
+      toast.error(errorMessage);
+      throw error;
     }
   },
 
@@ -97,8 +146,25 @@ export const useMenu = create((set, get) => ({
       toast.success("Food added successfully");
       return data;
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to add food");
+      console.error("Error adding food:", error);
+      
+      let errorMessage = "Failed to add food";
+      
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = error.response.data?.msg || error.response.data?.error || errorMessage;
+        console.log("Server error:", error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "Network error - please check your connection";
+        console.log("Network error:", error.request);
+      } else {
+        // Something else happened
+        errorMessage = error.message || errorMessage;
+        console.log("General error:", error.message);
+      }
+      
+      toast.error(errorMessage);
       throw error;
     }
   },

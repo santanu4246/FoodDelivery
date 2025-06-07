@@ -75,8 +75,10 @@ async function VerifyOtp(req, res) {
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        secure: true,
-        sameSite: "None",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? "None" : "Lax",
+        domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
+        path: '/'
       });
 
       const cart = await CartModel.findById(existingUser.cart);
@@ -129,8 +131,10 @@ async function createuser(req, res) {
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        secure: true,
-        sameSite: "None",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? "None" : "Lax",
+        domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
+        path: '/'
       });
 
       return res.status(200).json({
@@ -147,8 +151,8 @@ async function logout(req, res) {
   try {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       path: '/',
     });
     res.status(200).json({ message: "Logout successful" });

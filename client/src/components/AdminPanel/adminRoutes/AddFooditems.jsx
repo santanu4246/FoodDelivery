@@ -69,6 +69,7 @@ function AddFoodItems() {
       setImagePreview(null);
     } catch (error) {
       console.error("Error adding food:", error);
+      // Error is already handled in the store function with toast
     } finally {
       setIsSubmitting(false);
     }

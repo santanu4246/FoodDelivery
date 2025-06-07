@@ -35,8 +35,9 @@ async function addFood(req, res) {
 }
 async function updateFood(req, res) {
   const { foodid } = req.params;
-  const { foodName, foodPrice, starterType, isveg, prevStarterType, restuid } =
-    req.body;
+  const { foodName, foodPrice, starterType, isveg, prevStarterType, restuid, description } = req.body;
+  
+  console.log("Update food request:", { foodid, body: req.body });
 
   try {
     const foodItem = await FoodModel.findById(foodid);
@@ -44,32 +45,40 @@ async function updateFood(req, res) {
       return res.status(404).json({ msg: "Food item not found" });
     }
 
-    if (foodName) foodItem.name = foodName;
-    if (foodPrice) foodItem.price = foodPrice;
-    if (isveg !== undefined) foodItem.veg = isveg;
+    // Update food item fields
+    if (foodName !== undefined) foodItem.name = foodName;
+    if (foodPrice !== undefined) foodItem.price = parseFloat(foodPrice);
+    if (isveg !== undefined) foodItem.veg = isveg === "true" || isveg === true;
+    if (description !== undefined) foodItem.desc = description;
 
     await foodItem.save();
-    console.log(restuid);
-    console.log(prevStarterType, starterType);
     
-    if (prevStarterType !== starterType) {
-      const resturant = await RestrurantModel.findById(restuid)
-        .populate("menu")
-        .select("menu");
-      console.log(resturant.menu);
-      for (const menu of resturant.menu) {
+    // Handle menu category change if starterType is provided
+    if (starterType && prevStarterType && prevStarterType !== starterType) {
+      console.log("Moving food between menus:", { prevStarterType, starterType });
+      
+      const restaurant = await RestrurantModel.findById(restuid).populate("menu");
+      if (!restaurant) {
+        return res.status(404).json({ msg: "Restaurant not found" });
+      }
+      
+      for (const menu of restaurant.menu) {
         if (menu.title === prevStarterType) {
           menu.food.pull(foodid);
           await menu.save();
+          console.log(`Removed from ${prevStarterType}`);
         }
         if (menu.title === starterType) {
           menu.food.push(foodid);
           await menu.save();
+          console.log(`Added to ${starterType}`);
         }
       }
     }
+    
     res.status(200).json({ msg: "Food updated successfully", food: foodItem });
   } catch (error) {
+    console.error("Error updating food:", error);
     res.status(500).json({
       msg: "Error while updating food",
       error: error.message,
@@ -107,18 +116,32 @@ async function deleteFood(req, res) {
 
 async function AddFoodToDatabase(req, res) {
   const { foodName, foodPrice, starterType, isVegetarian, restuid, description } = req.body;
-  console.log(foodName, foodPrice, starterType, isVegetarian);
+  console.log("Request body:", { foodName, foodPrice, starterType, isVegetarian, restuid, description });
   
   try {
+    // Validation
+    if (!foodName || !foodPrice || !starterType || !restuid) {
+      return res.status(400).json({ 
+        msg: "Missing required fields", 
+        required: ["foodName", "foodPrice", "starterType", "restuid"],
+        received: { foodName, foodPrice, starterType, restuid }
+      });
+    }
+
     const menu = await MenuModel.findById(starterType);
     if (!menu) {
       return res.status(404).json({ msg: "Menu not found" });
     }
 
+    const restaurant = await RestrurantModel.findById(restuid);
+    if (!restaurant) {
+      return res.status(404).json({ msg: "Restaurant not found" });
+    }
+
     const newFood = new FoodModel({
       name: foodName,
-      price: foodPrice,
-      veg: isVegetarian,
+      price: parseFloat(foodPrice),
+      veg: isVegetarian === "true" || isVegetarian === true,
       menu: starterType,
       restaurant: restuid,
       desc: description,

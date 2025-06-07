@@ -54,8 +54,9 @@ async function loginAdmin(req, res) {
     res.cookie("adtoken", adtoken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: true,
-      sameSite: "None"
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? "None" : "Lax",
+      path: '/'
     });
 
     existingAdmin.password = "";
@@ -202,8 +203,8 @@ async function logoutAdmin(req, res) {
   try {
     res.clearCookie('adtoken', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       path: '/',
     });
     return res.status(200).json({ msg: "Logout successful", success: true });

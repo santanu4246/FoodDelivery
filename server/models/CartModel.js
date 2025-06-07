@@ -12,7 +12,7 @@ const CartSchema = new mongoose.Schema({
       },
       foods: [
         {
-          food: {
+          _id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Food"
           },

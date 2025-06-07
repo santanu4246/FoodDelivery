@@ -68,9 +68,10 @@ async function setLocation(req, res) {
     }
     res.cookie("location", JSON.stringify(location), {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? "None" : "Lax",
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/'
     });
     res.status(200).json({ message: "Location set successfully" });
   } catch (error) {
