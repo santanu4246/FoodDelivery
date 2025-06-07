@@ -134,6 +134,14 @@ export const useMenu = create((set, get) => ({
   },
   addFoodToDatabase: async (foodData) => {
     try {
+      console.log("=== FRONTEND SENDING DATA ===");
+      console.log("FormData object:", foodData);
+      
+      // Log FormData contents
+      for (let [key, value] of foodData.entries()) {
+        console.log(`${key}:`, value);
+      }
+      
       const { data } = await axios.post(
         `${BASE_URL}/addfood-to-database`,
         foodData,
@@ -150,10 +158,20 @@ export const useMenu = create((set, get) => ({
       
       let errorMessage = "Failed to add food";
       
-      if (error.response) {
-        // Server responded with error status
+              if (error.response) {
+          // Server responded with error status
+          console.log("=== SERVER ERROR RESPONSE ===");
+        console.log("Status:", error.response.status);
+        console.log("Full response data:", error.response.data);
+        console.log("Response headers:", error.response.headers);
+        
         errorMessage = error.response.data?.msg || error.response.data?.error || errorMessage;
-        console.log("Server error:", error.response.data);
+        
+        // Log specific details for debugging
+        if (error.response.data?.required) {
+          console.log("Missing required fields:", error.response.data.required);
+          console.log("Received data:", error.response.data.received);
+        }
       } else if (error.request) {
         // Request was made but no response received
         errorMessage = "Network error - please check your connection";

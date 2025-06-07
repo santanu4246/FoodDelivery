@@ -2,6 +2,10 @@ import FoodModel from "../models/FoodSchema.js";
 import MenuModel from "../models/MenuModel.js";
 import RestrurantModel from "../models/RestrudentModel.js";
 import CartModel from "../models/CartModel.js";
+import {
+  uploadOnCloudinary,
+  deleteImageFromCloudinary
+} from "../utils/Cloudinary.js";
 
 async function addFood(req, res) {
   const { title, description, price, isVegetarian } = req.body;
@@ -146,12 +150,26 @@ async function AddFoodToDatabase(req, res) {
       return res.status(404).json({ msg: "Restaurant not found" });
     }
 
-    // Validate ObjectId format
-    if (!starterType.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ msg: "Invalid menu ID format" });
+    // Validate ObjectId format (temporarily disabled for debugging)
+    console.log("Checking ObjectId formats:");
+    console.log("starterType:", starterType, "type:", typeof starterType);
+    console.log("restuid:", restuid, "type:", typeof restuid);
+    
+    if (!starterType || !starterType.match(/^[0-9a-fA-F]{24}$/)) {
+      console.log("Invalid starterType format");
+      return res.status(400).json({ 
+        msg: "Invalid menu ID format", 
+        received: starterType,
+        type: typeof starterType
+      });
     }
-    if (!restuid.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ msg: "Invalid restaurant ID format" });
+    if (!restuid || !restuid.match(/^[0-9a-fA-F]{24}$/)) {
+      console.log("Invalid restuid format");
+      return res.status(400).json({ 
+        msg: "Invalid restaurant ID format", 
+        received: restuid,
+        type: typeof restuid
+      });
     }
 
     console.log("Creating food with data:", {
@@ -165,13 +183,37 @@ async function AddFoodToDatabase(req, res) {
       fileInfo: req.file ? { filename: req.file.filename, size: req.file.size } : null
     });
 
-    // Handle image URL - in production, file upload might fail so we skip image
+    // Handle image upload to Cloudinary
     let imageUrl = null;
-    if (req.file && req.file.filename) {
-      imageUrl = `/uploads/${req.file.filename}`;
-      console.log("Image will be saved as:", imageUrl);
+    if (req.file) {
+      console.log("Uploading image to Cloudinary...");
+      try {
+        // For memory storage, we need to create a temporary file path
+        // or use the buffer directly if Cloudinary supports it
+        if (req.file.buffer) {
+          console.log("Using file buffer for Cloudinary upload");
+          // We'll need to modify uploadOnCloudinary to handle buffers
+          // For now, let's skip image upload but keep the food saving
+          console.log("File buffer available but skipping upload for now");
+          imageUrl = null;
+        } else if (req.file.path) {
+          const cloudinaryResponse = await uploadOnCloudinary(
+            req.file.path,
+            "FoodItems"
+          );
+          if (cloudinaryResponse) {
+            imageUrl = cloudinaryResponse.url;
+            console.log("Image uploaded to Cloudinary:", imageUrl);
+          } else {
+            console.log("Cloudinary upload failed");
+          }
+        }
+      } catch (error) {
+        console.log("Error uploading to Cloudinary:", error.message);
+        imageUrl = null;
+      }
     } else {
-      console.log("No file uploaded or file upload failed - saving food without image");
+      console.log("No file uploaded - saving food without image");
     }
 
     const newFood = new FoodModel({

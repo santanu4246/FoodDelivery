@@ -3,11 +3,36 @@ import { addFood, deleteFood, updateFood,AddFoodToDatabase,getMenuWithFoodList,g
 import uploadStorage from "../middleware/Multer.js";
 import AuthAdmin from "../middleware/AuthAdmin.js";
 
-// Skip file upload entirely for now
+// Use disk storage for Cloudinary, handle upload directory creation
 const handleUpload = (req, res, next) => {
-  console.log("=== SKIPPING FILE UPLOAD ===");
-  req.file = null;
-  next();
+  console.log("=== USING DISK STORAGE FOR CLOUDINARY ===");
+  
+  uploadStorage.single('image')(req, res, (err) => {
+    if (err) {
+      console.log('Disk upload error (parsing form data anyway):', err.message);
+      
+      // Even if file upload fails, we can still parse form data manually
+      // This is a fallback for when uploads directory doesn't exist
+      if (err.code === 'ENOENT') {
+        console.log('Upload directory missing - continuing without file');
+        req.file = null;
+      }
+    } else {
+      console.log('Disk upload success, file:', req.file ? 'saved' : 'no file');
+      if (req.file) {
+        console.log('File info:', { 
+          filename: req.file.filename,
+          path: req.file.path,
+          size: req.file.size,
+          mimetype: req.file.mimetype 
+        });
+      }
+    }
+    
+    console.log("Form data parsed, body keys:", Object.keys(req.body || {}));
+    console.log("Form data values:", req.body);
+    next();
+  });
 };
 
 const FoodRouter = express.Router()
