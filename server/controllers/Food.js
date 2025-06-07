@@ -188,24 +188,33 @@ async function AddFoodToDatabase(req, res) {
     if (req.file) {
       console.log("Uploading image to Cloudinary...");
       try {
-        // For memory storage, we need to create a temporary file path
-        // or use the buffer directly if Cloudinary supports it
+        // Handle memory storage (production)
         if (req.file.buffer) {
-          console.log("Using file buffer for Cloudinary upload");
-          // We'll need to modify uploadOnCloudinary to handle buffers
-          // For now, let's skip image upload but keep the food saving
-          console.log("File buffer available but skipping upload for now");
-          imageUrl = null;
-        } else if (req.file.path) {
+          console.log("Using file buffer for Cloudinary upload (production)");
+          const cloudinaryResponse = await uploadOnCloudinary(
+            null,
+            "FoodItems",
+            req.file.buffer
+          );
+          if (cloudinaryResponse) {
+            imageUrl = cloudinaryResponse.url;
+            console.log("Image uploaded to Cloudinary from buffer:", imageUrl);
+          } else {
+            console.log("Cloudinary buffer upload failed");
+          }
+        } 
+        // Handle disk storage (development)
+        else if (req.file.path) {
+          console.log("Using file path for Cloudinary upload (development)");
           const cloudinaryResponse = await uploadOnCloudinary(
             req.file.path,
             "FoodItems"
           );
           if (cloudinaryResponse) {
             imageUrl = cloudinaryResponse.url;
-            console.log("Image uploaded to Cloudinary:", imageUrl);
+            console.log("Image uploaded to Cloudinary from path:", imageUrl);
           } else {
-            console.log("Cloudinary upload failed");
+            console.log("Cloudinary path upload failed");
           }
         }
       } catch (error) {

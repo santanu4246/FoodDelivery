@@ -120,8 +120,9 @@ async function registerAdmin(req, res) {
     }
 
     const cloudinaryResponse = await uploadOnCloudinary(
-      file.path,
-      "Restrurant"
+      file.buffer ? null : file.path,
+      "Restrurant",
+      file.buffer
     );
     if (!cloudinaryResponse)
       return res
@@ -286,8 +287,9 @@ async function updateAdmin(req, res) {
     if (file) {
       await deleteImageFromCloudinary(restrurantRes.image);
       const cloudinaryResponse = await uploadOnCloudinary(
-        file.path,
-        "Restrurant"
+        file.buffer ? null : file.path,
+        "Restrurant",
+        file.buffer
       );
       if (!cloudinaryResponse) {
         return res

@@ -14,8 +14,9 @@ async function AddFoodCategory(req, res) {
     }
 
     const cloudinaryResponse = await uploadOnCloudinary(
-      file.path,
-      "FoodCategory"
+      file.buffer ? null : file.path,
+      "FoodCategory",
+      file.buffer
     );
 
     if (!cloudinaryResponse)

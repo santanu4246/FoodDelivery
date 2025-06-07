@@ -10,23 +10,48 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadOnCloudinary = async (localFilePath, subfolderName) => {
+const uploadOnCloudinary = async (localFilePath, subfolderName, buffer = null) => {
     try {
-        if (!localFilePath || !subfolderName) return null;
-
         const options = {
             resource_type: "auto",
             folder: `fooddelivery/${subfolderName}`
         };
 
+        // Handle buffer upload (for production/memory storage)
+        if (buffer) {
+            return new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    options,
+                    (error, result) => {
+                        if (error) {
+                            console.log("Error uploading buffer to Cloudinary:", error);
+                            reject(error);
+                        } else {
+                            console.log("Buffer uploaded to Cloudinary successfully:", result.url);
+                            resolve(result);
+                        }
+                    }
+                ).end(buffer);
+            });
+        }
+
+        // Handle file path upload (for development/disk storage)
+        if (!localFilePath || !subfolderName) return null;
+
         const response = await cloudinary.uploader.upload(localFilePath, options);
 
-        fs.unlinkSync(localFilePath);
+        // Delete local file only if it exists
+        if (fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath);
+        }
         return response;
 
     } catch (error) {
         console.log("Error uploading file to Cloudinary", error);
-        fs.unlinkSync(localFilePath);
+        // Delete local file only if it exists
+        if (localFilePath && fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath);
+        }
         return null;
     }
 }
