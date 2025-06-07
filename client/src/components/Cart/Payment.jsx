@@ -174,7 +174,31 @@ function Payment() {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
                   {index > 0 && <Separator className="my-4" />}
-                  <div className="flex justify-between items-center py-4">
+                  <div className="flex items-center gap-4 py-4">
+                    {/* Food Image */}
+                    <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg">
+                      <img
+                        src={item._id?.image || (item._id?.veg 
+                          ? "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&crop=center"
+                          : "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop&crop=center")}
+                        alt={item._id?.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = item._id?.veg 
+                            ? "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&crop=center"
+                            : "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop&crop=center";
+                        }}
+                      />
+                      {/* Veg/Non-veg Indicator */}
+                      <div className="absolute top-1 left-1">
+                        <div className={`w-3 h-3 rounded-full border ${
+                          item._id?.veg 
+                            ? "bg-green-500 border-green-600" 
+                            : "bg-red-500 border-red-600"
+                        }`} />
+                      </div>
+                    </div>
+                    
                     <div className="flex-1">
                       <h2 className="text-lg font-medium text-slate-900">
                         {item._id?.name}
@@ -182,9 +206,14 @@ function Payment() {
                       <p className="text-lg font-semibold text-slate-700">
                         ₹{item._id?.price?.toFixed(2)}
                       </p>
+                      {item._id?.desc && (
+                        <p className="text-sm text-slate-500 mt-1 line-clamp-2">
+                          {item._id.desc}
+                        </p>
+                      )}
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
+                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-1">
                         <Button
                           variant="ghost"
                           size="icon"
@@ -205,6 +234,14 @@ function Payment() {
                           <FiPlus className="h-4 w-4" />
                         </Button>
                       </div>
+                      
+                      <div className="text-right sm:text-left">
+                        <p className="text-sm text-slate-500">Total</p>
+                        <p className="text-lg font-bold text-green-600">
+                          ₹{(item._id?.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
+                      
                       <Button
                         variant="ghost"
                         size="icon"

@@ -87,11 +87,19 @@ export const useMenu = create((set, get) => ({
     try {
       const { data } = await axios.post(
         `${BASE_URL}/addfood-to-database`,
-        foodData
+        foodData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
-      toast.success("Food addedd successfully");
+      toast.success("Food added successfully");
+      return data;
     } catch (error) {
       console.log(error);
+      toast.error("Failed to add food");
+      throw error;
     }
   },
 

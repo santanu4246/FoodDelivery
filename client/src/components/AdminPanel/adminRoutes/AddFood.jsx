@@ -1,73 +1,112 @@
 import React, { useState } from "react";
 import { useMenu } from "../../../store/Menu";
 import { toast } from "react-toastify";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Plus, Utensils, Loader2 } from "lucide-react";
+
 function AddFood() {
-  const [title, setTitle] = useState(""); 
- 
-  // const [foodImage, setFoodImage] = useState(null); 
-  const { addMenu } = useMenu();  // Fetching addMenu from store
-
-
-  // const handleFoodImageChange = (e) => {
-  //   setFoodImage(e.target.files[0]); 
-  // };
+  const [title, setTitle] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addMenu } = useMenu();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // const formData = new FormData();
-    // formData.append("title", title);
-
-    // // Append each food item to formData
-    // foodItems.forEach((food, index) => {
-    //   formData.append(`food[${index}][name]`, food.name);
-    //   formData.append(`food[${index}][price]`, food.price);
-    //   formData.append(`food[${index}][veg]`, food.veg);
-    //   // formData.append(`food[${index}][image]`, food.image); 
-    // });
+    setIsSubmitting(true);
 
     try {
       await addMenu(title);
-      toast.success("Menu submitted successfully!");
+      toast.success("Menu category added successfully!");
+      setTitle("");
     } catch (error) {
       console.log(error);
-      toast.error("Failed to submit the menu.");
+      toast.error("Failed to add menu category.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-   
-    setFoodItems([]);
-    setTitle("");
   };
 
   return (
-    <div className="min-h-full w-full flex justify-center bg-gray-100 py-5">
-      <div className="h-full w-[50%] bg-white shadow-2xl p-10 rounded-lg">
-        <h2 className="uppercase text-center pb-5 text-black text-[30px] font-extrabold">
-          Add Food Items to Menu
-        </h2>
+    <div className="p-6 bg-gray-50 min-h-full">
+      <div className="max-w-2xl mx-auto">
+        <Card className="shadow-lg border-0 bg-white">
+          <CardHeader className="bg-white border-b border-gray-100 pb-6">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Utensils className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold text-gray-900">Add Menu Category</CardTitle>
+                <CardDescription className="text-gray-600 mt-1">
+                  Create a new category for organizing your food items
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="title" className="text-lg font-semibold text-gray-700">
+                  Category Name
+                </Label>
+                <Input
+                  id="title"
+                  type="text"
+                  placeholder="e.g., Appetizers, Main Course, Desserts"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  className="h-12 text-base border-2 focus:border-blue-500 transition-colors"
+                />
+                <p className="text-sm text-gray-500">
+                  This will be used to group your food items in the menu
+                </p>
+              </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="flex flex-col">
-            <label htmlFor="title" className="text-black text-[18px] font-bold mb-2">
-              Menu Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              className="border-2 border-gray-300 p-2 rounded-md text-black"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
+              <div className="pt-6 border-t border-gray-100">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !title.trim()}
+                  className="w-full h-12 text-base font-semibold bg-[#272E3F] hover:bg-gray-800 text-white shadow-lg transition-all duration-300 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      Adding Category...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-5 w-5 mr-2" />
+                      Add Menu Category
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
 
-          <button
-            type="submit"
-            className="bg-[#111111] text-white p-3 rounded-md font-bold w-full"
-          >
-            Submit Menu
-          </button>
-        </form>
+        {/* Info Card */}
+        <Card className="mt-6 border border-blue-200 bg-blue-50">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-3">
+              <div className="p-1 bg-blue-600 rounded-full mt-1">
+                <Utensils className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-2">Quick Tips</h3>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li>• Use clear, descriptive names for categories</li>
+                  <li>• Common categories: Starters, Mains, Beverages, Desserts</li>
+                  <li>• You can add food items to categories after creating them</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

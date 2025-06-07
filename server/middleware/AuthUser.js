@@ -15,7 +15,7 @@ async function AuthToken(req, res, next) {
     req.role = decoded.role;
     req.name = decoded.name;
     req.cart=decoded.cart
-    console.log(decoded);
+    // console.log(decoded);
     next();
   } catch (error) {
     console.log(error);

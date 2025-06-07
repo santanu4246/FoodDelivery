@@ -25,6 +25,9 @@ app.use(
   })
 );
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
+
 app.use("/", AdminRouter);
 app.use("/", FoodCategoryRouter);
 app.use("/", RestrudentRouter);

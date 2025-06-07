@@ -106,8 +106,9 @@ async function deleteFood(req, res) {
 }
 
 async function AddFoodToDatabase(req, res) {
-  const { foodName, foodPrice, starterType, isVegetarian, restuid } = req.body;
+  const { foodName, foodPrice, starterType, isVegetarian, restuid, description } = req.body;
   console.log(foodName, foodPrice, starterType, isVegetarian);
+  
   try {
     const menu = await MenuModel.findById(starterType);
     if (!menu) {
@@ -120,6 +121,8 @@ async function AddFoodToDatabase(req, res) {
       veg: isVegetarian,
       menu: starterType,
       restaurant: restuid,
+      desc: description,
+      image: req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : null,
     });
 
     await newFood.save();
