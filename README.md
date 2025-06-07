@@ -2,7 +2,7 @@ FoodForYou is a full-stack food delivery website.
 
 ## Live Demo
 
-Check out the live demo: https://fooddelivery-aq37.onrender.com
+Check out the live demo: https://santanu-food-delivery.vercel.app
 
 ## Key Features
 
