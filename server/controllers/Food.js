@@ -115,10 +115,13 @@ async function deleteFood(req, res) {
 }
 
 async function AddFoodToDatabase(req, res) {
-  const { foodName, foodPrice, starterType, isVegetarian, restuid, description } = req.body;
-  console.log("Request body:", { foodName, foodPrice, starterType, isVegetarian, restuid, description });
-  
   try {
+    console.log("=== AddFoodToDatabase START ===");
+    console.log("User from auth:", req.id, req.type);
+    console.log("Request body:", req.body);
+    console.log("File:", req.file);
+    
+    const { foodName, foodPrice, starterType, isVegetarian, restuid, description } = req.body;
     // Validation
     if (!foodName || !foodPrice || !starterType || !restuid) {
       return res.status(400).json({ 
@@ -138,28 +141,58 @@ async function AddFoodToDatabase(req, res) {
       return res.status(404).json({ msg: "Restaurant not found" });
     }
 
+    // Validate ObjectId format
+    if (!starterType.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ msg: "Invalid menu ID format" });
+    }
+    if (!restuid.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ msg: "Invalid restaurant ID format" });
+    }
+
+    console.log("Creating food with data:", {
+      name: foodName,
+      price: parseFloat(foodPrice),
+      veg: isVegetarian === "true" || isVegetarian === true,
+      menu: starterType,
+      restaurant: restuid,
+      desc: description || "",
+      hasFile: !!req.file
+    });
+
     const newFood = new FoodModel({
       name: foodName,
       price: parseFloat(foodPrice),
       veg: isVegetarian === "true" || isVegetarian === true,
       menu: starterType,
       restaurant: restuid,
-      desc: description,
-      image: req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : null,
+      desc: description || "",
+      image: req.file ? `/uploads/${req.file.filename}` : null,
     });
 
+    console.log("About to save food...");
+
     await newFood.save();
+    console.log("Food saved successfully, ID:", newFood._id);
+    
     menu.food.push(newFood._id);
     await menu.save();
+    console.log("Menu updated successfully");
+    
     res.status(200).json({
       msg: "Food added successfully",
       food: newFood,
+      success: true
     });
   } catch (error) {
-    console.log(error);
+    console.error("=== AddFoodToDatabase ERROR ===");
+    console.error("Error:", error);
+    console.error("Stack:", error.stack);
+    
     return res.status(500).json({
       msg: "Error while adding food",
       error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      success: false
     });
   }
 }
