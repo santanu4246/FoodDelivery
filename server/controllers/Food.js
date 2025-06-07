@@ -115,10 +115,15 @@ async function deleteFood(req, res) {
 }
 
 async function AddFoodToDatabase(req, res) {
+  console.log("=== AddFoodToDatabase FUNCTION CALLED ===");
+  
   try {
     console.log("=== AddFoodToDatabase START ===");
-    console.log("User from auth:", req.id, req.type);
+    console.log("Request method:", req.method);
+    console.log("Request URL:", req.url);
     console.log("Request body:", req.body);
+    console.log("Request body type:", typeof req.body);
+    console.log("Request body keys:", Object.keys(req.body || {}));
     console.log("File:", req.file);
     
     const { foodName, foodPrice, starterType, isVegetarian, restuid, description } = req.body;
@@ -156,8 +161,18 @@ async function AddFoodToDatabase(req, res) {
       menu: starterType,
       restaurant: restuid,
       desc: description || "",
-      hasFile: !!req.file
+      hasFile: !!req.file,
+      fileInfo: req.file ? { filename: req.file.filename, size: req.file.size } : null
     });
+
+    // Handle image URL - in production, file upload might fail so we skip image
+    let imageUrl = null;
+    if (req.file && req.file.filename) {
+      imageUrl = `/uploads/${req.file.filename}`;
+      console.log("Image will be saved as:", imageUrl);
+    } else {
+      console.log("No file uploaded or file upload failed - saving food without image");
+    }
 
     const newFood = new FoodModel({
       name: foodName,
@@ -166,7 +181,7 @@ async function AddFoodToDatabase(req, res) {
       menu: starterType,
       restaurant: restuid,
       desc: description || "",
-      image: req.file ? `/uploads/${req.file.filename}` : null,
+      image: imageUrl,
     });
 
     console.log("About to save food...");
