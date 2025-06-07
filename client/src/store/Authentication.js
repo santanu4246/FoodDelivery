@@ -2,7 +2,8 @@ import axios from "axios";
 import { create } from "zustand";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
-export const useAdminAuthentication = create((set) => ({
+
+export const useAdminAuthentication = create((set, get) => ({
   admin: null,
   allRestrurants:[],
   adminType: null,
@@ -10,6 +11,7 @@ export const useAdminAuthentication = create((set) => ({
   isLoading: false,
   restrurantDetail:null,
   orderdetails:[],
+
   adminLogin: async (username, password) => {
     if (!username || !password) {
       set({ error: "Username and password are required" });
@@ -23,22 +25,25 @@ export const useAdminAuthentication = create((set) => ({
       });
       
       if (response.status === 200) {
+        const { user } = response.data;
         
-        localStorage.setItem("restrurantID", response?.data?.user?.restrurant?._id);
+        localStorage.setItem("restrurantID", user?.restrurant?._id);
         set({
-          adminType: response.data.user.type,
-          admin: response.data.user,
+          adminType: user.type,
+          admin: user,
           isAuthenticated: true
         });
        
       }
       return response.data.msg;
     } catch (error) {
+      console.error('Admin login error:', error);
       throw error;
     } finally {
       set({ isLoading: false });
     }
   },
+  
   getAdmin: async () => {
     set({ isLoading: true });
     try {
@@ -51,17 +56,23 @@ export const useAdminAuthentication = create((set) => ({
         });
       }
     } catch (error) {
+      console.error('Get admin error:', error);
       set({ isAuthenticated: false });
       throw error;
     } finally {
       set({ isLoading: false });
     }
   },
+  
   logoutAdmin: async () => {
     try {
       await axios.get(`${BASE_URL}/admin/logout`);
       localStorage.removeItem("restrurantID");
-      set({ admin: null, adminType: null, isAuthenticated: false });
+      set({ 
+        admin: null, 
+        adminType: null, 
+        isAuthenticated: false
+      });
     } catch (error) {
       throw error;
     } finally {

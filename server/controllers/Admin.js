@@ -14,6 +14,11 @@ dotenv.config();
 async function loginAdmin(req, res) {
   const { username, password } = req.body;
   try {
+    console.log('Login attempt for:', username);
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('Request origin:', req.headers.origin);
+    console.log('Request cookies:', req.cookies);
+    
     if (!username || !password) {
       return res
         .status(400)
@@ -41,7 +46,6 @@ async function loginAdmin(req, res) {
         .json({ msg: "Incorrect password", success: false });
     }
 
-
     const adtoken = jwt.sign(
       {
         id: existingAdmin._id,
@@ -51,21 +55,39 @@ async function loginAdmin(req, res) {
       { expiresIn: "30d" }
     );
     
-    res.cookie("adtoken", adtoken, {
+    // More flexible cookie settings for production debugging
+    const cookieOptions = {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? "None" : "Lax",
       path: '/'
-    });
+    };
+
+    // Add secure and sameSite based on environment and origin
+    if (process.env.NODE_ENV === 'production') {
+      cookieOptions.secure = true;
+      cookieOptions.sameSite = "None";
+    } else {
+      cookieOptions.secure = false;
+      cookieOptions.sameSite = "Lax";
+    }
+
+    console.log('Setting cookie with options:', cookieOptions);
+    
+    res.cookie("adtoken", adtoken, cookieOptions);
 
     existingAdmin.password = "";
 
+    console.log('Login successful for:', username);
+    
     return res
       .status(200)
-      .json({ msg: "Login successfull", success: true, user: existingAdmin });
+      .json({ 
+        msg: "Login successfull", 
+        success: true, 
+        user: existingAdmin
+      });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
     return res
       .status(500)
       .json({ msg: "Error while login admin", error, success: false });
