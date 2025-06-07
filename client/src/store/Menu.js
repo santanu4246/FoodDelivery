@@ -191,7 +191,7 @@ export const useMenu = create((set, get) => ({
     const restuid = localStorage.getItem("restrurantID");
     try {
       const res = await axios.get(
-        `${BASE_URL}/get-food-by-restu-id/${restuid}`
+        `${BASE_URL}/getfood-by-restuid/${restuid}`
       );
       console.log(res);
       return res.data;
@@ -202,7 +202,7 @@ export const useMenu = create((set, get) => ({
   getFoodByMenuId: async (menuid) => {
     try {
       const { data } = await axios.get(
-        `${BASE_URL}/get-food-by-menu-id/${menuid}`
+        `${BASE_URL}/getfood-by-menuid/${menuid}`
       );
       return data.foods;
     } catch (error) {
@@ -213,7 +213,7 @@ export const useMenu = create((set, get) => ({
   getMenuWithFoodList: async (restuid) => {
     try {
       const { data } = await axios.get(
-        `${BASE_URL}/get-menu-with-food-list/${restuid}`
+        `${BASE_URL}/getmenu-with-foodlist/${restuid}`
       );
       set({ MenuWithFoodList: data.menu });
     } catch (error) {

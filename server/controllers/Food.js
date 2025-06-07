@@ -270,10 +270,18 @@ async function getFoodByMenuId(req, res) {
     if (!menu) {
       return res.status(404).json({ msg: "Menu not found" });
     }
-    console.log(menu);
+
+    // Fetch all food items for this menu
+    const foods = await FoodModel.find({ menu: menuid });
+    
+    res.status(200).json({ 
+      msg: "Foods fetched successfully", 
+      foods: foods,
+      menu: menu 
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: "Error while getting food" });
+    return res.status(500).json({ msg: "Error while getting food", error: error.message });
   }
 }
 
