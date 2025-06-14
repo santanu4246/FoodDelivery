@@ -7,7 +7,9 @@ const FoodRouter = express.Router();
 
 FoodRouter.post("/addfood/:menuid", AuthAdmin, addFood);
 FoodRouter.put("/updatefood/:foodid", AuthAdmin, updateFood);
+FoodRouter.put("/menu/:foodid", AuthAdmin, updateFood);
 FoodRouter.delete("/deletefood/:foodid", AuthAdmin, deleteFood);
+FoodRouter.delete("/menu-delete/:foodid", AuthAdmin, deleteFood);
 FoodRouter.get("/getmenu-with-foodlist/:restuid", getMenuWithFoodList);
 FoodRouter.get("/getfood-by-menuid/:menuid", getFoodByMenuId);
 FoodRouter.get("/getfood-by-restuid/:restuid", getFoodByRestuId);
